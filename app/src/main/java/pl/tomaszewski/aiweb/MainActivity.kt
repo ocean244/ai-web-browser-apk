@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -13,6 +14,7 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.view.inputmethod.EditorInfo
 import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
@@ -28,9 +30,6 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -160,7 +159,6 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
         Log.i(TAG, "onCreate start")
 
@@ -231,11 +229,23 @@ class MainActivity : AppCompatActivity() {
             setPadding(20, 136, 20, 96)
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { v, insets ->
-            val sysBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
-            val topPad = maxOf(sysBars.top, 132)
-            val bottomPad = maxOf(sysBars.bottom, ime.bottom, 90)
+        rootLayout.setOnApplyWindowInsetsListener { v, insets ->
+            val topPad = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val sysTop = insets.getInsets(WindowInsets.Type.systemBars()).top
+                if (sysTop > 132) sysTop else 132
+            } else {
+                @Suppress("DEPRECATION")
+                if (insets.systemWindowInsetTop > 132) insets.systemWindowInsetTop else 132
+            }
+            val bottomPad = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val sysBot = insets.getInsets(WindowInsets.Type.systemBars()).bottom
+                val imeBot = insets.getInsets(WindowInsets.Type.ime()).bottom
+                val maxBot = if (sysBot > imeBot) sysBot else imeBot
+                if (maxBot > 90) maxBot else 90
+            } else {
+                @Suppress("DEPRECATION")
+                if (insets.systemWindowInsetBottom > 90) insets.systemWindowInsetBottom else 90
+            }
             v.setPadding(20, topPad, 20, bottomPad)
             insets
         }
@@ -292,7 +302,7 @@ class MainActivity : AppCompatActivity() {
             visibility = View.VISIBLE
             inputType = InputType.TYPE_TEXT_VARIATION_URI
             imeOptions = EditorInfo.IME_ACTION_GO
-            singleLine = true
+            setSingleLine(true)
             setPadding(18, 14, 18, 14)
             layoutParams = LinearLayout.LayoutParams(
                 0,
@@ -377,7 +387,7 @@ class MainActivity : AppCompatActivity() {
             setHintTextColor(Color.parseColor("#8B949E"))
             setBackgroundColor(Color.parseColor("#0D1117"))
             visibility = View.VISIBLE
-            singleLine = true
+            setSingleLine(true)
             setPadding(16, 12, 16, 12)
             layoutParams = LinearLayout.LayoutParams(
                 0,
@@ -430,7 +440,7 @@ class MainActivity : AppCompatActivity() {
             visibility = View.VISIBLE
             textSize = 12f
             setPadding(12, 10, 12, 10)
-            layoutParams = ViewGroup.LayoutParams(
+            layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
