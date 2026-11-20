@@ -1,156 +1,143 @@
 package pl.tomaszewski.aiweb
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.webkit.CookieManager
+import android.os.Looper
+import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.ScrollView
-import android.widget.TextView
+import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import java.net.URLEncoder
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var webView: WebView
-    private lateinit var urlInput: EditText
-    private lateinit var progressBar: ProgressBar
-    private lateinit var aiPanel: ScrollView
-    private lateinit var aiOutputText: TextView
+    private var rootContainer: FrameLayout? = null
+    private var webView: WebView? = null
+    private var isWebInitialized = false
 
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        webView = findViewById(R.id.webView)
-        urlInput = findViewById(R.id.urlInput)
-        progressBar = findViewById(R.id.progressBar)
-        aiPanel = findViewById(R.id.aiPanel)
-        aiOutputText = findViewById(R.id.aiOutputText)
-
-        val goBtn: Button = findViewById(R.id.goBtn)
-        val aiExtractBtn: Button = findViewById(R.id.aiExtractBtn)
-
-        CookieManager.getInstance().setAcceptCookie(true)
-        CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
-
-        webView.settings.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            databaseEnabled = true
-            loadWithOverviewMode = true
-            useWideViewPort = true
-            builtInZoomControls = true
-            displayZoomControls = false
-            mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-            userAgentString = userAgentString.replace("; wv", "")
+        val container = FrameLayout(this).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            setBackgroundColor(0xFF0B0E14.toInt())
         }
+        rootContainer = container
+        setContentView(container)
 
-        webView.webChromeClient = object : WebChromeClient() {
-            override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                progressBar.visibility = if (newProgress in 1..99) View.VISIBLE else View.GONE
-                progressBar.progress = newProgress
-            }
-        }
-
-        webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                val uri = request?.url ?: return false
-                val scheme = uri.scheme?.lowercase().orEmpty()
-                if (scheme == "http" || scheme == "https") {
-                    return false
-                }
-                return try {
-                    startActivity(Intent(Intent.ACTION_VIEW, uri))
-                    true
-                } catch (_: Exception) {
-                    true
-                }
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                if (!url.isNullOrBlank()) {
-                    urlInput.setText(url)
-                }
-            }
-        }
-
-        goBtn.setOnClickListener { navigateTo(urlInput.text.toString()) }
-        urlInput.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_GO) {
-                navigateTo(urlInput.text.toString())
-                true
-            } else false
-        }
-
-        aiExtractBtn.setOnClickListener {
-            if (aiPanel.visibility == View.VISIBLE) {
-                aiPanel.visibility = View.GONE
-                return@setOnClickListener
-            }
-            aiPanel.visibility = View.VISIBLE
-            aiOutputText.text = "Ekstrakcja DOM i analiza AI..."
-            webView.evaluateJavascript("(function(){return document.body ? document.body.innerText : '';})();") { raw ->
-                val unescaped = raw
-                    ?.removeSurrounding("\"")
-                    ?.replace("\\n", "\n")
-                    ?.replace("\\t", " ")
-                    ?.replace("\\\"", "\"")
-                    .orEmpty()
-                val currentUrl = webView.url.orEmpty()
-                lifecycleScope.launch {
-                    val result = AiBridgeClient.analyzePage(
-                        url = currentUrl,
-                        pageText = unescaped,
-                        userPrompt = "Podsumuj najważniejsze fakty, linki i dane techniczne."
-                    )
-                    aiOutputText.text = result
-                }
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(container) { v, insets ->
+            val sysBars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime()
+            )
+            v.setPadding(sysBars.left, sysBars.top, sysBars.right, sysBars.bottom)
+            insets
         }
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (aiPanel.visibility == View.VISIBLE) {
-                    aiPanel.visibility = View.GONE
-                } else if (webView.canGoBack()) {
-                    webView.goBack()
+                val wv = webView
+                if (wv != null && wv.canGoBack()) {
+                    wv.goBack()
                 } else {
-                    finish()
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
                 }
             }
         })
 
-        val initialUrl = intent?.dataString ?: "https://duck.ai"
-        navigateTo(initialUrl)
+        scheduleDeferredWebInit(container)
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        intent.dataString?.let { navigateTo(it) }
-    }
-
-    private fun navigateTo(rawInput: String) {
-        val q = rawInput.trim()
-        if (q.isEmpty()) return
-        val target = when {
-            q.startsWith("http://") || q.startsWith("https://") -> q
-            q.contains(".") && !q.contains(" ") -> "https://$q"
-            else -> "https://duckduckgo.com/?q=" + URLEncoder.encode(q, "UTF-8")
+    private fun scheduleDeferredWebInit(container: FrameLayout) {
+        container.post {
+            Looper.myQueue().addIdleHandler {
+                if (!isFinishing && !isDestroyed && !isWebInitialized) {
+                    initWebView(container)
+                }
+                false
+            }
         }
-        webView.loadUrl(target)
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun initWebView(container: FrameLayout) {
+        isWebInitialized = true
+
+        val wv = WebView(applicationContext).apply {
+            layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+            setBackgroundColor(0xFF0B0E14.toInt())
+
+            settings.apply {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                databaseEnabled = true
+                allowFileAccess = true
+                allowContentAccess = true
+                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                cacheMode = WebSettings.LOAD_DEFAULT
+                mediaPlaybackRequiresUserGesture = false
+            }
+
+            webChromeClient = WebChromeClient()
+            webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean = false
+
+                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                }
+            }
+        }
+
+        container.removeAllViews()
+        container.addView(wv)
+        webView = wv
+
+        wv.post {
+            if (!isFinishing && !isDestroyed) {
+                wv.loadUrl("file:///android_asset/index.html")
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        webView?.onResume()
+        webView?.resumeTimers()
+    }
+
+    override fun onPause() {
+        webView?.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        webView?.apply {
+            stopLoading()
+            webChromeClient = null
+            (parent as? ViewGroup)?.removeView(this)
+            removeAllViews()
+            destroy()
+        }
+        webView = null
+        rootContainer = null
+        super.onDestroy()
     }
 }
