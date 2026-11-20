@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AI Web Core</string>
+    <string name="shortcut_1_short">Duck.ai</string>
+    <string name="shortcut_1_long">Uruchom Duck.ai</string>
+    <string name="shortcut_2_short">Szukaj</string>
+    <string name="shortcut_2_long">Wyszukiwarka bez śledzenia</string>
+</resources>
