@@ -382,6 +382,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+ else {
+            "https://$target"
+        }
+        try {
+            webView.loadUrl(resolved)
+        } catch (_: Throwable) {}
 
     fun loadTargetUrl(url: String) {
         val target = url.trim()
