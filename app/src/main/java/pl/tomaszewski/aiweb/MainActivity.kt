@@ -6,25 +6,31 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Looper
 import android.text.InputType
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
-import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -34,10 +40,16 @@ import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
-    private val mainHandler = Handler(Looper.getMainLooper())
-    private val ioHandler = android.os.HandlerThread("AiBridgeIoThread").apply { start() }
-    private val bgHandler = Handler(ioHandler.looper)
+    companion object {
+        private const val TAG = "AiWebMainActivity"
+        private const val BRIDGE_NAME = "AndroidNative"
+    }
 
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val ioThread = HandlerThread("AiBridgeIoThread").apply { start() }
+    private val bgHandler = Handler(ioThread.looper)
+
+    private lateinit var rootLayout: LinearLayout
     private lateinit var webView: WebView
     private lateinit var urlInput: EditText
     private lateinit var statusText: TextView
@@ -53,23 +65,23 @@ class MainActivity : AppCompatActivity() {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <title>AI Web Browser</title>
           <style>
+            * { box-sizing: border-box; }
             body {
               margin: 0;
-              padding: 18px;
-              background: #0e1117;
+              padding: 16px;
+              background: #0d1117;
               color: #e6edf3;
               font-family: sans-serif;
-              line-height: 1.5;
+              line-height: 1.45;
             }
-            .card {
+            .box {
               background: #161b22;
               border: 1px solid #30363d;
               border-radius: 10px;
-              padding: 16px;
-              margin-bottom: 14px;
+              padding: 14px;
             }
-            h1 { margin: 0 0 8px 0; font-size: 20px; color: #58a6ff; }
-            code { background: #21262d; padding: 2px 6px; border-radius: 4px; }
+            h1 { margin: 0 0 8px 0; font-size: 19px; color: #58a6ff; }
+            .row { margin: 8px 0; font-size: 14px; }
             button {
               background: #238636;
               color: #ffffff;
@@ -78,54 +90,52 @@ class MainActivity : AppCompatActivity() {
               padding: 10px 14px;
               font-size: 14px;
               margin-right: 8px;
-              margin-top: 8px;
+              margin-top: 6px;
             }
-            #aiOutput {
-              white-space: pre-wrap;
-              background: #0b0e14;
+            pre {
+              background: #090c10;
               border: 1px solid #262c36;
               border-radius: 8px;
-              padding: 12px;
-              min-height: 90px;
-              margin-top: 10px;
-              font-family: monospace;
+              padding: 10px;
+              color: #7ee787;
               font-size: 12px;
+              white-space: pre-wrap;
+              min-height: 80px;
+              margin-top: 10px;
             }
           </style>
         </head>
         <body>
-          <div class="card">
-            <h1>AI Web Browser — Aktywny</h1>
-            <div>Mostek natywny: <strong id="bridgeStatus">sprawdzanie...</strong></div>
-            <button onclick="runBridgePing()">Test AndroidNative</button>
-            <button onclick="openSampleSite()">Otwórz example.com</button>
-            <div id="aiOutput">Gotowy do pracy.</div>
+          <div class="box">
+            <h1>AI Web Browser — Gotowy</h1>
+            <div class="row">Mostek: <span id="bridgeStatus">sprawdzanie...</span></div>
+            <button type="button" onclick="pingBridge()">Test Bridge</button>
+            <button type="button" onclick="goExample()">Otwórz example.com</button>
+            <pre id="webConsole">Inicjalizacja strony startowej...</pre>
           </div>
           <script>
-            (function initPage() {
-              var el = document.getElementById('bridgeStatus');
-              if (el) {
-                el.textContent = (window.AndroidNative && typeof window.AndroidNative.postChatCompletion === 'function')
-                  ? 'AKTYWNY (AndroidNative)'
-                  : 'BRAK MOSTKA';
+            (function() {
+              var st = document.getElementById('bridgeStatus');
+              var hasBridge = !!(window.AndroidNative && typeof window.AndroidNative.postChatCompletion === 'function');
+              if (st) {
+                st.textContent = hasBridge ? 'AKTYWNY (AndroidNative)' : 'BRAK';
               }
             })();
-            function appendOut(msg) {
-              var out = document.getElementById('aiOutput');
-              if (out) {
-                out.textContent += '\n' + msg;
-                out.scrollTop = out.scrollHeight;
+            function logWeb(msg) {
+              var el = document.getElementById('webConsole');
+              if (el) {
+                el.textContent += '\n' + msg;
               }
             }
-            function runBridgePing() {
+            function pingBridge() {
               if (!window.AndroidNative) {
-                appendOut('[ERR] window.AndroidNative niedostępny');
+                logWeb('[ERR] window.AndroidNative == null');
                 return;
               }
-              var res = window.AndroidNative.postChatCompletion('', '', '', '');
-              appendOut('[PING] ' + res);
+              var out = window.AndroidNative.postChatCompletion('', '', '', '');
+              logWeb('[PING] ' + out);
             }
-            function openSampleSite() {
+            function goExample() {
               if (window.AndroidNative && typeof window.AndroidNative.openExternalUrl === 'function') {
                 window.AndroidNative.openExternalUrl('https://example.com');
               } else {
@@ -150,9 +160,56 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
+        Log.i(TAG, "onCreate start")
+
         buildUserInterface()
         setupWebView()
+        loadHomePage()
+
+        Log.i(TAG, "onCreate completed, views attached")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i(TAG, "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i(TAG, "onResume")
+        if (::webView.isInitialized) {
+            attachBridge(webView)
+            webView.onResume()
+            webView.resumeTimers()
+        }
+    }
+
+    override fun onPause() {
+        Log.i(TAG, "onPause")
+        if (::webView.isInitialized) {
+            webView.onPause()
+        }
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.i(TAG, "onStop")
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        Log.i(TAG, "onDestroy")
+        if (::webView.isInitialized) {
+            webView.removeJavascriptInterface(BRIDGE_NAME)
+            webView.destroy()
+        }
+        ioThread.quitSafely()
+        super.onDestroy()
+    }
+
+    private fun loadHomePage() {
         webView.loadDataWithBaseURL(
             "https://app.local/",
             defaultHomeHtml,
@@ -162,90 +219,81 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (::webView.isInitialized) {
-            attachBridge(webView)
-            webView.onResume()
-        }
-    }
-
-    override fun onPause() {
-        if (::webView.isInitialized) {
-            webView.onPause()
-        }
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        if (::webView.isInitialized) {
-            webView.removeJavascriptInterface("AndroidNative")
-            webView.destroy()
-        }
-        ioHandler.quitSafely()
-        super.onDestroy()
-    }
-
     private fun buildUserInterface() {
-        val root = LinearLayout(this).apply {
+        rootLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundColor(Color.parseColor("#0E1117"))
+            setBackgroundColor(Color.parseColor("#0D1117"))
+            visibility = View.VISIBLE
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
-            setPadding(16, 48, 16, 16)
+            setPadding(20, 136, 20, 96)
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootLayout) { v, insets ->
+            val sysBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            val topPad = maxOf(sysBars.top, 132)
+            val bottomPad = maxOf(sysBars.bottom, ime.bottom, 90)
+            v.setPadding(20, topPad, 20, bottomPad)
+            insets
         }
 
         val navRow = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
+            visibility = View.VISIBLE
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
 
-        fun makeBtn(label: String, onClick: () -> Unit): Button = Button(this).apply {
+        fun createNavButton(label: String, action: () -> Unit): Button = Button(this).apply {
             text = label
             setTextColor(Color.WHITE)
             setBackgroundColor(Color.parseColor("#21262D"))
-            setPadding(18, 10, 18, 10)
-            val lp = LinearLayout.LayoutParams(
+            visibility = View.VISIBLE
+            minWidth = 0
+            minimumWidth = 0
+            setPadding(20, 12, 20, 12)
+            layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
                 marginEnd = 8
             }
-            layoutParams = lp
-            setOnClickListener { onClick() }
+            setOnClickListener { action() }
         }
 
-        val btnBack = makeBtn("<") {
-            if (webView.canGoBack()) webView.goBack()
+        val btnBack = createNavButton("<") {
+            if (::webView.isInitialized && webView.canGoBack()) {
+                webView.goBack()
+            }
         }
-        val btnFwd = makeBtn(">") {
-            if (webView.canGoForward()) webView.goForward()
+        val btnFwd = createNavButton(">") {
+            if (::webView.isInitialized && webView.canGoForward()) {
+                webView.goForward()
+            }
         }
-        val btnHome = makeBtn("Home") {
-            webView.loadDataWithBaseURL(
-                "https://app.local/",
-                defaultHomeHtml,
-                "text/html",
-                "UTF-8",
-                null
-            )
+        val btnHome = createNavButton("Home") {
+            if (::webView.isInitialized) {
+                loadHomePage()
+            }
         }
 
         urlInput = EditText(this).apply {
-            hint = "https://..."
+            hint = "https://example.com"
             setText("https://example.com")
             setTextColor(Color.WHITE)
             setHintTextColor(Color.parseColor("#8B949E"))
             setBackgroundColor(Color.parseColor("#161B22"))
-            setPadding(16, 12, 16, 12)
+            visibility = View.VISIBLE
             inputType = InputType.TYPE_TEXT_VARIATION_URI
             imeOptions = EditorInfo.IME_ACTION_GO
+            singleLine = true
+            setPadding(18, 14, 18, 14)
             layoutParams = LinearLayout.LayoutParams(
                 0,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -263,7 +311,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val btnGo = makeBtn("Idź") {
+        val btnGo = createNavButton("Idź") {
             navigateTo(urlInput.text.toString())
         }
 
@@ -274,24 +322,35 @@ class MainActivity : AppCompatActivity() {
         navRow.addView(btnGo)
 
         statusText = TextView(this).apply {
-            text = "Status: GOTOWY | Bridge: AndroidNative"
+            text = "Status: UI_READY | Bridge: $BRIDGE_NAME"
             setTextColor(Color.parseColor("#58A6FF"))
-            textSize = 12f
-            setPadding(4, 10, 4, 8)
+            setBackgroundColor(Color.parseColor("#11161D"))
+            visibility = View.VISIBLE
+            textSize = 13f
+            setPadding(12, 10, 12, 10)
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = 8
+                bottomMargin = 8
+            }
         }
 
         webView = WebView(this).apply {
+            visibility = View.VISIBLE
+            setBackgroundColor(Color.parseColor("#0D1117"))
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 0,
                 1f
             )
-            setBackgroundColor(Color.parseColor("#0E1117"))
         }
 
         val aiPanel = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setBackgroundColor(Color.parseColor("#161B22"))
+            visibility = View.VISIBLE
             setPadding(14, 14, 14, 14)
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -304,6 +363,7 @@ class MainActivity : AppCompatActivity() {
         val aiRow = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
+            visibility = View.VISIBLE
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -311,12 +371,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         aiPromptInput = EditText(this).apply {
-            hint = "Prompt JSON lub tekst testowy..."
+            hint = """{"messages":[{"role":"user","content":"ping"}]}"""
             setText("""{"messages":[{"role":"user","content":"ping"}]}""")
             setTextColor(Color.WHITE)
             setHintTextColor(Color.parseColor("#8B949E"))
             setBackgroundColor(Color.parseColor("#0D1117"))
-            setPadding(14, 10, 14, 10)
+            visibility = View.VISIBLE
+            singleLine = true
+            setPadding(16, 12, 16, 12)
             layoutParams = LinearLayout.LayoutParams(
                 0,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -326,62 +388,64 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val btnTestBridge = Button(this).apply {
+        val btnTestAi = Button(this).apply {
             text = "Test AI"
             setTextColor(Color.WHITE)
             setBackgroundColor(Color.parseColor("#238636"))
-            setPadding(16, 10, 16, 10)
+            visibility = View.VISIBLE
+            setPadding(18, 12, 18, 12)
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
             setOnClickListener {
-                val prompt = aiPromptInput.text.toString()
+                val payload = aiPromptInput.text.toString()
                 bgHandler.post {
-                    val result = AndroidNative(webView).postChatCompletion(
-                        "",
-                        "",
-                        "",
-                        prompt
-                    )
+                    val res = AndroidNative(webView).postChatCompletion("", "", "", payload)
                     mainHandler.post {
-                        aiOutputView.append("\n[TEST] $result")
-                        statusText.text = "Status: BRIDGE_OK"
+                        aiOutputView.append("\n[TEST] $res")
+                        statusText.text = "Status: TEST_OK | Bridge: $BRIDGE_NAME"
                     }
                 }
             }
         }
 
         aiRow.addView(aiPromptInput)
-        aiRow.addView(btnTestBridge)
+        aiRow.addView(btnTestAi)
 
-        val scrollOut = ScrollView(this).apply {
+        val logScroll = ScrollView(this).apply {
+            visibility = View.VISIBLE
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                220
+                240
             ).apply {
                 topMargin = 8
             }
         }
 
         aiOutputView = TextView(this).apply {
-            text = "[INIT] Aktywność uruchomiona i widoczna."
-            setTextColor(Color.parseColor("#C9D1D9"))
-            setBackgroundColor(Color.parseColor("#0B0E14"))
-            setPadding(12, 10, 12, 10)
+            text = "[READY] MainActivity UI widoczne. Mostek: $BRIDGE_NAME"
+            setTextColor(Color.parseColor("#E6EDF3"))
+            setBackgroundColor(Color.parseColor("#090C10"))
+            visibility = View.VISIBLE
             textSize = 12f
+            setPadding(12, 10, 12, 10)
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
 
-        scrollOut.addView(aiOutputView)
+        logScroll.addView(aiOutputView)
         aiPanel.addView(aiRow)
-        aiPanel.addView(scrollOut)
+        aiPanel.addView(logScroll)
 
-        root.addView(navRow)
-        root.addView(statusText)
-        root.addView(webView)
-        root.addView(aiPanel)
+        rootLayout.addView(navRow)
+        rootLayout.addView(statusText)
+        rootLayout.addView(webView)
+        rootLayout.addView(aiPanel)
 
-        setContentView(root)
+        setContentView(rootLayout)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -390,18 +454,28 @@ class MainActivity : AppCompatActivity() {
             javaScriptEnabled = true
             domStorageEnabled = true
             databaseEnabled = true
+            loadWithOverviewMode = true
+            useWideViewPort = true
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
-            userAgentString = "$userAgentString AiWebBrowser/1.1"
+            userAgentString = "$userAgentString AiWebBrowser/1.2"
         }
+
         attachBridge(webView)
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
                 mainHandler.post {
-                    statusText.text = "Status: Ładowanie ${newProgress}% | Bridge: AndroidNative"
+                    statusText.text = "Status: WebView ${newProgress}% | Bridge: $BRIDGE_NAME"
                 }
+            }
+
+            override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                consoleMessage?.let {
+                    Log.d(TAG, "JS[${it.messageLevel()}]: ${it.message()} (${it.sourceId()}:${it.lineNumber()})")
+                }
+                return super.onConsoleMessage(consoleMessage)
             }
         }
 
@@ -410,55 +484,68 @@ class MainActivity : AppCompatActivity() {
                 view: WebView?,
                 request: WebResourceRequest?
             ): Boolean {
-                val target = request?.url?.toString().orEmpty()
-                if (target.startsWith("http://") || target.startsWith("https://")) {
-                    mainHandler.post { urlInput.setText(target) }
-                    return false
+                val url = request?.url?.toString().orEmpty()
+                if (url.isNotEmpty()) {
+                    mainHandler.post { urlInput.setText(url) }
                 }
                 return false
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+                val currentUrl = url.orEmpty()
+                Log.i(TAG, "onPageFinished: $currentUrl")
                 mainHandler.post {
-                    val current = url.orEmpty()
-                    if (current.isNotEmpty() && !current.startsWith("data:")) {
-                        urlInput.setText(current)
+                    if (currentUrl.isNotEmpty() && !currentUrl.startsWith("data:")) {
+                        urlInput.setText(currentUrl)
                     }
-                    statusText.text = "Status: ZAŁADOWANO | Bridge: AndroidNative"
+                    statusText.text = "Status: LOADED | Bridge: $BRIDGE_NAME"
+                }
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                super.onReceivedError(view, request, error)
+                val desc = error?.description?.toString().orEmpty()
+                val reqUrl = request?.url?.toString().orEmpty()
+                Log.e(TAG, "WebView error ($reqUrl): $desc")
+                mainHandler.post {
+                    statusText.text = "Status: WEB_ERR | $desc"
+                    aiOutputView.append("\n[WEB_ERR] $reqUrl -> $desc")
                 }
             }
         }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    private fun attachBridge(targetWebView: WebView) {
-        targetWebView.settings.javaScriptEnabled = true
-        targetWebView.settings.domStorageEnabled = true
-        targetWebView.removeJavascriptInterface("AndroidNative")
-        targetWebView.addJavascriptInterface(AndroidNative(targetWebView), "AndroidNative")
+    private fun attachBridge(target: WebView) {
+        target.settings.javaScriptEnabled = true
+        target.settings.domStorageEnabled = true
+        target.removeJavascriptInterface(BRIDGE_NAME)
+        target.addJavascriptInterface(AndroidNative(target), BRIDGE_NAME)
+        Log.i(TAG, "Bridge $BRIDGE_NAME attached")
     }
 
-    private fun navigateTo(rawInput: String) {
-        val trimmed = rawInput.trim()
+    private fun navigateTo(raw: String) {
+        val trimmed = raw.trim()
         if (trimmed.isEmpty()) return
-        val normalized = if (
+        val url = when {
             trimmed.startsWith("http://", ignoreCase = true) ||
-            trimmed.startsWith("https://", ignoreCase = true) ||
-            trimmed.startsWith("file://", ignoreCase = true) ||
-            trimmed.startsWith("about:", ignoreCase = true)
-        ) {
-            trimmed
-        } else if (trimmed.contains(".") && !trimmed.contains(" ")) {
-            "https://$trimmed"
-        } else {
-            "https://duckduckgo.com/?q=${Uri.encode(trimmed)}"
+                trimmed.startsWith("https://", ignoreCase = true) ||
+                trimmed.startsWith("file://", ignoreCase = true) ||
+                trimmed.startsWith("about:", ignoreCase = true) -> trimmed
+            trimmed.contains(".") && !trimmed.contains(" ") -> "https://$trimmed"
+            else -> "https://duckduckgo.com/?q=${Uri.encode(trimmed)}"
         }
-        urlInput.setText(normalized)
-        webView.loadUrl(normalized)
+        Log.i(TAG, "navigateTo: $url")
+        urlInput.setText(url)
+        webView.loadUrl(url)
     }
 
-    inner class AndroidNative(private val webView: WebView) {
+    inner class AndroidNative(private val targetWebView: WebView) {
 
         @JavascriptInterface
         fun openExternalUrl(url: String?) {
@@ -474,11 +561,12 @@ class MainActivity : AppCompatActivity() {
                             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         }
                         startActivity(intent)
-                    } else if (cleanUrl.startsWith("file://") || cleanUrl.startsWith("about:")) {
-                        webView.loadUrl(cleanUrl)
+                    } else {
+                        targetWebView.loadUrl(cleanUrl)
                     }
                 } catch (e: Exception) {
-                    emitJsError("openExternalUrl: ${e.message ?: "intent error"}")
+                    Log.e(TAG, "openExternalUrl failed", e)
+                    emitJsError("openExternalUrl: ${e.message ?: "error"}")
                 }
             }
         }
@@ -487,11 +575,11 @@ class MainActivity : AppCompatActivity() {
         fun goBack() {
             mainHandler.post {
                 try {
-                    if (webView.canGoBack()) {
-                        webView.goBack()
+                    if (targetWebView.canGoBack()) {
+                        targetWebView.goBack()
                     }
                 } catch (e: Exception) {
-                    emitJsError("goBack: ${e.message ?: "error"}")
+                    Log.e(TAG, "goBack failed", e)
                 }
             }
         }
@@ -500,11 +588,11 @@ class MainActivity : AppCompatActivity() {
         fun goForward() {
             mainHandler.post {
                 try {
-                    if (webView.canGoForward()) {
-                        webView.goForward()
+                    if (targetWebView.canGoForward()) {
+                        targetWebView.goForward()
                     }
                 } catch (e: Exception) {
-                    emitJsError("goForward: ${e.message ?: "error"}")
+                    Log.e(TAG, "goForward failed", e)
                 }
             }
         }
@@ -516,73 +604,72 @@ class MainActivity : AppCompatActivity() {
             apiKey: String?,
             payloadJson: String?
         ): String {
-            val targetUrl = endpoint?.trim().orEmpty()
-            if (targetUrl.isEmpty()) {
+            val url = endpoint?.trim().orEmpty()
+            if (url.isEmpty()) {
                 return JSONObject().put("error", "Brak endpointu AI").toString()
             }
-            val rawBody = payloadJson?.trim().orEmpty()
-            if (rawBody.isEmpty()) {
+            val rawPayload = payloadJson?.trim().orEmpty()
+            if (rawPayload.isEmpty()) {
                 return JSONObject().put("error", "Pusty ładunek JSON").toString()
             }
 
-            val normalizedBody = try {
-                val obj = JSONObject(rawBody)
+            val bodyJson = try {
+                val obj = JSONObject(rawPayload)
                 if (!model.isNullOrBlank()) {
                     obj.put("model", model.trim())
                 }
                 obj.toString()
             } catch (e: Exception) {
-                return JSONObject().put("error", "Niepoprawny JSON żądania: ${e.message}").toString()
+                return JSONObject().put("error", "Błędny JSON: ${e.message}").toString()
             }
 
             return try {
                 val mediaType = "application/json; charset=utf-8".toMediaType()
-                val body = normalizedBody.toRequestBody(mediaType)
+                val reqBody = bodyJson.toRequestBody(mediaType)
                 val reqBuilder = Request.Builder()
-                    .url(targetUrl)
-                    .post(body)
+                    .url(url)
+                    .post(reqBody)
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
 
-                val cleanKey = apiKey?.trim().orEmpty()
-                if (cleanKey.isNotEmpty()) {
-                    reqBuilder.header("Authorization", "Bearer $cleanKey")
+                val token = apiKey?.trim().orEmpty()
+                if (token.isNotEmpty()) {
+                    reqBuilder.header("Authorization", "Bearer $token")
                 }
 
-                httpClient.newCall(reqBuilder.build()).execute().use { response ->
-                    val responseBody = response.body?.string().orEmpty()
-                    if (!response.isSuccessful) {
+                httpClient.newCall(reqBuilder.build()).execute().use { resp ->
+                    val respText = resp.body?.string().orEmpty()
+                    if (!resp.isSuccessful) {
                         JSONObject()
-                            .put("error", "HTTP ${response.code}: ${response.message} ${responseBody.take(400)}")
+                            .put("error", "HTTP ${resp.code}: ${resp.message} ${respText.take(400)}")
                             .toString()
-                    } else if (responseBody.isBlank()) {
-                        JSONObject().put("error", "Pusta odpowiedź z endpointu AI").toString()
+                    } else if (respText.isBlank()) {
+                        JSONObject().put("error", "Pusta odpowiedź endpointu").toString()
                     } else {
-                        responseBody
+                        respText
                     }
                 }
             } catch (e: Exception) {
+                Log.e(TAG, "postChatCompletion failed", e)
                 JSONObject()
-                    .put("error", "${e.javaClass.simpleName}: ${e.message ?: "błąd połączenia"}")
+                    .put("error", "${e.javaClass.simpleName}: ${e.message ?: "network error"}")
                     .toString()
             }
         }
 
-        private fun emitJsError(message: String) {
-            val escaped = JSONObject.quote("[BRIDGE] $message")
-            val jsCode = """
+        private fun emitJsError(msg: String) {
+            val quoted = JSONObject.quote("[BRIDGE] $msg")
+            val script = """
                 (function() {
-                  var out = document.getElementById('aiOutput');
-                  if (out) {
-                    out.textContent += '\n' + $escaped + '\n';
-                    out.scrollTop = out.scrollHeight;
+                  var el = document.getElementById('webConsole');
+                  if (el) {
+                    el.textContent += '\n' + $quoted;
                   }
                 })();
             """.trimIndent()
-
             mainHandler.post {
                 try {
-                    webView.evaluateJavascript(jsCode, null)
+                    targetWebView.evaluateJavascript(script, null)
                 } catch (_: Exception) {
                 }
             }
