@@ -179,8 +179,7 @@ class MainActivity : AppCompatActivity() {
 
         private fun emitJsError(message: String) {
             val escaped = JSONObject.quote("[BRIDGE] $message")
-            webView.evaluateJavascript(
-                """
+            val jsCode = """
                 (function() {
                   var out = document.getElementById('aiOutput');
                   if (out) {
@@ -188,9 +187,14 @@ class MainActivity : AppCompatActivity() {
                     out.scrollTop = out.scrollHeight;
                   }
                 })();
-                """.trimIndent(),
-                null
-            )
+            """.trimIndent()
+
+            mainHandler.post {
+                try {
+                    webView.evaluateJavascript(jsCode, null)
+                } catch (_: Exception) {
+                }
+            }
         }
     }
 }
