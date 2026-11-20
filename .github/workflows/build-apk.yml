@@ -63,7 +63,29 @@ jobs:
             WORKDIR="ai-browser-app"
           fi
           chmod +x "$WORKDIR/gradlew"
-          (cd "$WORKDIR" && ./gradlew assembleRelease --no-daemon --stacktrace || (cd "$WORKDIR" && ./gradlew assembleDebug --no-daemon --stacktrace))
+          (
+            cd "$WORKDIR"
+            if ! ./gradlew --version >/dev/null 2>&1; then
+              rm -f gradle/wrapper/gradle-wrapper.jar
+              if command -v gradle >/dev/null 2>&1; then
+                gradle wrapper --no-daemon || true
+              fi
+              if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+                mkdir -p gradle/wrapper
+                DIST_URL=$(grep -E '^distributionUrl=' gradle/wrapper/gradle-wrapper.properties 2>/dev/null | cut -d'=' -f2- | sed 's/\\:/:/g' || true)
+                WRAPPER_JAR=$(find /root/.gradle /home/runner/.gradle -name "gradle-wrapper-*.jar" 2>/dev/null | head -n 1 || true)
+                if [ -n "$WRAPPER_JAR" ]; then
+                  cp "$WRAPPER_JAR" gradle/wrapper/gradle-wrapper.jar
+                elif [ -n "$DIST_URL" ]; then
+                  curl -fsSL "$DIST_URL" -o /tmp/gradle-dist.zip
+                  unzip -qo /tmp/gradle-dist.zip "*/lib/gradle-wrapper-*.jar" -d /tmp/gw_extract
+                  cp /tmp/gw_extract/*/lib/gradle-wrapper-*.jar gradle/wrapper/gradle-wrapper.jar
+                fi
+              fi
+              chmod +x gradlew
+            fi
+            ./gradlew assembleRelease --no-daemon --stacktrace || ./gradlew assembleDebug --no-daemon --stacktrace
+          )
           mkdir -p dist
           FOUND_APK=$(find "$WORKDIR" -path "*/build/outputs/apk/*/*.apk" -o -path "*/build/outputs/apk/*.apk" | head -n 1)
           echo "Znaleziony APK: $FOUND_APK"
