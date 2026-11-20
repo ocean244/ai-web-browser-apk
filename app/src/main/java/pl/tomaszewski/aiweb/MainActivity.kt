@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         if (!bridgeAttached) {
-            webView.addJavascriptInterface(AndroidNativeBridge(), "AndroidNative")
+            webView.addJavascriptInterface(AndroidNativeBridge(this), "AndroidNative")
             bridgeAttached = true
             Log.i(tag, "Bridge AndroidNative attached")
         }
@@ -294,11 +294,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    inner class AndroidNativeBridge {
+    class AndroidNativeBridge(private val activity: MainActivity) {
     @android.webkit.JavascriptInterface
     fun saveConfig(jsonStr: String): String {
         return try {
-            val prefs = this@MainActivity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
+            val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
             prefs.edit().putString("cfg_json", jsonStr).apply()
             "{\"ok\":true,\"saved\":true}"
         } catch (e: Throwable) {
@@ -310,7 +310,7 @@ class MainActivity : AppCompatActivity() {
     @android.webkit.JavascriptInterface
     fun getConfig(): String {
         return try {
-            val prefs = this@MainActivity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
+            val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
             prefs.getString("cfg_json", "{}") ?: "{}"
         } catch (_: Throwable) {
             "{}"
@@ -320,8 +320,8 @@ class MainActivity : AppCompatActivity() {
     @android.webkit.JavascriptInterface
     fun openUrl(url: String): String {
         return try {
-            this@MainActivity.runOnUiThread {
-                this@MainActivity.loadTargetUrl(url)
+            activity.runOnUiThread {
+                activity.loadTargetUrl(url)
             }
             "{\"ok\":true}"
         } catch (e: Throwable) {
@@ -393,4 +393,6 @@ class MainActivity : AppCompatActivity() {
             webView.loadUrl(resolved)
         } catch (_: Throwable) {}
     }
+}
+}
 }
