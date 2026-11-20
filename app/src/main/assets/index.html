@@ -6,54 +6,136 @@
   <title>AI Web Core</title>
   <style>
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-    body { margin: 0; padding: 12px; background: #0c0f14; color: #e6edf7; }
-    .bar { display: flex; gap: 8px; margin-bottom: 10px; }
-    input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #263042; background: #141a23; color: #e6edf7; }
-    button { padding: 10px 14px; border-radius: 8px; border: 0; background: #10b981; color: #06100c; font-weight: 700; cursor: pointer; }
-    button.sec { background: #2563eb; color: #ffffff; }
-    pre { white-space: pre-wrap; word-break: break-word; background: #121720; border: 1px solid #222b3a; padding: 10px; border-radius: 8px; font-size: 12px; min-height: 120px; }
-    .res { margin-top: 8px; padding: 10px; border-radius: 8px; background: #131924; border: 1px solid #1f293a; }
-    a { color: #38bdf8; text-decoration: none; font-weight: 600; }
+    body { margin: 0; padding: 10px; background: #0b0e14; color: #e6edf7; }
+    .row { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+    input, select { flex: 1; min-width: 120px; padding: 9px; border-radius: 8px; border: 1px solid #263247; background: #131924; color: #e6edf7; font-size: 13px; }
+    button { padding: 9px 12px; border-radius: 8px; border: 0; background: #10b981; color: #05110c; font-weight: 700; cursor: pointer; font-size: 12px; }
+    button.blue { background: #2563eb; color: #ffffff; }
+    button.dark { background: #1e293b; color: #cbd5e1; border: 1px solid #334155; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #111620; border: 1px solid #202a3c; padding: 10px; border-radius: 8px; font-size: 12px; max-height: 240px; overflow: auto; }
+    .res { margin-top: 8px; padding: 10px; border-radius: 8px; background: #121824; border: 1px solid #1e293b; }
+    .res a { color: #38bdf8; text-decoration: none; font-weight: 700; display: block; margin-bottom: 4px; }
+    .snip { font-size: 12px; color: #94a3b8; }
+    .meta { font-size: 11px; color: #10b981; margin-bottom: 6px; }
   </style>
 </head>
 <body>
-  <div class="bar">
-    <input id="q" type="text" placeholder="Zapytanie Web / AI lub URL..." />
-    <button onclick="doSearch()">SEARCH</button>
-    <button class="sec" onclick="doAi()">AI</button>
+  <div class="meta" id="meta">Status: READY | Bridge: checking...</div>
+  <div class="row">
+    <input id="endpoint" type="text" value="https://api.openai.com/v1/chat/completions" placeholder="Endpoint AI (OpenAI / OpenRouter / Local)" />
+    <input id="model" type="text" value="gpt-4o-mini" placeholder="Model" />
   </div>
-  <div id="out"><pre id="log">Bridge ready. Waiting for command.</pre></div>
+  <div class="row">
+    <input id="apikey" type="password" placeholder="API Key (opcjonalnie dla lokalnego/open endpointu)" />
+    <button class="dark" onclick="saveCfg()">SAVE CFG</button>
+  </div>
+  <div class="row">
+    <input id="q" type="text" placeholder="Wpisz zapytanie Web / AI lub adres URL..." />
+    <button onclick="doSearch()">SEARCH</button>
+    <button class="blue" onclick="doAi()">AI</button>
+    <button class="dark" onclick="doWebAi()">WEB+AI</button>
+  </div>
+  <div id="out"><pre id="log">Bridge ready.</pre></div>
   <script>
-    function hasBridge() { return typeof window.AndroidNative !== "undefined"; }
-    function writeLog(txt) { document.getElementById("log").textContent = txt; }
+    function bridge() { return (typeof window.AndroidNative !== "undefined") ? window.AndroidNative : null; }
+    function setMeta(msg) { document.getElementById("meta").textContent = msg; }
+    function setLog(msg) { document.getElementById("out").innerHTML = '<pre id="log">' + esc(msg) + '</pre>'; }
+    function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+    (function init() {
+      const b = bridge();
+      setMeta("Status: READY | Bridge: " + (b ? "AndroidNative" : "NONE"));
+      if (b && typeof b.getConfig === "function") {
+        try {
+          const cfg = JSON.parse(b.getConfig());
+          if (cfg.endpoint) document.getElementById("endpoint").value = cfg.endpoint;
+          if (cfg.model) document.getElementById("model").value = cfg.model;
+          if (cfg.apiKey) document.getElementById("apikey").value = cfg.apiKey;
+        } catch (_) {}
+      }
+    })();
+
+    function saveCfg() {
+      const b = bridge();
+      const payload = JSON.stringify({
+        endpoint: document.getElementById("endpoint").value.trim(),
+        model: document.getElementById("model").value.trim(),
+        apiKey: document.getElementById("apikey").value.trim()
+      });
+      if (b && typeof b.saveConfig === "function") {
+        setLog(b.saveConfig(payload));
+      } else {
+        localStorage.setItem("aiweb_cfg", payload);
+        setLog("SAVED_LOCALSTORAGE=OK");
+      }
+    }
+
+    function openUrl(u) {
+      if (!u || u === "#") return;
+      const b = bridge();
+      if (b && typeof b.openUrl === "function") {
+        b.openUrl(u);
+      } else {
+        location.href = u;
+      }
+    }
+
+    function renderResults(items) {
+      if (!Array.isArray(items) || !items.length) {
+        setLog("Brak wyników wyszukiwania.");
+        return;
+      }
+      const html = items.map(r => {
+        const u = esc(r.url || "#");
+        const t = esc(r.title || r.url || "Wynik");
+        const s = esc(r.snippet || "");
+        return '<div class="res"><a href="' + u + '" onclick="event.preventDefault();openUrl(this.href)">' + t + '</a><div class="snip">' + s + '</div></div>';
+      }).join("");
+      document.getElementById("out").innerHTML = html;
+    }
+
     function doSearch() {
       const q = document.getElementById("q").value.trim();
       if (!q) return;
-      if (q.startsWith("http://") || q.startsWith("https://")) { location.href = q; return; }
-      if (!hasBridge()) { writeLog("Bridge AndroidNative unavailable."); return; }
+      if (/^https?:\/\//i.test(q)) { openUrl(q); return; }
+      const b = bridge();
+      if (!b || typeof b.webSearch !== "function") { setLog("Brak AndroidNative.webSearch"); return; }
       try {
-        const raw = window.AndroidNative.webSearch(q, 8);
-        const data = JSON.parse(raw);
-        const items = Array.isArray(data.results) ? data.results : [];
-        const container = document.getElementById("out");
-        container.innerHTML = "";
-        if (!items.length) { container.innerHTML = '<pre id="log">' + JSON.stringify(data, null, 2) + "</pre>"; return; }
-        items.forEach(r => {
-          const div = document.createElement("div");
-          div.className = "res";
-          div.innerHTML = '<div><a href="' + (r.url || "#") + '">' + (r.title || r.url || "Result") + "</a></div><div>" + (r.snippet || "") + "</div>";
-          container.appendChild(div);
-        });
-      } catch (e) { writeLog("ERR: " + e.message); }
+        const data = JSON.parse(b.webSearch(q, 10));
+        renderResults(data.results || []);
+      } catch (e) { setLog("SEARCH_ERR: " + e.message); }
     }
+
     function doAi() {
       const q = document.getElementById("q").value.trim() || "ping";
-      if (!hasBridge()) { writeLog("Bridge AndroidNative unavailable."); return; }
+      const b = bridge();
+      if (!b || typeof b.askAi !== "function") { setLog("Brak AndroidNative.askAi"); return; }
       try {
-        const raw = window.AndroidNative.askAi(q, true);
-        const data = JSON.parse(raw);
-        writeLog(data.content || JSON.stringify(data, null, 2));
-      } catch (e) { writeLog("ERR: " + e.message); }
+        saveCfg();
+        const data = JSON.parse(b.askAi(q, true));
+        setLog(data.content || JSON.stringify(data, null, 2));
+      } catch (e) { setLog("AI_ERR: " + e.message); }
+    }
+
+    function doWebAi() {
+      const q = document.getElementById("q").value.trim();
+      if (!q) return;
+      const b = bridge();
+      if (!b || typeof b.webSearch !== "function" || typeof b.askAi !== "function") {
+        setLog("Brak pełnego mostka AndroidNative"); return;
+      }
+      try {
+        saveCfg();
+        const sData = JSON.parse(b.webSearch(q, 5));
+        const ctx = (sData.results || []).map((r, i) => (i+1) + ". " + (r.title||"") + " (" + (r.url||"") + "): " + (r.snippet||"")).join("\n");
+        const prompt = "Na podstawie poniższych wyników wyszukiwania odpowiedz zwięźle i konkretnie na pytanie: " + q + "\n\nŹródła:\n" + ctx;
+        const aData = JSON.parse(b.askAi(prompt, true));
+        const aiText = aData.content || JSON.stringify(aData, null, 2);
+        const resHtml = (sData.results || []).map(r =>
+          '<div class="res"><a href="' + esc(r.url || "#") + '" onclick="event.preventDefault();openUrl(this.href)">' + esc(r.title || r.url || "Wynik") + '</a><div class="snip">' + esc(r.snippet || "") + '</div></div>'
+        ).join("");
+        document.getElementById("out").innerHTML = '<pre id="log">' + esc(aiText) + '</pre>' + resHtml;
+      } catch (e) { setLog("WEB_AI_ERR: " + e.message); }
     }
   </script>
 </body>

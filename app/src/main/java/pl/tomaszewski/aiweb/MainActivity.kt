@@ -346,4 +346,32 @@ class MainActivity : AppCompatActivity() {
             return searchEngine.fetchUrlText(url).toString()
         }
     }
+
+    @JavascriptInterface
+    fun saveConfig(jsonStr: String): String {
+        return try {
+            val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
+            prefs.edit().putString("cfg_json", jsonStr).apply()
+            "{\"ok\":true,\"saved\":true}"
+        } catch (e: Exception) {
+            "{\"ok\":false,\"error\":\"${e.message?.replace("\"", "")}\"}"
+        }
+    }
+
+    @JavascriptInterface
+    fun getConfig(): String {
+        val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
+        return prefs.getString("cfg_json", "{}") ?: "{}"
+    }
+
+    @JavascriptInterface
+    fun openUrl(url: String): String {
+        activity.runOnUiThread {
+            try {
+                activity.loadTargetUrl(url)
+            } catch (_: Exception) {}
+        }
+        return "{\"ok\":true}"
+    }
+
 }
