@@ -100,9 +100,7 @@ if command -v gh >/dev/null 2>&1; then
     echo "GH_RUN_ID=$RUN_ID REPO=$REPO_SLUG"
     if ! gh run watch "$RUN_ID" --repo "$REPO_SLUG" --exit-status; then
       echo "BUILD_FAILED_LOG_START"
-      gh run view "$RUN_ID" --repo "$REPO_SLUG" --log-failed \
-        | grep -E "e: file://|Unresolved reference|error:|FAILURE:|What went wrong|> Task " \
-        | tail -n 60 || true
+      gh run view "$RUN_ID" --repo "$REPO_SLUG" --log-failed | tail -n 80 || true
       echo "BUILD_FAILED_LOG_END"
       exit 1
     fi
