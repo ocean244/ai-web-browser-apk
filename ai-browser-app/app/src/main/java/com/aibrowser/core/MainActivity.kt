@@ -320,7 +320,7 @@ class MainActivity : AppCompatActivity() {
         }
         val nameEdit = EditText(this).apply {
             hint = "Nazwa skryptu (np. Nagłówki)"
-            singleLine = true
+            maxLines = 1
         }
         val codeEdit = EditText(this).apply {
             hint = "Kod JS zwracający string (np. JSON.stringify(...))"
