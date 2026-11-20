@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Browser — Local + Web Bridge</title>
+<style>
+  :root {
+    --bg: #0b0c10;
+    --panel: #141720;
+    --panel-2: #1c202c;
+    --border: #2b3142;
+    --text: #eef1f7;
+    --muted: #9aa3b8;
+    --accent: #cbb4ff;
+    --accent-text: #141024;
+    --green: #16a34a;
+    --blue: #2563eb;
+    --indigo: #4f46e5;
+    --status-ok: #4ade80;
+    --status-err: #f87171;
+  }
+  * { box-sizing: border-box; font-family: system-ui, -apple-system, Roboto, sans-serif; }
+  body { margin: 0; padding: 10px; background: var(--bg); color: var(--text); font-size: 13px; }
+  .box { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 8px; margin-bottom: 10px; }
+  .row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
+  .row:last-child { margin-bottom: 0; }
+  input {
+    background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 6px; padding: 7px 9px; font-size: 12px; width: 100%; outline: none;
+  }
+  input:focus { border-color: var(--accent); }
+  button {
+    border: 0; border-radius: 6px; padding: 7px 10px; font-size: 12px; font-weight: 700;
+    cursor: pointer; white-space: nowrap;
+  }
+  .btn-pill { background: var(--accent); color: var(--accent-text); border-radius: 999px; padding: 7px 14px; }
+  .btn-half { flex: 1; background: var(--accent); color: var(--accent-text); border-radius: 999px; padding: 8px; }
+  .btn-save { background: #334155; color: #f8fafc; }
+  .btn-search { background: var(--green); color: #ffffff; }
+  .btn-ai { background: var(--blue); color: #ffffff; }
+  .btn-webai { background: var(--indigo); color: #ffffff; }
+  .status { font-size: 11px; color: var(--status-ok); margin: 4px 2px 8px; word-break: break-word; }
+  .status.err { color: var(--status-err); }
+  .out {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
+    white-space: pre-wrap; word-break: break-word; max-height: 240px; overflow-y: auto;
+  }
+  .results { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .res-item {
+    display: block; text-decoration: none; background: #172033; border: 1px solid #283859;
+    border-radius: 6px; padding: 8px; color: #7dd3fc; font-weight: 600; font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="box">
+    <div class="row">
+      <input id="urlInput" type="text" value="file:///android_asset/index.html" placeholder="Adres URL lub file:///android_asset/index.html" />
+      <button class="btn-pill" id="goBtn">GO</button>
+    </div>
+    <div class="row">
+      <input id="topEndpoint" type="text" value="http://127.0.0.1:8080/v1/chat/completions" placeholder="Endpoint API (np. http://127.0.0.1:8080/v1/chat/completions)" style="flex: 1.6;" />
+      <input id="topModel" type="text" value="Qwen2.5-3B-Instruct-Abliterated.Q4_K_M.gguf" placeholder="Model" style="flex: 1;" />
+      <input id="topKey" type="password" placeholder="API Key" style="flex: 0.9;" />
+    </div>
+    <div class="row">
+      <input id="pingPayload" type="text" value='{"messages":[{"role":"user","content":"ping"}]}' />
+    </div>
+    <div class="row">
+      <button class="btn-half" id="testAiBtn">TEST AI</button>
+      <button class="btn-half" id="topWebAiBtn">WEB + AI</button>
+    </div>
+    <div class="status" id="topStatus">Status: LOADED | Bridge: <span id="bridgeNameTop">WebFetch</span></div>
+  </div>
+
+  <div class="status" id="mainStatus">Status: READY | Bridge: <span id="bridgeNameMain">WebFetch</span></div>
+
+  <div class="box">
+    <div class="row">
+      <input id="cfgEndpoint" type="text" value="http://127.0.0.1:8080/v1/chat/completions" placeholder="Endpoint (lokalny 127.0.0.1:8080 lub zdalny)" style="flex: 1.5;" />
+      <input id="cfgModel" type="text" value="Qwen2.5-3B-Instruct-Abliterated.Q4_K_M.gguf" placeholder="Nazwa modelu" style="flex: 1;" />
+    </div>
+    <div class="row">
+      <input id="cfgKey" type="password" placeholder="API Key (opcjonalnie dla lokalnego/open endpointu)" style="flex: 1;" />
+      <button class="btn-save" id="saveCfgBtn">SAVE CFG</button>
+    </div>
+    <div class="row">
+      <input id="queryInput" type="text" placeholder="Wpisz zapytanie Web / AI lub adres URL..." style="flex: 1;" />
+      <button class="btn-search" id="searchBtn">SEARCH</button>
+      <button class="btn-ai" id="aiBtn">AI</button>
+      <button class="btn-webai" id="webAiBtn">WEB+AI</button>
+    </div>
+    <div class="out" id="outputBox">{"ok":true,"ready":true,"endpoint":"http://127.0.0.1:8080/v1/chat/completions"}</div>
+    <div class="results" id="resultsBox"></div>
+  </div>
+
+<script>
+(function() {
+  const hasNative = typeof window.AndroidNative !== "undefined" && window.AndroidNative !== null;
+  const bridgeLabel = hasNative ? "AndroidNative" : "BrowserFetch";
+  document.getElementById("bridgeNameTop").textContent = bridgeLabel;
+  document.getElementById("bridgeNameMain").textContent = bridgeLabel;
+
+  const urlInput = document.getElementById("urlInput");
+  const topEndpoint = document.getElementById("topEndpoint");
+  const topModel = document.getElementById("topModel");
+  const topKey = document.getElementById("topKey");
+  const pingPayload = document.getElementById("pingPayload");
+  const cfgEndpoint = document.getElementById("cfgEndpoint");
+  const cfgModel = document.getElementById("cfgModel");
+  const cfgKey = document.getElementById("cfgKey");
+  const queryInput = document.getElementById("queryInput");
+  const outputBox = document.getElementById("outputBox");
+
+  window.__onNativeStreamDelta = function(partialText) {
+    if (typeof partialText === "string") {
+      outputBox.textContent = partialText;
+      outputBox.scrollTop = outputBox.scrollHeight;
+    }
+  };
+
+  const resultsBox = document.getElementById("resultsBox");
+  const topStatus = document.getElementById("topStatus");
+  const mainStatus = document.getElementById("mainStatus");
+
+  function setStatus(el, text, isErr) {
+    el.textContent = text;
+    el.className = isErr ? "status err" : "status";
+  }
+
+  function normalizeTargetUrl(raw) {
+    let u = (raw || "").trim();
+    if (!u) return "file:///android_asset/index.html";
+    if (u.startsWith("https://file:///")) {
+      u = u.slice("https://".length);
+    }
+    if (u.startsWith("http://file:///")) {
+      u = u.slice("http://".length);
+    }
+    if (u.startsWith("file://") || u.startsWith("http://") || u.startsWith("https://")) {
+      return u;
+    }
+    if (u.includes(".") && !u.includes(" ")) {
+      return "https://" + u;
+    }
+    return u;
+  }
+
+  function syncConfig(source) {
+    if (source === "top") {
+      cfgEndpoint.value = topEndpoint.value.trim() || cfgEndpoint.value;
+      cfgModel.value = topModel.value.trim() || cfgModel.value;
+      if (topKey.value) cfgKey.value = topKey.value;
+    } else {
+      topEndpoint.value = cfgEndpoint.value.trim() || topEndpoint.value;
+      topModel.value = cfgModel.value.trim() || topModel.value;
+      if (cfgKey.value) topKey.value = cfgKey.value;
+    }
+    try {
+      localStorage.setItem("ai_browser_cfg", JSON.stringify({
+        endpoint: cfgEndpoint.value.trim(),
+        model: cfgModel.value.trim(),
+        key: cfgKey.value
+      }));
+    } catch (_) {}
+  }
+
+  try {
+    const saved = JSON.parse(localStorage.getItem("ai_browser_cfg") || "null");
+    if (saved) {
+      if (saved.endpoint) { topEndpoint.value = saved.endpoint; cfgEndpoint.value = saved.endpoint; }
+      if (saved.model) { topModel.value = saved.model; cfgModel.value = saved.model; }
+      if (saved.key) { topKey.value = saved.key; cfgKey.value = saved.key; }
+    }
+  } catch (_) {}
+
+  function navigateTo(rawUrl) {
+    const target = normalizeTargetUrl(rawUrl);
+    urlInput.value = target;
+    if (hasNative && typeof window.AndroidNative.openUrl === "function") {
+      window.AndroidNative.openUrl(target);
+    } else if (target.startsWith("http://") || target.startsWith("https://") || target.startsWith("file://")) {
+      window.location.href = target;
+    } else {
+      runSearch(target);
+    }
+  }
+
+  document.getElementById("goBtn").addEventListener("click", () => navigateTo(urlInput.value));
+  urlInput.addEventListener("keydown", (e) => { if (e.key === "Enter") navigateTo(urlInput.value); });
+
+  document.getElementById("saveCfgBtn").addEventListener("click", () => {
+    syncConfig("cfg");
+    outputBox.textContent = JSON.stringify({
+      ok: true,
+      saved: true,
+      endpoint: cfgEndpoint.value.trim(),
+      model: cfgModel.value.trim()
+    }, null, 2);
+    setStatus(mainStatus, "Status: SAVED | Bridge: " + bridgeLabel, false);
+  });
+
+  async function callChatCompletion(messages, streamMode) {
+    syncConfig("cfg");
+    const endpoint = (cfgEndpoint.value || "http://127.0.0.1:8080/v1/chat/completions").trim();
+    const model = (cfgModel.value || "Qwen2.5-3B-Instruct-Abliterated.Q4_K_M.gguf").trim();
+    const apiKey = (cfgKey.value || "").trim();
+
+    if (hasNative && typeof window.AndroidNative.chatCompletion === "function") {
+      return window.AndroidNative.chatCompletion(endpoint, model, apiKey, JSON.stringify(messages), Boolean(streamMode));
+    }
+
+    const headers = { "Content-Type": "application/json" };
+    if (apiKey) headers["Authorization"] = "Bearer " + apiKey;
+
+    const resp = await fetch(endpoint, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ model, messages, stream: Boolean(streamMode) })
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text();
+      return JSON.stringify({
+        ok: false,
+        status: resp.status,
+        error: "HTTP " + resp.status,
+        raw: errText
+      }, null, 2);
+    }
+
+    if (!streamMode || !resp.body) {
+      const data = await resp.json();
+      const content = data?.choices?.[0]?.message?.content ?? "";
+      return content || JSON.stringify(data, null, 2);
+    }
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let acc = "";
+    let buf = "";
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split("\n");
+      buf = lines.pop() || "";
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith("data:")) continue;
+        const payload = trimmed.slice(5).trim();
+        if (payload === "[DONE]") continue;
+        try {
+          const parsed = JSON.parse(payload);
+          const delta = parsed?.choices?.[0]?.delta?.content ?? "";
+          if (delta) {
+            acc += delta;
+            outputBox.textContent = acc;
+          }
+        } catch (_) {}
+      }
+    }
+    return acc || "(brak treści w strumieniu SSE)";
+  }
+
+  async function runTestAi() {
+    setStatus(topStatus, "Status: RUNNING_AI | Bridge: " + bridgeLabel, false);
+    let parsed;
+    try {
+      parsed = JSON.parse(pingPayload.value);
+    } catch (_) {
+      parsed = { messages: [{ role: "user", content: pingPayload.value || "ping" }] };
+    }
+    const msgs = Array.isArray(parsed.messages) ? parsed.messages : [{ role: "user", content: "ping" }];
+    try {
+      const res = await callChatCompletion(msgs, true);
+      outputBox.textContent = typeof res === "string" ? res : JSON.stringify(res, null, 2);
+      setStatus(topStatus, "Status: AI_OK | Bridge: " + bridgeLabel, false);
+    } catch (e) {
+      setStatus(topStatus, "Status: AI_ERR | Bridge: " + bridgeLabel, true);
+      outputBox.textContent = JSON.stringify({ ok: false, error: String(e) }, null, 2);
+    }
+  }
+
+  async function runSearch(q) {
+    const query = (q || queryInput.value || "").trim();
+    resultsBox.innerHTML = "";
+    if (!query) return;
+    setStatus(mainStatus, "Status: SEARCHING | Bridge: " + bridgeLabel, false);
+
+    if (hasNative && typeof window.AndroidNative.searchWeb === "function") {
+      try {
+        const raw = window.AndroidNative.searchWeb(query);
+        const list = JSON.parse(raw);
+        if (Array.isArray(list) && list.length > 0) {
+          for (const item of list) {
+            const a = document.createElement("a");
+            a.className = "res-item";
+            a.href = item.url || "#";
+            a.textContent = item.title || item.url || "Wynik";
+            a.addEventListener("click", (ev) => {
+              if (item.url) {
+                ev.preventDefault();
+                navigateTo(item.url);
+              }
+            });
+            resultsBox.appendChild(a);
+          }
+          setStatus(mainStatus, "Status: SEARCH_OK (" + list.length + ") | Bridge: " + bridgeLabel, false);
+          return;
+        }
+      } catch (_) {}
+    }
+
+    try {
+      const apiUrl = "https://api.duckduckgo.com/?q=" + encodeURIComponent(query) + "&format=json&no_html=1";
+      const r = await fetch(apiUrl);
+      const d = await r.json();
+      const items = [];
+      if (d.AbstractURL) items.push({ title: d.Heading || query, url: d.AbstractURL });
+      if (Array.isArray(d.RelatedTopics)) {
+        for (const t of d.RelatedTopics) {
+          if (t.FirstURL && t.Text) items.push({ title: t.Text, url: t.FirstURL });
+        }
+      }
+      if (items.length === 0) {
+        items.push({ title: "Szukaj w DuckDuckGo: " + query, url: "https://duckduckgo.com/?q=" + encodeURIComponent(query) });
+      }
+      for (const item of items) {
+        const a = document.createElement("a");
+        a.className = "res-item";
+        a.href = item.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = item.title;
+        resultsBox.appendChild(a);
+      }
+      setStatus(mainStatus, "Status: SEARCH_OK | Bridge: " + bridgeLabel, false);
+    } catch (e) {
+      outputBox.textContent = JSON.stringify({ ok: false, error: String(e) }, null, 2);
+      setStatus(mainStatus, "Status: SEARCH_ERR | Bridge: " + bridgeLabel, true);
+    }
+  }
+
+  async function runAiOnly() {
+    const q = (queryInput.value || pingPayload.value || "ping").trim();
+    setStatus(mainStatus, "Status: AI_STREAM | Bridge: " + bridgeLabel, false);
+    try {
+      const res = await callChatCompletion([{ role: "user", content: q }], true);
+      outputBox.textContent = typeof res === "string" ? res : JSON.stringify(res, null, 2);
+      setStatus(mainStatus, "Status: AI_OK | Bridge: " + bridgeLabel, false);
+    } catch (e) {
+      setStatus(mainStatus, "Status: AI_ERR | Bridge: " + bridgeLabel, true);
+      outputBox.textContent = JSON.stringify({ ok: false, error: String(e) }, null, 2);
+    }
+  }
+
+  async function runWebAndAi() {
+    const q = (queryInput.value || "").trim();
+    if (q) await runSearch(q);
+    await runAiOnly();
+    setStatus(mainStatus, "Status: WEB_AI_DONE | Bridge: " + bridgeLabel, false);
+  }
+
+  document.getElementById("testAiBtn").addEventListener("click", runTestAi);
+  document.getElementById("searchBtn").addEventListener("click", () => runSearch(queryInput.value));
+  document.getElementById("aiBtn").addEventListener("click", runAiOnly);
+  document.getElementById("webAiBtn").addEventListener("click", runWebAndAi);
+  document.getElementById("topWebAiBtn").addEventListener("click", runWebAndAi);
+})();
+</script>
+</body>
+</html>

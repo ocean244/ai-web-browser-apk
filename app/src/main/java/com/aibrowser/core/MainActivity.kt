@@ -1,28 +1,14 @@
 package com.aibrowser.core
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.webkit.CookieManager
+import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
-import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -31,397 +17,228 @@ import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
-
-data class BrowserTab(
-    val id: Int,
-    val webView: WebView,
-    val tabButton: Button,
-    var title: String = "Duck.ai",
-    var url: String = "https://duck.ai/"
-)
+import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    private val tabs = mutableListOf<BrowserTab>()
-    private var activeTabId: Int = -1
-    private var nextTabId: Int = 1
-
-    private lateinit var webContainer: FrameLayout
-    private lateinit var tabsStrip: LinearLayout
-    private lateinit var aiCard: LinearLayout
-    private lateinit var urlInput: EditText
-    private lateinit var promptInput: EditText
-    private lateinit var aiOutputText: TextView
-
-    private val messagesHistory = JSONArray()
+    private lateinit var webView: WebView
+    private val ioExecutor = Executors.newCachedThreadPool()
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        webView = WebView(this)
+        setContentView(webView)
 
-        webContainer = findViewById(R.id.webContainer)
-        tabsStrip = findViewById(R.id.tabsStrip)
-        aiCard = findViewById(R.id.aiCardContainer)
-        urlInput = findViewById(R.id.urlInput)
-        promptInput = findViewById(R.id.promptInput)
-        aiOutputText = findViewById(R.id.aiOutputText)
+        val settings = webView.settings
+        settings.javaScriptEnabled = true
+        settings.domStorageEnabled = true
+        settings.databaseEnabled = true
+        settings.allowFileAccess = true
+        settings.allowContentAccess = true
+        @Suppress("DEPRECATION")
+        settings.allowFileAccessFromFileURLs = true
+        @Suppress("DEPRECATION")
+        settings.allowUniversalAccessFromFileURLs = true
+        settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        settings.useWideViewPort = true
+        settings.loadWithOverviewMode = true
 
-        val backButton: Button = findViewById(R.id.backButton)
-        val newTabButton: Button = findViewById(R.id.newTabButton)
-        val goButton: Button = findViewById(R.id.goButton)
-        val aiTabButton: Button = findViewById(R.id.aiTabButton)
-        val endpointInput: EditText = findViewById(R.id.endpointInput)
-        val apiKeyInput: EditText = findViewById(R.id.apiKeyInput)
-        val modelInput: EditText = findViewById(R.id.modelInput)
-        val saveConfigButton: Button = findViewById(R.id.saveConfigButton)
-        val clearChatButton: Button = findViewById(R.id.clearChatButton)
-        val injectPageButton: Button = findViewById(R.id.injectPageButton)
-        val injectSelectionButton: Button = findViewById(R.id.injectSelectionButton)
-        val sendAiButton: Button = findViewById(R.id.sendAiButton)
-
-        val prefs = getSharedPreferences("ai_browser_prefs", Context.MODE_PRIVATE)
-        endpointInput.setText(prefs.getString("endpoint", "https://api.openai.com/v1/chat/completions"))
-        apiKeyInput.setText(prefs.getString("api_key", ""))
-        modelInput.setText(prefs.getString("model", "gpt-4.1-mini"))
-
-        val saveConfig = {
-            prefs.edit()
-                .putString("endpoint", endpointInput.text.toString().trim())
-                .putString("api_key", apiKeyInput.text.toString().trim())
-                .putString("model", modelInput.text.toString().trim())
-                .apply()
-        }
-
-        saveConfigButton.setOnClickListener { saveConfig() }
-
-        clearChatButton.setOnClickListener {
-            while (messagesHistory.length() > 0) {
-                messagesHistory.remove(0)
-            }
-            aiOutputText.text = ""
-        }
-
-        CookieManager.getInstance().setAcceptCookie(true)
-
-        backButton.setOnClickListener {
-            if (aiCard.visibility == View.VISIBLE) {
-                showBrowserTab()
-                return@setOnClickListener
-            }
-            val current = getActiveTab()
-            if (current != null && current.webView.canGoBack()) {
-                current.webView.goBack()
-            }
-        }
-
-        newTabButton.setOnClickListener {
-            createTab("https://duckduckgo.com/", switchToIt = true)
-        }
-
-        val navigate = { raw: String ->
-            showBrowserTab()
-            val trimmed = raw.trim()
-            val url = when {
-                trimmed.startsWith("http://") || trimmed.startsWith("https://") -> trimmed
-                trimmed.contains(".") && !trimmed.contains(" ") -> "https://$trimmed"
-                else -> "https://duckduckgo.com/?q=" + URLEncoder.encode(trimmed, "UTF-8")
-            }
-            val current = getActiveTab() ?: createTab(url, switchToIt = true)
-            current.url = url
-            urlInput.setText(url)
-            current.webView.loadUrl(url)
-        }
-
-        goButton.setOnClickListener { navigate(urlInput.text.toString()) }
-        urlInput.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE) {
-                navigate(urlInput.text.toString())
-                true
-            } else false
-        }
-
-        aiTabButton.setOnClickListener {
-            if (aiCard.visibility == View.VISIBLE) showBrowserTab() else showAiTab()
-        }
-
-        injectPageButton.setOnClickListener {
-            val current = getActiveTab() ?: return@setOnClickListener
-            val pageUrl = current.webView.url ?: current.url
-            current.webView.evaluateJavascript(
-                "(function(){ return (document.body && document.body.innerText) ? document.body.innerText.slice(0, 12000) : ''; })()"
-            ) { rawJs ->
-                val extracted = unescapeJsString(rawJs)
-                val existing = promptInput.text.toString()
-                val appended = buildString {
-                    if (existing.isNotBlank()) append(existing).append("\n\n")
-                    append("URL: ").append(pageUrl).append("\n")
-                    append("TREŚĆ:\n").append(extracted)
+        webView.webChromeClient = WebChromeClient()
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                val raw = request?.url?.toString() ?: return false
+                val cleaned = sanitizeUrl(raw)
+                if (cleaned != raw) {
+                    view?.loadUrl(cleaned)
+                    return true
                 }
-                promptInput.setText(appended)
-            }
-        }
-
-        injectSelectionButton.setOnClickListener {
-            val current = getActiveTab() ?: return@setOnClickListener
-            val pageUrl = current.webView.url ?: current.url
-            current.webView.evaluateJavascript(
-                "(function(){ return window.getSelection ? window.getSelection().toString() : ''; })()"
-            ) { rawJs ->
-                val selected = unescapeJsString(rawJs)
-                val existing = promptInput.text.toString()
-                val appended = buildString {
-                    if (existing.isNotBlank()) append(existing).append("\n\n")
-                    append("URL: ").append(pageUrl).append("\n")
-                    append("ZAZNACZENIE:\n").append(selected)
-                }
-                promptInput.setText(appended)
-            }
-        }
-
-        sendAiButton.setOnClickListener {
-            saveConfig()
-            val endpoint = endpointInput.text.toString().trim()
-            val apiKey = apiKeyInput.text.toString().trim()
-            val model = modelInput.text.toString().trim()
-            val prompt = promptInput.text.toString().trim()
-            if (endpoint.isEmpty() || prompt.isEmpty()) return@setOnClickListener
-
-            messagesHistory.put(JSONObject().apply {
-                put("role", "user")
-                put("content", prompt)
-            })
-            promptInput.setText("")
-            sendAiButton.isEnabled = false
-            aiOutputText.append("\n[USER]: $prompt\n[AI]: ...\n")
-
-            scope.launch {
-                val reply = callChatCompletions(endpoint, apiKey, model, messagesHistory)
-                messagesHistory.put(JSONObject().apply {
-                    put("role", "assistant")
-                    put("content", reply)
-                })
-                val currentText = aiOutputText.text.toString()
-                aiOutputText.text = currentText.replaceLastOccurrence("[AI]: ...\n", "[AI]: $reply\n")
-                sendAiButton.isEnabled = true
-            }
-        }
-
-        val initialUrl = intent?.data?.toString() ?: "https://duck.ai/"
-        createTab(initialUrl, switchToIt = true)
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun createTab(url: String, switchToIt: Boolean): BrowserTab {
-        val id = nextTabId++
-        val wv = WebView(this).apply {
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
-            CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
-            settings.apply {
-                javaScriptEnabled = true
-                domStorageEnabled = true
-                databaseEnabled = true
-                cacheMode = WebSettings.LOAD_DEFAULT
-                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                loadWithOverviewMode = true
-                useWideViewPort = true
-                setSupportMultipleWindows(false)
-            }
-            webChromeClient = object : WebChromeClient() {
-                override fun onReceivedTitle(view: WebView?, title: String?) {
-                    val t = tabs.find { it.id == id } ?: return
-                    if (!title.isNullOrBlank()) {
-                        t.title = title.take(18)
-                        refreshTabLabels()
-                    }
-                }
-            }
-            webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                    val target = request?.url?.toString() ?: return false
-                    val t = tabs.find { it.id == id }
-                    t?.url = target
-                    if (activeTabId == id) {
-                        urlInput.setText(target)
-                    }
+                if (cleaned.startsWith("file://") || cleaned.startsWith("http://") || cleaned.startsWith("https://")) {
                     return false
                 }
+                return true
+            }
+        }
 
-                override fun onPageFinished(view: WebView?, loadedUrl: String?) {
-                    val t = tabs.find { it.id == id } ?: return
-                    if (!loadedUrl.isNullOrBlank()) {
-                        t.url = loadedUrl
-                        if (activeTabId == id) {
-                            urlInput.setText(loadedUrl)
+        webView.addJavascriptInterface(AndroidNativeBridge(), "AndroidNative")
+        webView.loadUrl("file:///android_asset/index.html")
+    }
+
+    private fun sanitizeUrl(raw: String): String {
+        val trimmed = raw.trim()
+        return when {
+            trimmed.startsWith("https://file:///") -> trimmed.removePrefix("https://")
+            trimmed.startsWith("http://file:///") -> trimmed.removePrefix("http://")
+            else -> trimmed
+        }
+    }
+
+    private fun pushDeltaToJs(deltaText: String) {
+        val escaped = JSONObject.quote(deltaText)
+        runOnUiThread {
+            webView.evaluateJavascript("if (window.__onNativeStreamDelta) window.__onNativeStreamDelta(" + escaped + ");", null)
+        }
+    }
+
+    inner class AndroidNativeBridge {
+
+        @JavascriptInterface
+        fun openUrl(url: String) {
+            val target = sanitizeUrl(url)
+            runOnUiThread {
+                if (target.startsWith("file://") || target.startsWith("http://") || target.startsWith("https://")) {
+                    webView.loadUrl(target)
+                } else if (target.contains(".") && !target.contains(" ")) {
+                    webView.loadUrl("https://$target")
+                } else {
+                    val q = URLEncoder.encode(target, "UTF-8")
+                    webView.loadUrl("https://duckduckgo.com/?q=$q")
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun chatCompletion(
+            endpoint: String,
+            model: String,
+            apiKey: String,
+            messagesJson: String,
+            streamMode: Boolean
+        ): String {
+            return try {
+                val messagesArray = JSONArray(messagesJson)
+                val payload = JSONObject().apply {
+                    put("model", model.ifBlank { "Qwen2.5-3B-Instruct-Abliterated.Q4_K_M.gguf" })
+                    put("messages", messagesArray)
+                    put("stream", streamMode)
+                }
+
+                val conn = (URL(endpoint).openConnection() as HttpURLConnection).apply {
+                    requestMethod = "POST"
+                    connectTimeout = 10000
+                    readTimeout = 60000
+                    doOutput = true
+                    setRequestProperty("Content-Type", "application/json; charset=UTF-8")
+                    if (apiKey.isNotBlank()) {
+                        setRequestProperty("Authorization", "Bearer $apiKey")
+                    }
+                }
+
+                OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use { writer ->
+                    writer.write(payload.toString())
+                    writer.flush()
+                }
+
+                val code = conn.responseCode
+                if (code !in 200..299) {
+                    val errText = conn.errorStream?.bufferedReader(Charsets.UTF_8)?.use { it.readText() } ?: ""
+                    conn.disconnect()
+                    return JSONObject().apply {
+                        put("ok", false)
+                        put("status", code)
+                        put("error", "HTTP $code")
+                        put("raw", errText)
+                    }.toString(2)
+                }
+
+                if (!streamMode) {
+                    val rawBody = conn.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                    conn.disconnect()
+                    val json = JSONObject(rawBody)
+                    val content = json.optJSONArray("choices")
+                        ?.optJSONObject(0)
+                        ?.optJSONObject("message")
+                        ?.optString("content")
+                    return if (!content.isNullOrEmpty()) content else json.toString(2)
+                }
+
+                val acc = StringBuilder()
+                BufferedReader(InputStreamReader(conn.inputStream, Charsets.UTF_8)).use { reader ->
+                    while (true) {
+                        val line = reader.readLine() ?: break
+                        val trimmed = line.trim()
+                        if (!trimmed.startsWith("data:")) continue
+                        val dataPart = trimmed.removePrefix("data:").trim()
+                        if (dataPart == "[DONE]") break
+                        try {
+                            val chunk = JSONObject(dataPart)
+                            val delta = chunk.optJSONArray("choices")
+                                ?.optJSONObject(0)
+                                ?.optJSONObject("delta")
+                                ?.optString("content")
+                            if (!delta.isNullOrEmpty() && delta != "null") {
+                                acc.append(delta)
+                                pushDeltaToJs(acc.toString())
+                            }
+                        } catch (_: Exception) {}
+                    }
+                }
+                conn.disconnect()
+                acc.toString().ifEmpty { "(brak treści w strumieniu SSE)" }
+            } catch (ex: Exception) {
+                JSONObject().apply {
+                    put("ok", false)
+                    put("error", ex.message ?: ex.javaClass.simpleName)
+                }.toString(2)
+            }
+        }
+
+        @JavascriptInterface
+        fun searchWeb(query: String): String {
+            return try {
+                val encoded = URLEncoder.encode(query, "UTF-8")
+                val apiUrl = "https://api.duckduckgo.com/?q=$encoded&format=json&no_html=1"
+                val conn = (URL(apiUrl).openConnection() as HttpURLConnection).apply {
+                    requestMethod = "GET"
+                    connectTimeout = 10000
+                    readTimeout = 15000
+                }
+                val text = BufferedReader(InputStreamReader(conn.inputStream, Charsets.UTF_8)).use { it.readText() }
+                conn.disconnect()
+
+                val root = JSONObject(text)
+                val out = JSONArray()
+                val abstractUrl = root.optString("AbstractURL")
+                val heading = root.optString("Heading").ifBlank { query }
+                if (abstractUrl.isNotBlank()) {
+                    out.put(JSONObject().apply {
+                        put("title", heading)
+                        put("url", abstractUrl)
+                    })
+                }
+                val related = root.optJSONArray("RelatedTopics")
+                if (related != null) {
+                    for (i in 0 until related.length()) {
+                        val item = related.optJSONObject(i) ?: continue
+                        val u = item.optString("FirstURL")
+                        val t = item.optString("Text")
+                        if (u.isNotBlank() && t.isNotBlank()) {
+                            out.put(JSONObject().apply {
+                                put("title", t)
+                                put("url", u)
+                            })
                         }
                     }
                 }
-            }
-        }
-
-        val btn = Button(this).apply {
-            text = "K$id"
-            setOnClickListener {
-                showBrowserTab()
-                switchToTab(id)
-            }
-            setOnLongClickListener {
-                if (tabs.size > 1) {
-                    closeTab(id)
+                if (out.length() == 0) {
+                    out.put(JSONObject().apply {
+                        put("title", "Szukaj w DuckDuckGo: $query")
+                        put("url", "https://duckduckgo.com/?q=$encoded")
+                    })
                 }
-                true
+                out.toString()
+            } catch (_: Exception) {
+                val encoded = URLEncoder.encode(query, "UTF-8")
+                JSONArray().put(JSONObject().apply {
+                    put("title", "Szukaj w DuckDuckGo: $query")
+                    put("url", "https://duckduckgo.com/?q=$encoded")
+                }).toString()
             }
-        }
-
-        val tab = BrowserTab(id = id, webView = wv, tabButton = btn, url = url)
-        tabs.add(tab)
-        tabsStrip.addView(btn)
-        webContainer.addView(wv)
-        wv.loadUrl(url)
-
-        if (switchToIt) {
-            switchToTab(id)
-        }
-        return tab
-    }
-
-    private fun switchToTab(id: Int) {
-        activeTabId = id
-        for (t in tabs) {
-            val selected = t.id == id
-            t.webView.visibility = if (selected) View.VISIBLE else View.GONE
-            t.tabButton.isEnabled = !selected
-            if (selected) {
-                urlInput.setText(t.url)
-            }
-        }
-        refreshTabLabels()
-    }
-
-    private fun closeTab(id: Int) {
-        val idx = tabs.indexOfFirst { it.id == id }
-        if (idx == -1 || tabs.size <= 1) return
-        val target = tabs.removeAt(idx)
-        tabsStrip.removeView(target.tabButton)
-        webContainer.removeView(target.webView)
-        target.webView.destroy()
-
-        if (activeTabId == id) {
-            val next = tabs[idx.coerceAtMost(tabs.lastIndex)]
-            switchToTab(next.id)
-        }
-    }
-
-    private fun refreshTabLabels() {
-        for (t in tabs) {
-            val marker = if (t.id == activeTabId) "*" else ""
-            t.tabButton.text = "$marker${t.id}:${t.title}"
-        }
-    }
-
-    private fun getActiveTab(): BrowserTab? = tabs.find { it.id == activeTabId }
-
-    private fun showBrowserTab() {
-        aiCard.visibility = View.GONE
-        webContainer.visibility = View.VISIBLE
-    }
-
-    private fun showAiTab() {
-        webContainer.visibility = View.GONE
-        aiCard.visibility = View.VISIBLE
-    }
-
-    private fun unescapeJsString(raw: String?): String {
-        if (raw == null || raw == "null") return ""
-        return try {
-            JSONArray("[$raw]").optString(0, raw)
-        } catch (_: Exception) {
-            raw.trim('"')
-        }
-    }
-
-    private fun String.replaceLastOccurrence(oldValue: String, newValue: String): String {
-        val idx = lastIndexOf(oldValue)
-        if (idx == -1) return this
-        return replaceRange(idx, idx + oldValue.length, newValue)
-    }
-
-    private suspend fun callChatCompletions(
-        endpoint: String,
-        apiKey: String,
-        model: String,
-        history: JSONArray
-    ): String = withContext(Dispatchers.IO) {
-        var conn: HttpURLConnection? = null
-        try {
-            val url = URL(endpoint)
-            conn = (url.openConnection() as HttpURLConnection).apply {
-                requestMethod = "POST"
-                connectTimeout = 15000
-                readTimeout = 60000
-                doOutput = true
-                setRequestProperty("Content-Type", "application/json")
-                if (apiKey.isNotEmpty()) {
-                    setRequestProperty("Authorization", "Bearer $apiKey")
-                }
-            }
-
-            val payload = JSONObject().apply {
-                put("model", model)
-                put("messages", history)
-            }.toString()
-
-            OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use { writer ->
-                writer.write(payload)
-                writer.flush()
-            }
-
-            val code = conn.responseCode
-            val stream = if (code in 200..299) conn.inputStream else conn.errorStream
-            val body = BufferedReader(InputStreamReader(stream, Charsets.UTF_8)).use { it.readText() }
-
-            if (code !in 200..299) return@withContext "HTTP $code: $body"
-
-            val json = JSONObject(body)
-            val choices = json.optJSONArray("choices")
-            if (choices != null && choices.length() > 0) {
-                val msg = choices.getJSONObject(0).optJSONObject("message")
-                msg?.optString("content", body) ?: body
-            } else {
-                body
-            }
-        } catch (e: Exception) {
-            "ERR: ${e.message}"
-        } finally {
-            conn?.disconnect()
-        }
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (aiCard.visibility == View.VISIBLE) {
-            showBrowserTab()
-            return
-        }
-        val current = getActiveTab()
-        if (current != null && current.webView.canGoBack()) {
-            current.webView.goBack()
-        } else {
-            @Suppress("DEPRECATION")
-            super.onBackPressed()
         }
     }
 
     override fun onDestroy() {
-        scope.cancel()
-        for (t in tabs) {
-            t.webView.destroy()
-        }
-        tabs.clear()
+        ioExecutor.shutdownNow()
         super.onDestroy()
     }
 }
