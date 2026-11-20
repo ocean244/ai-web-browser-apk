@@ -6,6 +6,7 @@ import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
@@ -35,13 +36,37 @@ class MainActivity : AppCompatActivity() {
     private lateinit var statusView: TextView
     private lateinit var outputView: TextView
 
+    @Volatile
     private var lastPageText: String = ""
+    private var bridgeAttached: Boolean = false
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        bindViews()
+
+        val initialCfg = configStore.load()
+        endpointInput.setText(initialCfg.endpoint)
+        modelInput.setText(initialCfg.model)
+        apiKeyInput.setText(initialCfg.apiKey)
+        if (promptInput.text.isNullOrBlank()) {
+            promptInput.setText("{\"messages\":[{\"role\":\"user\",\"content\":\"ping\"}]}")
+        }
+
+        bindListeners()
+
+        val startUrl = urlInput.text.toString().trim().ifEmpty { "https://app.local/" }
+        urlInput.setText(startUrl)
+
+        webView.post {
+            configureWebView(startUrl)
+        }
+        Log.i(tag, "onCreate completed, views attached")
+    }
+
+    private fun bindViews() {
         configStore = AiConfigStore(this)
         aiClient = OpenAiClient(configStore)
         searchEngine = WebSearchEngine(configStore)
@@ -54,18 +79,34 @@ class MainActivity : AppCompatActivity() {
         promptInput = findViewById(R.id.promptInput)
         statusView = findViewById(R.id.statusView)
         outputView = findViewById(R.id.outputView)
+    }
 
-        val initialCfg = configStore.load()
-        endpointInput.setText(initialCfg.endpoint)
-        modelInput.setText(initialCfg.model)
-        apiKeyInput.setText(initialCfg.apiKey)
-        if (promptInput.text.isNullOrBlank()) {
-            promptInput.setText("{\"messages\":[{\"role\":\"user\",\"content\":\"ping\"}]}")
+    private fun bindListeners() {
+        findViewById<Button>(R.id.goButton).setOnClickListener {
+            navigateOrSearch(urlInput.text.toString())
         }
 
+        findViewById<Button>(R.id.testAiButton).setOnClickListener {
+            persistInputsToConfig()
+            val rawPrompt = promptInput.text.toString().trim()
+            val userText = extractUserTextFromPrompt(rawPrompt)
+            runAiQuery(userText, usePageContext = false)
+        }
+
+        findViewById<Button>(R.id.searchAndAskButton)?.setOnClickListener {
+            persistInputsToConfig()
+            val query = urlInput.text.toString().trim().ifEmpty {
+                extractUserTextFromPrompt(promptInput.text.toString())
+            }
+            runSearchAndAi(query)
+        }
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun configureWebView(startUrl: String) {
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
-        webView.settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        webView.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         webView.webChromeClient = WebChromeClient()
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -89,31 +130,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        webView.addJavascriptInterface(AndroidNativeBridge(), "AndroidNative")
-
-        findViewById<Button>(R.id.goButton).setOnClickListener {
-            navigateOrSearch(urlInput.text.toString())
+        if (!bridgeAttached) {
+            webView.addJavascriptInterface(AndroidNativeBridge(), "AndroidNative")
+            bridgeAttached = true
+            Log.i(tag, "Bridge AndroidNative attached")
         }
-
-        findViewById<Button>(R.id.testAiButton).setOnClickListener {
-            persistInputsToConfig()
-            val rawPrompt = promptInput.text.toString().trim()
-            val userText = extractUserTextFromPrompt(rawPrompt)
-            runAiQuery(userText, usePageContext = false)
-        }
-
-        findViewById<Button>(R.id.searchAndAskButton)?.setOnClickListener {
-            persistInputsToConfig()
-            val query = urlInput.text.toString().trim().ifEmpty {
-                extractUserTextFromPrompt(promptInput.text.toString())
-            }
-            runSearchAndAi(query)
-        }
-
-        val startUrl = urlInput.text.toString().trim().ifEmpty { "https://app.local/" }
-        urlInput.setText(startUrl)
         webView.loadUrl(startUrl)
-        Log.i(tag, "onCreate completed, views attached")
     }
 
     override fun onStart() {
@@ -124,8 +146,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         Log.i(tag, "onResume")
-        webView.addJavascriptInterface(AndroidNativeBridge(), "AndroidNative")
-        Log.i(tag, "Bridge AndroidNative attached")
     }
 
     override fun onPause() {
