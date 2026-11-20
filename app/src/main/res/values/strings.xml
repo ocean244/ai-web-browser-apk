@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Duck.ai Browser</string>
+    <string name="name">Duck.ai</string>
+    <string name="short_name">Duck.ai</string>
+    <string name="notification_channel_name">Duck.ai</string>
+    <string name="shortcut_1_name">Duck.ai Shortcut 1</string>
+    <string name="shortcut_1_short_name">Shortcut 1</string>
+    <string name="shortcut_2_name">Duck.ai Shortcut 2</string>
+    <string name="shortcut_2_short_name">Shortcut 2</string>
+    <string name="shortcut_3_name">Duck.ai Shortcut 3</string>
+    <string name="shortcut_3_short_name">Shortcut 3</string>
+    <string name="shortcut_4_name">Duck.ai Shortcut 4</string>
+    <string name="shortcut_4_short_name">Shortcut 4</string>
+    <string name="site_settings_long_label">Site settings</string>
+    <string name="site_settings_short_label">Site settings</string>
+    <string name="choose_host_browser_dialog_title">Choose a browser that supports this app:</string>
+    <string name="choose_host_browser_dialog_quit">CLOSE</string>
+    <string name="install_host_browser_dialog_title">%1$s requires the following app:</string>
+    <string name="install_host_browser_dialog_install_button">INSTALL</string>
+    <string name="no_support_for_launch_settings">To open site settings, update or reinstall %1$s</string>
+    <string name="host_browser_item_not_supporting_webapks">Unsupported</string>
+    <string name="action_general">General</string>
+    <string name="action_ai">AI</string>
+</resources>

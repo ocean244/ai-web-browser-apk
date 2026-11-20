@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="shortcut_1"
+        android:enabled="true"
+        android:icon="@drawable/shortcut_1_icon"
+        android:shortcutShortLabel="@string/shortcut_1_short_name"
+        android:shortcutLongLabel="@string/shortcut_1_name">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.aibrowser.core"
+            android:targetClass="com.aibrowser.core.MainActivity"
+            android:data="https://duck.ai/" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="shortcut_2"
+        android:enabled="true"
+        android:icon="@drawable/shortcut_2_icon"
+        android:shortcutShortLabel="@string/shortcut_2_short_name"
+        android:shortcutLongLabel="@string/shortcut_2_name">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.aibrowser.core"
+            android:targetClass="com.aibrowser.core.MainActivity"
+            android:data="https://duckduckgo.com/" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="shortcut_3"
+        android:enabled="true"
+        android:icon="@drawable/shortcut_3_icon"
+        android:shortcutShortLabel="@string/shortcut_3_short_name"
+        android:shortcutLongLabel="@string/shortcut_3_name">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.aibrowser.core"
+            android:targetClass="com.aibrowser.core.MainActivity"
+            android:data="https://duckduckgo.com/?q=news" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="shortcut_4"
+        android:enabled="true"
+        android:icon="@drawable/shortcut_4_icon"
+        android:shortcutShortLabel="@string/shortcut_4_short_name"
+        android:shortcutLongLabel="@string/shortcut_4_name">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.aibrowser.core"
+            android:targetClass="com.aibrowser.core.MainActivity"
+            android:data="https://duckduckgo.com/?ia=images&amp;iax=images" />
+    </shortcut>
+</shortcuts>

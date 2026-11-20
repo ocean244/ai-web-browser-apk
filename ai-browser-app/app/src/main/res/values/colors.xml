@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="webapp_default_bg">#FFFFFFFF</color>
+    <color name="webapp_grey_900">#FF202124</color>
+    <color name="white_adaptive_ic_launcher_background">#FFFFFFFF</color>
+    <color name="webapk_black_alpha_38">#61000000</color>
+    <color name="webapk_black_alpha_54">#8A000000</color>
+    <color name="webapk_black_alpha_87">#DE000000</color>
+    <color name="accent_primary">#FF1A73E8</color>
+</resources>

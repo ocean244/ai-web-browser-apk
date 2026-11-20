@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dialog_content_padding">24dp</dimen>
+    <dimen name="dialog_content_top_padding">20dp</dimen>
+    <dimen name="headline_size_medium">24sp</dimen>
+    <dimen name="list_column_padding">16dp</dimen>
+    <dimen name="oom_splash_icon_size">72dp</dimen>
+    <dimen name="title_bottom_padding">12dp</dimen>
+    <dimen name="webapk_text_size_large">18sp</dimen>
+    <dimen name="webapk_text_size_medium_dense">14sp</dimen>
+    <dimen name="webapp_splash_image_size_ideal">96dp</dimen>
+    <dimen name="webapp_splash_image_size_minimum">48dp</dimen>
+    <dimen name="webapp_splash_large_title_margin_bottom">16dp</dimen>
+    <dimen name="webapp_splash_offset">0dp</dimen>
+</resources>
