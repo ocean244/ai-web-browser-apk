@@ -1,93 +1,94 @@
-=== CI_ERROR_BLOCKS RUN_ID=44687472327 ===
-build-and-release	Build Signed Release APK	﻿2026-11-20T06:23:50.9849081Z ##[group]Run gradle assembleRelease --no-daemon
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9849306Z ^[[36;1mgradle assembleRelease --no-daemon^[[0m
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9884703Z shell: /usr/bin/bash -e {0}
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9884855Z env:
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9885041Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9885321Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9885565Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9885753Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9886050Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9886310Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9886591Z   DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE: gradle-actions
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9886788Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9886966Z   RELEASE_STORE_FILE: keystore/release.jks
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9887179Z   RELEASE_STORE_PASSWORD: ***
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9887374Z   RELEASE_KEY_ALIAS: ***
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9887568Z   RELEASE_KEY_PASSWORD: ***
-build-and-release	Build Signed Release APK	2026-11-20T06:23:50.9887711Z ##[endgroup]
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.1277094Z 
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.1277736Z Welcome to Gradle 8.7!
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.1278020Z 
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.1278641Z Here are the highlights of this release:
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.1279454Z  - Compiling and testing with Java 22
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.1280069Z  - Cacheable Groovy script compilation
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.1280815Z  - New methods in lazy collection properties
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.1281326Z 
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.1282602Z For more details see https://docs.gradle.org/8.7/release-notes.html
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.1282998Z 
-build-and-release	Build Signed Release APK	2026-11-20T06:23:52.3224837Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.7/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
-build-and-release	Build Signed Release APK	2026-11-20T06:23:54.0223278Z Daemon will be stopped at the end of the build 
-build-and-release	Build Signed Release APK	2026-11-20T06:24:40.6241232Z > Task :app:buildKotlinToolingMetadata
-build-and-release	Build Signed Release APK	2026-11-20T06:24:40.6241725Z > Task :app:checkKotlinGradlePluginConfigurationErrors
-build-and-release	Build Signed Release APK	2026-11-20T06:24:40.6241997Z > Task :app:preBuild UP-TO-DATE
-build-and-release	Build Signed Release APK	2026-11-20T06:24:40.6242326Z > Task :app:preReleaseBuild UP-TO-DATE
-build-and-release	Build Signed Release APK	2026-11-20T06:24:48.7237183Z > Task :app:generateReleaseResValues
-build-and-release	Build Signed Release APK	2026-11-20T06:24:48.7237839Z > Task :app:checkReleaseAarMetadata
-build-and-release	Build Signed Release APK	2026-11-20T06:24:48.8233404Z > Task :app:mapReleaseSourceSetPaths
-build-and-release	Build Signed Release APK	2026-11-20T06:24:48.8272994Z > Task :app:generateReleaseResources
-build-and-release	Build Signed Release APK	2026-11-20T06:24:50.1223906Z > Task :app:packageReleaseResources
-build-and-release	Build Signed Release APK	2026-11-20T06:24:50.5232896Z > Task :app:createReleaseCompatibleScreenManifests
-build-and-release	Build Signed Release APK	2026-11-20T06:24:50.6233217Z > Task :app:parseReleaseLocalResources
-build-and-release	Build Signed Release APK	2026-11-20T06:24:50.6252698Z > Task :app:extractDeepLinksRelease
-build-and-release	Build Signed Release APK	2026-11-20T06:24:50.7232286Z > Task :app:mergeReleaseResources
-build-and-release	Build Signed Release APK	2026-11-20T06:24:50.9226284Z > Task :app:processReleaseMainManifest
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.0234190Z > Task :app:processReleaseManifest
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.0235005Z > Task :app:processReleaseManifestForPackage
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.0236062Z > Task :app:javaPreCompileRelease
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.1233152Z > Task :app:extractProguardFiles
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.1252766Z > Task :app:mergeReleaseJniLibFolders
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.5235924Z > Task :app:mergeReleaseNativeLibs NO-SOURCE
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.5262813Z > Task :app:stripReleaseDebugSymbols NO-SOURCE
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.5264613Z > Task :app:extractReleaseNativeSymbolTables NO-SOURCE
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.5278075Z > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.6238260Z > Task :app:processReleaseResources
-build-and-release	Build Signed Release APK	2026-11-20T06:24:51.8253163Z > Task :app:checkReleaseDuplicateClasses
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.1227048Z > Task :app:mergeReleaseStartupProfile
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.1253100Z > Task :app:mergeReleaseArtProfile
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.1282810Z > Task :app:mergeReleaseShaders
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.1283449Z > Task :app:compileReleaseShaders NO-SOURCE
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.1313056Z > Task :app:generateReleaseAssets UP-TO-DATE
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.2224306Z > Task :app:mergeReleaseAssets
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.2230741Z > Task :app:compressReleaseAssets
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.3258716Z > Task :app:extractReleaseVersionControlInfo
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.3273084Z > Task :app:processApplicationManifestReleaseForBundle
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.4224156Z > Task :app:collectReleaseDependencies
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.5223824Z > Task :app:sdkReleaseDependencyData
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.5239326Z > Task :app:validateSigningRelease
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.5242701Z > Task :app:writeReleaseAppMetadata
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.5243196Z > Task :app:writeReleaseSigningConfigVersions
-build-and-release	Build Signed Release APK	2026-11-20T06:24:54.7253284Z > Task :app:bundleReleaseResources
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.5227267Z 
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.5227883Z > Task :app:compileReleaseKotlin FAILED
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.5229111Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:353:25 Unresolved reference: activity
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.5229907Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:363:21 Unresolved reference: activity
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.5230485Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:369:9 Unresolved reference: activity
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.5231064Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:371:17 Unresolved reference: activity
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6232637Z 
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6233311Z 33 actionable tasks: 33 executed
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6252753Z FAILURE: Build failed with an exception.
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6278764Z 
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6279253Z * What went wrong:
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6294669Z Execution failed for task ':app:compileReleaseKotlin'.
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6295500Z > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6296300Z    > Compilation error. See log for more details
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6296568Z 
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6296730Z * Try:
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6297062Z > Run with --stacktrace option to get the stack trace.
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6297475Z > Run with --info or --debug option to get more log output.
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6297863Z > Run with --scan to get full insights.
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6298277Z > Get more help at https://help.gradle.org.
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6298539Z 
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.6298723Z BUILD FAILED in 1m 7s
-build-and-release	Build Signed Release APK	2026-11-20T06:24:58.9751169Z ##[error]Process completed with exit code 1.
+=== CI_ERROR_BLOCKS RUN_ID=44688267310 ===
+build-and-release	Build Signed Release APK	﻿2026-11-20T06:30:35.9102613Z ##[group]Run gradle assembleRelease --no-daemon
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9102972Z ^[[36;1mgradle assembleRelease --no-daemon^[[0m
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9149466Z shell: /usr/bin/bash -e {0}
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9149724Z env:
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9149995Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9150403Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9150748Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9151011Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9151437Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9151801Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9152193Z   DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE: gradle-actions
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9152463Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9152705Z   RELEASE_STORE_FILE: keystore/release.jks
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9153093Z   RELEASE_STORE_PASSWORD: ***
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9153388Z   RELEASE_KEY_ALIAS: ***
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9153611Z   RELEASE_KEY_PASSWORD: ***
+build-and-release	Build Signed Release APK	2026-11-20T06:30:35.9153813Z ##[endgroup]
+build-and-release	Build Signed Release APK	2026-11-20T06:30:36.8605928Z 
+build-and-release	Build Signed Release APK	2026-11-20T06:30:36.8607280Z Welcome to Gradle 8.7!
+build-and-release	Build Signed Release APK	2026-11-20T06:30:36.8607652Z 
+build-and-release	Build Signed Release APK	2026-11-20T06:30:36.8608353Z Here are the highlights of this release:
+build-and-release	Build Signed Release APK	2026-11-20T06:30:36.8609663Z  - Compiling and testing with Java 22
+build-and-release	Build Signed Release APK	2026-11-20T06:30:36.8610641Z  - Cacheable Groovy script compilation
+build-and-release	Build Signed Release APK	2026-11-20T06:30:36.8613409Z  - New methods in lazy collection properties
+build-and-release	Build Signed Release APK	2026-11-20T06:30:36.8613805Z 
+build-and-release	Build Signed Release APK	2026-11-20T06:30:36.8614100Z For more details see https://docs.gradle.org/8.7/release-notes.html
+build-and-release	Build Signed Release APK	2026-11-20T06:30:36.8619989Z 
+build-and-release	Build Signed Release APK	2026-11-20T06:30:37.1561266Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.7/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+build-and-release	Build Signed Release APK	2026-11-20T06:30:38.6535183Z Daemon will be stopped at the end of the build 
+build-and-release	Build Signed Release APK	2026-11-20T06:31:23.9560472Z > Task :app:buildKotlinToolingMetadata
+build-and-release	Build Signed Release APK	2026-11-20T06:31:24.0541590Z > Task :app:checkKotlinGradlePluginConfigurationErrors
+build-and-release	Build Signed Release APK	2026-11-20T06:31:24.0551822Z > Task :app:preBuild UP-TO-DATE
+build-and-release	Build Signed Release APK	2026-11-20T06:31:24.0552417Z > Task :app:preReleaseBuild UP-TO-DATE
+build-and-release	Build Signed Release APK	2026-11-20T06:31:27.1550520Z > Task :app:generateReleaseResValues
+build-and-release	Build Signed Release APK	2026-11-20T06:31:27.1551309Z > Task :app:checkReleaseAarMetadata
+build-and-release	Build Signed Release APK	2026-11-20T06:31:27.1551981Z > Task :app:mapReleaseSourceSetPaths
+build-and-release	Build Signed Release APK	2026-11-20T06:31:27.1552560Z > Task :app:generateReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T06:31:28.5540595Z > Task :app:packageReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T06:31:29.4533600Z > Task :app:mergeReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T06:31:29.5620197Z > Task :app:createReleaseCompatibleScreenManifests
+build-and-release	Build Signed Release APK	2026-11-20T06:31:29.5620789Z > Task :app:extractDeepLinksRelease
+build-and-release	Build Signed Release APK	2026-11-20T06:31:29.6534370Z > Task :app:parseReleaseLocalResources
+build-and-release	Build Signed Release APK	2026-11-20T06:31:29.8538506Z > Task :app:processReleaseMainManifest
+build-and-release	Build Signed Release APK	2026-11-20T06:31:29.8560213Z > Task :app:processReleaseManifest
+build-and-release	Build Signed Release APK	2026-11-20T06:31:29.9540428Z > Task :app:javaPreCompileRelease
+build-and-release	Build Signed Release APK	2026-11-20T06:31:29.9541292Z > Task :app:processReleaseManifestForPackage
+build-and-release	Build Signed Release APK	2026-11-20T06:31:30.0555577Z > Task :app:extractProguardFiles
+build-and-release	Build Signed Release APK	2026-11-20T06:31:30.0572204Z > Task :app:mergeReleaseJniLibFolders
+build-and-release	Build Signed Release APK	2026-11-20T06:31:30.4568148Z > Task :app:mergeReleaseNativeLibs NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T06:31:30.4639985Z > Task :app:stripReleaseDebugSymbols NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T06:31:30.4690735Z > Task :app:extractReleaseNativeSymbolTables NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T06:31:30.4760714Z > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T06:31:30.8533775Z > Task :app:checkReleaseDuplicateClasses
+build-and-release	Build Signed Release APK	2026-11-20T06:31:30.9545492Z > Task :app:processReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T06:31:30.9620064Z > Task :app:mergeReleaseArtProfile
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.5553099Z > Task :app:mergeReleaseStartupProfile
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.5570307Z > Task :app:mergeReleaseShaders
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.5579816Z > Task :app:compileReleaseShaders NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.5580682Z > Task :app:generateReleaseAssets UP-TO-DATE
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.6550707Z > Task :app:mergeReleaseAssets
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.7570261Z > Task :app:compressReleaseAssets
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.7589940Z > Task :app:extractReleaseVersionControlInfo
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.7599762Z > Task :app:processApplicationManifestReleaseForBundle
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.9533915Z > Task :app:collectReleaseDependencies
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.9534441Z > Task :app:sdkReleaseDependencyData
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.9549779Z > Task :app:validateSigningRelease
+build-and-release	Build Signed Release APK	2026-11-20T06:31:33.9550518Z > Task :app:writeReleaseAppMetadata
+build-and-release	Build Signed Release APK	2026-11-20T06:31:34.0543775Z > Task :app:writeReleaseSigningConfigVersions
+build-and-release	Build Signed Release APK	2026-11-20T06:31:34.3535466Z > Task :app:bundleReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0555248Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:396:2 Missing '}
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0580353Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:301:25 Unresolved reference: activity
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0581284Z 
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0610334Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:313:25 Unresolved reference: activity
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0611320Z > Task :app:compileReleaseKotlin FAILED
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0620049Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:323:13 Unresolved reference: activity
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0630261Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:324:17 Unresolved reference: activity
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0631237Z 33 actionable tasks: 33 executed
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0650604Z 
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0679960Z FAILURE: Build failed with an exception.
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0729691Z 
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0750136Z * What went wrong:
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0751414Z Execution failed for task ':app:compileReleaseKotlin'.
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0753116Z > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0761389Z    > Compilation error. See log for more details
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0761888Z 
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0762202Z * Try:
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0762740Z > Run with --stacktrace option to get the stack trace.
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0763426Z > Run with --info or --debug option to get more log output.
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0764063Z > Run with --scan to get full insights.
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0764692Z > Get more help at https://help.gradle.org.
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0765153Z 
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.0765406Z BUILD FAILED in 1m 3s
+build-and-release	Build Signed Release APK	2026-11-20T06:31:39.5543524Z ##[error]Process completed with exit code 1.

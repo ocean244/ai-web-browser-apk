@@ -298,7 +298,7 @@ class MainActivity : AppCompatActivity() {
     @android.webkit.JavascriptInterface
     fun saveConfig(jsonStr: String): String {
         return try {
-            val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
+            val prefs = this@MainActivity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
             prefs.edit().putString("cfg_json", jsonStr).apply()
             "{\"ok\":true,\"saved\":true}"
         } catch (e: Throwable) {
@@ -310,7 +310,7 @@ class MainActivity : AppCompatActivity() {
     @android.webkit.JavascriptInterface
     fun getConfig(): String {
         return try {
-            val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
+            val prefs = this@MainActivity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
             prefs.getString("cfg_json", "{}") ?: "{}"
         } catch (_: Throwable) {
             "{}"
@@ -320,8 +320,8 @@ class MainActivity : AppCompatActivity() {
     @android.webkit.JavascriptInterface
     fun openUrl(url: String): String {
         return try {
-            activity.runOnUiThread {
-                activity.loadTargetUrl(url)
+            this@MainActivity.runOnUiThread {
+                this@MainActivity.loadTargetUrl(url)
             }
             "{\"ok\":true}"
         } catch (e: Throwable) {
