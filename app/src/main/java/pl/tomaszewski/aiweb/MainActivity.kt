@@ -1,6 +1,7 @@
 package pl.tomaszewski.aiweb
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -42,6 +43,11 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "AiWebMainActivity"
         private const val BRIDGE_NAME = "AndroidNative"
+        private const val PREFS_NAME = "ai_web_browser_prefs"
+        private const val KEY_ENDPOINT = "ai_endpoint"
+        private const val KEY_MODEL = "ai_model"
+        private const val KEY_API_KEY = "ai_api_key"
+        private const val KEY_PAYLOAD = "ai_payload"
     }
 
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -52,8 +58,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
     private lateinit var urlInput: EditText
     private lateinit var statusText: TextView
+    private lateinit var endpointInput: EditText
+    private lateinit var modelInput: EditText
+    private lateinit var apiKeyInput: EditText
     private lateinit var aiPromptInput: EditText
     private lateinit var aiOutputView: TextView
+
+    private val prefs by lazy {
+        getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    }
 
     private val defaultHomeHtml: String by lazy {
         """
@@ -187,6 +200,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         Log.i(TAG, "onPause")
+        persistAiConfig()
         if (::webView.isInitialized) {
             webView.onPause()
         }
@@ -208,6 +222,16 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    private fun persistAiConfig() {
+        if (!::endpointInput.isInitialized) return
+        prefs.edit()
+            .putString(KEY_ENDPOINT, endpointInput.text.toString().trim())
+            .putString(KEY_MODEL, modelInput.text.toString().trim())
+            .putString(KEY_API_KEY, apiKeyInput.text.toString().trim())
+            .putString(KEY_PAYLOAD, aiPromptInput.text.toString())
+            .apply()
+    }
+
     private fun loadHomePage() {
         webView.loadDataWithBaseURL(
             "https://app.local/",
@@ -216,6 +240,34 @@ class MainActivity : AppCompatActivity() {
             "UTF-8",
             null
         )
+    }
+
+    private fun createField(
+        hintText: String,
+        initialText: String,
+        inputTypeFlags: Int,
+        weight: Float = 0f,
+        marginEndPx: Int = 0
+    ): EditText = EditText(this).apply {
+        hint = hintText
+        setText(initialText)
+        setTextColor(Color.WHITE)
+        setHintTextColor(Color.parseColor("#8B949E"))
+        setBackgroundColor(Color.parseColor("#0D1117"))
+        visibility = View.VISIBLE
+        inputType = inputTypeFlags
+        setSingleLine(true)
+        textSize = 12f
+        setPadding(14, 10, 14, 10)
+        layoutParams = if (weight > 0f) {
+            LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, weight).apply {
+                marginEnd = marginEndPx
+            }
+        } else {
+            LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                marginEnd = marginEndPx
+            }
+        }
     }
 
     private fun buildUserInterface() {
@@ -261,57 +313,51 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        fun createNavButton(label: String, action: () -> Unit): Button = Button(this).apply {
+        fun createActionButton(label: String, bgHex: String, action: () -> Unit): Button = Button(this).apply {
             text = label
             setTextColor(Color.WHITE)
-            setBackgroundColor(Color.parseColor("#21262D"))
+            setBackgroundColor(Color.parseColor(bgHex))
             visibility = View.VISIBLE
             minWidth = 0
             minimumWidth = 0
-            setPadding(20, 12, 20, 12)
+            setPadding(18, 10, 18, 10)
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                marginEnd = 8
-            }
+            )
             setOnClickListener { action() }
         }
 
-        val btnBack = createNavButton("<") {
+        val btnBack = createActionButton("<", "#21262D") {
             if (::webView.isInitialized && webView.canGoBack()) {
                 webView.goBack()
             }
+        }.apply {
+            (layoutParams as LinearLayout.LayoutParams).marginEnd = 8
         }
-        val btnFwd = createNavButton(">") {
+        val btnFwd = createActionButton(">", "#21262D") {
             if (::webView.isInitialized && webView.canGoForward()) {
                 webView.goForward()
             }
+        }.apply {
+            (layoutParams as LinearLayout.LayoutParams).marginEnd = 8
         }
-        val btnHome = createNavButton("Home") {
+        val btnHome = createActionButton("Home", "#21262D") {
             if (::webView.isInitialized) {
                 loadHomePage()
             }
+        }.apply {
+            (layoutParams as LinearLayout.LayoutParams).marginEnd = 8
         }
 
-        urlInput = EditText(this).apply {
-            hint = "https://example.com"
-            setText("https://example.com")
-            setTextColor(Color.WHITE)
-            setHintTextColor(Color.parseColor("#8B949E"))
-            setBackgroundColor(Color.parseColor("#161B22"))
-            visibility = View.VISIBLE
-            inputType = InputType.TYPE_TEXT_VARIATION_URI
+        urlInput = createField(
+            "https://example.com",
+            "https://example.com",
+            InputType.TYPE_TEXT_VARIATION_URI,
+            weight = 1f,
+            marginEndPx = 8
+        ).apply {
             imeOptions = EditorInfo.IME_ACTION_GO
-            setSingleLine(true)
-            setPadding(18, 14, 18, 14)
-            layoutParams = LinearLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f
-            ).apply {
-                marginEnd = 8
-            }
             setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE) {
                     navigateTo(text.toString())
@@ -322,7 +368,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val btnGo = createNavButton("Idź") {
+        val btnGo = createActionButton("Idź", "#21262D") {
             navigateTo(urlInput.text.toString())
         }
 
@@ -338,13 +384,13 @@ class MainActivity : AppCompatActivity() {
             setBackgroundColor(Color.parseColor("#11161D"))
             visibility = View.VISIBLE
             textSize = 13f
-            setPadding(12, 10, 12, 10)
+            setPadding(12, 8, 12, 8)
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
-                topMargin = 8
-                bottomMargin = 8
+                topMargin = 6
+                bottomMargin = 6
             }
         }
 
@@ -362,14 +408,50 @@ class MainActivity : AppCompatActivity() {
             orientation = LinearLayout.VERTICAL
             setBackgroundColor(Color.parseColor("#161B22"))
             visibility = View.VISIBLE
-            setPadding(14, 14, 14, 14)
+            setPadding(12, 10, 12, 10)
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
-                topMargin = 10
+                topMargin = 8
             }
         }
+
+        endpointInput = createField(
+            "Endpoint: http://127.0.0.1:8080/v1/chat/completions",
+            prefs.getString(KEY_ENDPOINT, "") ?: "",
+            InputType.TYPE_TEXT_VARIATION_URI
+        )
+
+        val metaRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            visibility = View.VISIBLE
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = 6
+            }
+        }
+
+        modelInput = createField(
+            "Model",
+            prefs.getString(KEY_MODEL, "") ?: "",
+            InputType.TYPE_CLASS_TEXT,
+            weight = 1f,
+            marginEndPx = 8
+        )
+        apiKeyInput = createField(
+            "API Key (opcjonalnie)",
+            prefs.getString(KEY_API_KEY, "") ?: "",
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD,
+            weight = 1f,
+            marginEndPx = 0
+        )
+
+        metaRow.addView(modelInput)
+        metaRow.addView(apiKeyInput)
 
         val aiRow = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -378,45 +460,31 @@ class MainActivity : AppCompatActivity() {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        }
-
-        aiPromptInput = EditText(this).apply {
-            hint = """{"messages":[{"role":"user","content":"ping"}]}"""
-            setText("""{"messages":[{"role":"user","content":"ping"}]}""")
-            setTextColor(Color.WHITE)
-            setHintTextColor(Color.parseColor("#8B949E"))
-            setBackgroundColor(Color.parseColor("#0D1117"))
-            visibility = View.VISIBLE
-            setSingleLine(true)
-            setPadding(16, 12, 16, 12)
-            layoutParams = LinearLayout.LayoutParams(
-                0,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f
             ).apply {
-                marginEnd = 8
+                topMargin = 6
             }
         }
 
-        val btnTestAi = Button(this).apply {
-            text = "Test AI"
-            setTextColor(Color.WHITE)
-            setBackgroundColor(Color.parseColor("#238636"))
-            visibility = View.VISIBLE
-            setPadding(18, 12, 18, 12)
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            setOnClickListener {
-                val payload = aiPromptInput.text.toString()
-                bgHandler.post {
-                    val res = AndroidNative(webView).postChatCompletion("", "", "", payload)
-                    mainHandler.post {
-                        aiOutputView.append("\n[TEST] $res")
-                        statusText.text = "Status: TEST_OK | Bridge: $BRIDGE_NAME"
-                    }
+        aiPromptInput = createField(
+            """{"messages":[{"role":"user","content":"ping"}]}""",
+            prefs.getString(KEY_PAYLOAD, """{"messages":[{"role":"user","content":"ping"}]}""")
+                ?: """{"messages":[{"role":"user","content":"ping"}]}""",
+            InputType.TYPE_CLASS_TEXT,
+            weight = 1f,
+            marginEndPx = 8
+        )
+
+        val btnTestAi = createActionButton("Test AI", "#238636") {
+            persistAiConfig()
+            val ep = endpointInput.text.toString().trim()
+            val mdl = modelInput.text.toString().trim()
+            val key = apiKeyInput.text.toString().trim()
+            val payload = aiPromptInput.text.toString()
+            bgHandler.post {
+                val res = AndroidNative(webView).postChatCompletion(ep, mdl, key, payload)
+                mainHandler.post {
+                    aiOutputView.append("\n[TEST] $res")
+                    statusText.text = "Status: TEST_OK | Bridge: $BRIDGE_NAME"
                 }
             }
         }
@@ -428,9 +496,9 @@ class MainActivity : AppCompatActivity() {
             visibility = View.VISIBLE
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                240
+                190
             ).apply {
-                topMargin = 8
+                topMargin = 6
             }
         }
 
@@ -440,7 +508,7 @@ class MainActivity : AppCompatActivity() {
             setBackgroundColor(Color.parseColor("#090C10"))
             visibility = View.VISIBLE
             textSize = 12f
-            setPadding(12, 10, 12, 10)
+            setPadding(12, 8, 12, 8)
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -448,6 +516,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         logScroll.addView(aiOutputView)
+        aiPanel.addView(endpointInput)
+        aiPanel.addView(metaRow)
         aiPanel.addView(aiRow)
         aiPanel.addView(logScroll)
 
@@ -469,7 +539,7 @@ class MainActivity : AppCompatActivity() {
             useWideViewPort = true
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
-            userAgentString = "$userAgentString AiWebBrowser/1.2"
+            userAgentString = "$userAgentString AiWebBrowser/1.3"
         }
 
         attachBridge(webView)
