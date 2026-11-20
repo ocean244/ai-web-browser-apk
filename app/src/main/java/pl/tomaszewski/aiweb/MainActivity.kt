@@ -295,6 +295,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class AndroidNativeBridge {
+    @android.webkit.JavascriptInterface
+    fun saveConfig(jsonStr: String): String {
+        return try {
+            val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
+            prefs.edit().putString("cfg_json", jsonStr).apply()
+            "{\"ok\":true,\"saved\":true}"
+        } catch (e: Throwable) {
+            val msg = (e.message ?: "error").replace("\"", "'")
+            "{\"ok\":false,\"error\":\"$msg\"}"
+        }
+    }
+
+    @android.webkit.JavascriptInterface
+    fun getConfig(): String {
+        return try {
+            val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
+            prefs.getString("cfg_json", "{}") ?: "{}"
+        } catch (_: Throwable) {
+            "{}"
+        }
+    }
+
+    @android.webkit.JavascriptInterface
+    fun openUrl(url: String): String {
+        return try {
+            activity.runOnUiThread {
+                activity.loadTargetUrl(url)
+            }
+            "{\"ok\":true}"
+        } catch (e: Throwable) {
+            val msg = (e.message ?: "error").replace("\"", "'")
+            "{\"ok\":false,\"error\":\"$msg\"}"
+        }
+    }
+
         @JavascriptInterface
         fun ping(): String {
             return JSONObject()
@@ -345,33 +380,17 @@ class MainActivity : AppCompatActivity() {
         fun fetchPage(url: String): String {
             return searchEngine.fetchUrlText(url).toString()
         }
-    }
-
-    @JavascriptInterface
-    fun saveConfig(jsonStr: String): String {
-        return try {
-            val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
-            prefs.edit().putString("cfg_json", jsonStr).apply()
-            "{\"ok\":true,\"saved\":true}"
-        } catch (e: Exception) {
-            "{\"ok\":false,\"error\":\"${e.message?.replace("\"", "")}\"}"
+    
+    fun loadTargetUrl(url: String) {
+        val target = url.trim()
+        if (target.isEmpty()) return
+        val resolved = if (target.startsWith("http://") || target.startsWith("https://") || target.startsWith("file://")) {
+            target
+        } else {
+            "https://$target"
         }
+        try {
+            webView.loadUrl(resolved)
+        } catch (_: Throwable) {}
     }
-
-    @JavascriptInterface
-    fun getConfig(): String {
-        val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
-        return prefs.getString("cfg_json", "{}") ?: "{}"
-    }
-
-    @JavascriptInterface
-    fun openUrl(url: String): String {
-        activity.runOnUiThread {
-            try {
-                activity.loadTargetUrl(url)
-            } catch (_: Exception) {}
-        }
-        return "{\"ok\":true}"
-    }
-
 }
