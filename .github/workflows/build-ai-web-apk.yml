@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
@@ -31,13 +31,12 @@ jobs:
           fi
           chmod +x ./gradlew
 
-      - name: Build Debug and Release APK
-        run: |
-          ./gradlew --no-daemon assembleDebug assembleRelease --stacktrace || ./gradlew --no-daemon assembleDebug --stacktrace
+      - name: Assemble Debug APK
+        run: ./gradlew --no-daemon assembleDebug --stacktrace
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ai-web-browser-apk
-          path: "**/build/outputs/apk/**/*.apk"
+          name: ai-web-browser-debug-apk
+          path: "**/build/outputs/apk/debug/*.apk"
           if-no-files-found: error

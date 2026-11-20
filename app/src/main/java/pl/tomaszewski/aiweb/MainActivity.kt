@@ -3,7 +3,6 @@ package pl.tomaszewski.aiweb
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -38,15 +37,6 @@ class MainActivity : AppCompatActivity() {
 
     private var lastPageText: String = ""
 
-    private fun <T : View> resolveView(idName: String, fallback: () -> T): T {
-        val resId = resources.getIdentifier(idName, "id", packageName)
-        if (resId != 0) {
-            val found = findViewById<T>(resId)
-            if (found != null) return found
-        }
-        return fallback()
-    }
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,14 +46,14 @@ class MainActivity : AppCompatActivity() {
         aiClient = OpenAiClient(configStore)
         searchEngine = WebSearchEngine(configStore)
 
-        webView = resolveView("webView") { WebView(this) }
-        urlInput = resolveView("urlInput") { EditText(this) }
-        endpointInput = resolveView("endpointInput") { EditText(this) }
-        modelInput = resolveView("modelInput") { EditText(this) }
-        apiKeyInput = resolveView("apiKeyInput") { EditText(this) }
-        promptInput = resolveView("promptInput") { EditText(this) }
-        statusView = resolveView("statusView") { TextView(this) }
-        outputView = resolveView("outputView") { TextView(this) }
+        webView = findViewById(R.id.webView)
+        urlInput = findViewById(R.id.urlInput)
+        endpointInput = findViewById(R.id.endpointInput)
+        modelInput = findViewById(R.id.modelInput)
+        apiKeyInput = findViewById(R.id.apiKeyInput)
+        promptInput = findViewById(R.id.promptInput)
+        statusView = findViewById(R.id.statusView)
+        outputView = findViewById(R.id.outputView)
 
         val initialCfg = configStore.load()
         endpointInput.setText(initialCfg.endpoint)
@@ -101,21 +91,18 @@ class MainActivity : AppCompatActivity() {
         }
         webView.addJavascriptInterface(AndroidNativeBridge(), "AndroidNative")
 
-        val goBtn = resolveView("goButton") { Button(this) }
-        goBtn.setOnClickListener {
+        findViewById<Button>(R.id.goButton).setOnClickListener {
             navigateOrSearch(urlInput.text.toString())
         }
 
-        val testBtn = resolveView("testAiButton") { Button(this) }
-        testBtn.setOnClickListener {
+        findViewById<Button>(R.id.testAiButton).setOnClickListener {
             persistInputsToConfig()
             val rawPrompt = promptInput.text.toString().trim()
             val userText = extractUserTextFromPrompt(rawPrompt)
             runAiQuery(userText, usePageContext = false)
         }
 
-        val searchAiBtn = resolveView("searchAndAskButton") { Button(this) }
-        searchAiBtn.setOnClickListener {
+        findViewById<Button>(R.id.searchAndAskButton)?.setOnClickListener {
             persistInputsToConfig()
             val query = urlInput.text.toString().trim().ifEmpty {
                 extractUserTextFromPrompt(promptInput.text.toString())

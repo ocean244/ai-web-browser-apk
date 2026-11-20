@@ -8,6 +8,17 @@ REVERSE_PORT="${4:-18080}"
 PKG_NAME="pl.tomaszewski.aiweb"
 MAIN_ACT="pl.tomaszewski.aiweb/.MainActivity"
 
+is_placeholder_url() {
+  local u="$1"
+  [ -z "$u" ] && return 0
+  case "$u" in
+    *"<"*|*">"*|*"TWOJ_LOGIN"*|*"TWOJE_REPO"*|*"TWOJA_NAZWA"*)
+      return 0
+      ;;
+  esac
+  return 1
+}
+
 cd "$PROJECT_DIR"
 
 for cfg_file in "$HOME/.aiweb_env" "$PROJECT_DIR/.aiweb_env"; do
@@ -19,19 +30,10 @@ for cfg_file in "$HOME/.aiweb_env" "$PROJECT_DIR/.aiweb_env"; do
   fi
 done
 
-is_invalid_url() {
-  local u="$1"
-  [ -z "$u" ] && return 0
-  case "$u" in
-    *"<"*|*">"*|*"TWOJ_LOGIN"*|*"TWOJE_REPO"*|*"TWOJA_NAZWA"*) return 0 ;;
-    *) return 1 ;;
-  esac
-}
-
 REMOTE_URL="${AIWEB_REPO_URL:-${GH_REPO_URL:-${GIT_REMOTE_URL:-}}}"
-if is_invalid_url "$REMOTE_URL" && git remote get-url origin >/dev/null 2>&1; then
+if [ -z "$REMOTE_URL" ] && git remote get-url origin >/dev/null 2>&1; then
   cand="$(git remote get-url origin)"
-  if ! is_invalid_url "$cand"; then
+  if ! is_placeholder_url "$cand"; then
     REMOTE_URL="$cand"
   fi
 fi
@@ -43,8 +45,16 @@ if [ -z "$GH_TOKEN_VAL" ] && command -v gh >/dev/null 2>&1; then
   GH_TOKEN_VAL="$(gh auth token 2>/dev/null || true)"
 fi
 
-if is_invalid_url "$REMOTE_URL"; then
+if [ -z "$REMOTE_URL" ] && [ -n "$GH_TOKEN_VAL" ] && command -v gh >/dev/null 2>&1; then
+  gh_login="$(gh api user --jq '.login' 2>/dev/null || true)"
+  if [ -n "$gh_login" ]; then
+    REMOTE_URL="https://github.com/${gh_login}/ai-web-browser-apk.git"
+  fi
+fi
+
+if is_placeholder_url "$REMOTE_URL"; then
   echo "AUTO_STATUS=WAITING_REMOTE_ENDPOINT"
+  echo "Zapisz docelowy URL repozytorium w ~/.aiweb_env jako: AIWEB_REPO_URL=https://github.com/LOGIN/REPO.git (oraz opcjonalnie AIWEB_GH_USER i AIWEB_GH_TOKEN) i uruchom ponownie ten sam skrypt bez argumentów."
   exit 0
 fi
 
@@ -90,44 +100,16 @@ echo "GITHUB_PUSH=OK BRANCH=$BRANCH_NAME REMOTE=$REMOTE_URL"
 
 if command -v gh >/dev/null 2>&1; then
   REPO_SLUG="$(printf '%s' "$REMOTE_URL" | sed -E 's#^(https?://[^/]+/|git@[^:]+:)##; s#\.git$##')"
-  sleep 3
+  gh workflow run "build-ai-web-apk.yml" --repo "$REPO_SLUG" --ref "$BRANCH_NAME" >/dev/null 2>&1 || true
+  sleep 4
   RUN_ID="$(gh run list --repo "$REPO_SLUG" --branch "$BRANCH_NAME" --limit 1 --json databaseId --jq '.[0].databaseId' 2>/dev/null || true)"
-  if [ -z "$RUN_ID" ]; then
-    RUN_ID="$(gh run list --repo "$REPO_SLUG" --limit 1 --json databaseId --jq '.[0].databaseId' 2>/dev/null || true)"
-  fi
-
   if [ -n "$RUN_ID" ]; then
     echo "GH_RUN_ID=$RUN_ID REPO=$REPO_SLUG"
-    if ! gh run watch "$RUN_ID" --repo "$REPO_SLUG" --exit-status; then
-      echo "BUILD_FAILED_LOG_START"
-      gh run view "$RUN_ID" --repo "$REPO_SLUG" --log-failed | tail -n 80 || true
-      echo "BUILD_FAILED_LOG_END"
-      exit 1
-    fi
-
+    gh run watch "$RUN_ID" --repo "$REPO_SLUG" --exit-status
     mkdir -p "$PROJECT_DIR/out/apk_artifact"
     rm -rf "${PROJECT_DIR:?}/out/apk_artifact"/*
-
-    ART_NAMES="$(gh api "repos/${REPO_SLUG}/actions/runs/${RUN_ID}/artifacts" --jq '.artifacts[] | select(.expired == false) | .name' 2>/dev/null || true)"
-    DOWNLOADED=0
-    while IFS= read -r art_name; do
-      [ -z "$art_name" ] && continue
-      if gh run download "$RUN_ID" --repo "$REPO_SLUG" -n "$art_name" -D "$PROJECT_DIR/out/apk_artifact/$art_name" >/dev/null 2>&1; then
-        DOWNLOADED=1
-      fi
-    done <<< "$ART_NAMES"
-
-    if [ "$DOWNLOADED" -eq 0 ]; then
-      gh run download "$RUN_ID" --repo "$REPO_SLUG" -D "$PROJECT_DIR/out/apk_artifact" >/dev/null 2>&1 || true
-    fi
-
+    gh run download "$RUN_ID" --repo "$REPO_SLUG" -n "ai-web-browser-debug-apk" -D "$PROJECT_DIR/out/apk_artifact"
     APK_FOUND="$(find "$PROJECT_DIR/out/apk_artifact" -name "*.apk" -type f | head -n 1 || true)"
-
-    if [ -z "$APK_FOUND" ]; then
-      gh release download --repo "$REPO_SLUG" --pattern "*.apk" -D "$PROJECT_DIR/out/apk_artifact" >/dev/null 2>&1 || true
-      APK_FOUND="$(find "$PROJECT_DIR/out/apk_artifact" -name "*.apk" -type f | head -n 1 || true)"
-    fi
-
     if [ -n "$APK_FOUND" ] && [ -x "$PROJECT_DIR/bin/adb_ensure_target.sh" ]; then
       TARGET="$("$PROJECT_DIR/bin/adb_ensure_target.sh" "$RAW_TARGET" 3)"
       adb -s "$TARGET" wait-for-device
@@ -138,9 +120,6 @@ if command -v gh >/dev/null 2>&1; then
       sleep 1.2
       PID_AI="$(adb -s "$TARGET" shell pidof "$PKG_NAME" | tr -d '\r' || true)"
       echo "DEPLOY_FINAL=OK APK=$APK_FOUND TARGET=$TARGET PID_AI=${PID_AI:-<none>}"
-    else
-      echo "ARTIFACTS_LIST=${ART_NAMES:-<none>}"
-      echo "APK_STATUS=NOT_FOUND_IN_RUN_OR_RELEASE"
     fi
   fi
 else
