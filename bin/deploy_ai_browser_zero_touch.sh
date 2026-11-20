@@ -90,6 +90,7 @@ echo "GITHUB_PUSH=OK BRANCH=$BRANCH_NAME REMOTE=$REMOTE_URL"
 
 if command -v gh >/dev/null 2>&1; then
   REPO_SLUG="$(printf '%s' "$REMOTE_URL" | sed -E 's#^(https?://[^/]+/|git@[^:]+:)##; s#\.git$##')"
+  sleep 3
   RUN_ID="$(gh run list --repo "$REPO_SLUG" --branch "$BRANCH_NAME" --limit 1 --json databaseId --jq '.[0].databaseId' 2>/dev/null || true)"
   if [ -z "$RUN_ID" ]; then
     RUN_ID="$(gh run list --repo "$REPO_SLUG" --limit 1 --json databaseId --jq '.[0].databaseId' 2>/dev/null || true)"
@@ -97,7 +98,13 @@ if command -v gh >/dev/null 2>&1; then
 
   if [ -n "$RUN_ID" ]; then
     echo "GH_RUN_ID=$RUN_ID REPO=$REPO_SLUG"
-    gh run watch "$RUN_ID" --repo "$REPO_SLUG" --exit-status
+    if ! gh run watch "$RUN_ID" --repo "$REPO_SLUG" --exit-status; then
+      echo "BUILD_FAILED_LOG_START"
+      gh run view "$RUN_ID" --repo "$REPO_SLUG" --log-failed | tail -n 80 || true
+      echo "BUILD_FAILED_LOG_END"
+      exit 1
+    fi
+
     mkdir -p "$PROJECT_DIR/out/apk_artifact"
     rm -rf "${PROJECT_DIR:?}/out/apk_artifact"/*
 
