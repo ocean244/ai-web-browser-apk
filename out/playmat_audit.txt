@@ -1,0 +1,92 @@
+APK_PATH=/data/data/com.termux/files/home/ai-web-browser-apk/playmat/Duck.ai.ver.1.build.1.apk
+ENTRY size=  13996 compress=   3300 name=AndroidManifest.xml
+ENTRY size=    438 compress=    438 name=res/drawable-mdpi-v4/ic_site_settings.png
+ENTRY size=    190 compress=    190 name=res/drawable-mdpi-v4/notification_badge.png
+ENTRY size=    300 compress=    182 name=res/drawable-mdpi-v4/splash_icon.xml
+ENTRY size=    602 compress=    602 name=res/drawable-hdpi-v4/ic_site_settings.png
+ENTRY size=   3124 compress=   3124 name=res/drawable-hdpi-v4/last_resort_runtime_host_logo.png
+ENTRY size=    255 compress=    255 name=res/drawable-hdpi-v4/notification_badge.png
+ENTRY size=    772 compress=    772 name=res/drawable-xhdpi-v4/ic_site_settings.png
+ENTRY size=    255 compress=    255 name=res/drawable-xhdpi-v4/notification_badge.png
+ENTRY size=   1129 compress=   1129 name=res/drawable-xxhdpi-v4/ic_site_settings.png
+ENTRY size=    396 compress=    396 name=res/drawable-xxhdpi-v4/notification_badge.png
+ENTRY size=   1409 compress=   1409 name=res/drawable-xxxhdpi-v4/ic_site_settings.png
+ENTRY size=    479 compress=    479 name=res/drawable-xxxhdpi-v4/notification_badge.png
+ENTRY size=   1180 compress=    599 name=res/layout/host_browser_list_item.xml
+ENTRY size=   1412 compress=    656 name=res/layout/webapp_splash_screen_large.xml
+ENTRY size=   1068 compress=    512 name=res/layout/webapp_splash_screen_no_icon.xml
+ENTRY size=    760 compress=    427 name=res/layout-v31/splash_screen_view.xml
+ENTRY size=    296 compress=    177 name=res/mipmap-mdpi-v4/app_icon.xml
+ENTRY size=    296 compress=    177 name=res/mipmap-mdpi-v4/ic_launcher.xml
+ENTRY size=    300 compress=    182 name=res/mipmap-xhdpi-v4/maskable_app_icon.xml
+ENTRY size=    532 compress=    268 name=res/mipmap-anydpi-v26/ic_launcher.xml
+ENTRY size=  12073 compress=  12073 name=res/mipmap-nodpi-v4/maskable_app_icon_xhdpi.png
+ENTRY size=    232 compress=    130 name=res/xml/shortcuts.xml
+ENTRY size=  85796 compress=  85796 name=resources.arsc
+ENTRY size=  40060 compress=  19276 name=classes.dex
+ENTRY size=   2884 compress=   1319 name=META-INF/APP.SF
+ENTRY size=   1577 compress=   1478 name=META-INF/APP.RSA
+ENTRY size=   2884 compress=   1319 name=META-INF/BROWSER.SF
+ENTRY size=   1714 compress=   1533 name=META-INF/BROWSER.RSA
+ENTRY size=   2760 compress=   1171 name=META-INF/MANIFEST.MF
+INTERESTING_STRINGS_COUNT=125
+STR: --Web-arakatzaile
+STR: 33res/mipmap-nodpi-v4/maskable_splash_icon_xxhdpi.png
+STR: 44res/mipmap-nodpi-v4/maskable_splash_icon_xxxhdpi.png
+STR: 66res/drawable-hdpi-v4/last_resort_runtime_host_logo.png
+STR: AIZV
+STR: Browser
+STR: Duck.ai
+STR: FFWebgunearen
+STR: Haitumiki
+STR: Kinakailangan
+STR: LNSaidi
+STR: Nepalaikoma
+STR: Saidi
+STR: Shortcut
+STR: SplashTheme
+STR: Svetain
+STR: WebappSplashScreenText
+STR: WebappSplashScreenTextTheme
+STR: Webbplatsinst
+STR: Webbrowser
+STR: Webgunearen
+STR: Webhelybe
+STR: Website-Einstellungen
+STR: Websiteindstillinger
+STR: ZAINSTALUJ
+STR: arakatzaile
+STR: blaaier
+STR: browser
+STR: browser_icon
+STR: browser_name
+STR: choose_host_browser
+STR: choose_host_browser_dialog_quit
+STR: choose_host_browser_dialog_title
+STR: host_browser_item_not_supporting_webapks
+STR: host_browser_list_item
+STR: install_host_browser_dialog_install_button
+STR: install_host_browser_dialog_title
+STR: is_splash_icon_maskable
+STR: last_resort_runtime_host_logo
+STR: maskable_splash_icon_xxhdpi
+STR: maskable_splash_icon_xxxhdpi
+STR: nustatymai
+STR: oom_splash_icon_size
+STR: opaque_main_activity_enabled_default
+STR: palaikan
+STR: res/drawable-hdpi-v4/shortcut_1_icon.png
+STR: res/drawable-hdpi-v4/shortcut_2_icon.png
+STR: res/drawable-hdpi-v4/shortcut_3_icon.png
+STR: res/drawable-hdpi-v4/shortcut_4_icon.png
+STR: res/drawable-mdpi-v4/shortcut_1_icon.png
+STR: res/drawable-mdpi-v4/shortcut_2_icon.png
+STR: res/drawable-mdpi-v4/shortcut_3_icon.png
+STR: res/drawable-mdpi-v4/shortcut_4_icon.png
+STR: res/drawable-mdpi-v4/splash_icon.xml
+STR: res/drawable-xhdpi-v4/shortcut_1_icon.png
+STR: res/drawable-xhdpi-v4/shortcut_2_icon.png
+STR: res/drawable-xhdpi-v4/shortcut_3_icon.png
+STR: res/drawable-xhdpi-v4/shortcut_4_icon.png
+STR: res/drawable-xxhdpi-v4/shortcut_1_icon.png
+STR: res/drawable-xxhdpi-v4/shortcut_2_icon.png
