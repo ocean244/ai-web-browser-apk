@@ -183,7 +183,7 @@
             android:id="@+id/endpointInput"
             android:layout_width="match_parent"
             android:layout_height="42dp"
-            android:hint="Endpoint (np. https://api.openai.com/v1/chat/completions)"
+            android:hint="Endpoint (np. http://127.0.0.1:8080/v1/chat/completions)"
             android:inputType="textUri"
             android:singleLine="true" />
 
@@ -210,9 +210,16 @@
                 android:singleLine="true" />
 
             <Button
+                android:id="@+id/bridgePresetButton"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:text="127:8080" />
+
+            <Button
                 android:id="@+id/saveConfigButton"
                 android:layout_width="wrap_content"
                 android:layout_height="42dp"
+                android:layout_marginStart="4dp"
                 android:text="ZAPISZ" />
 
             <Button

@@ -14,6 +14,7 @@ import android.webkit.DownloadListener
 import android.webkit.URLUtil
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -33,6 +34,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
@@ -93,6 +95,7 @@ class MainActivity : AppCompatActivity() {
         val endpointInput: EditText = findViewById(R.id.endpointInput)
         val apiKeyInput: EditText = findViewById(R.id.apiKeyInput)
         val modelInput: EditText = findViewById(R.id.modelInput)
+        val bridgePresetButton: Button = findViewById(R.id.bridgePresetButton)
         val saveConfigButton: Button = findViewById(R.id.saveConfigButton)
         val clearChatButton: Button = findViewById(R.id.clearChatButton)
         val injectPageButton: Button = findViewById(R.id.injectPageButton)
@@ -102,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         val prefs = getSharedPreferences("ai_browser_prefs", Context.MODE_PRIVATE)
         storage = BrowserStorage(prefs)
 
-        endpointInput.setText(prefs.getString("endpoint", "https://api.openai.com/v1/chat/completions"))
+        endpointInput.setText(prefs.getString("endpoint", "http://127.0.0.1:8080/v1/chat/completions"))
         apiKeyInput.setText(prefs.getString("api_key", ""))
         modelInput.setText(prefs.getString("model", "gpt-4.1-mini"))
 
@@ -112,6 +115,12 @@ class MainActivity : AppCompatActivity() {
                 .putString("api_key", apiKeyInput.text.toString().trim())
                 .putString("model", modelInput.text.toString().trim())
                 .apply()
+        }
+
+        bridgePresetButton.setOnClickListener {
+            endpointInput.setText("http://127.0.0.1:8080/v1/chat/completions")
+            saveConfig()
+            Toast.makeText(this, "Ustawiono mostek 127.0.0.1:8080", Toast.LENGTH_SHORT).show()
         }
 
         saveConfigButton.setOnClickListener {
@@ -439,6 +448,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             webViewClient = object : WebViewClient() {
+                override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+                    val host = request?.url?.host
+                    if (AdDomainFilter.isBlockedHost(host)) {
+                        return WebResourceResponse("text/plain", "UTF-8", ByteArrayInputStream(ByteArray(0)))
+                    }
+                    return super.shouldInterceptRequest(view, request)
+                }
+
                 override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                     val target = request?.url?.toString() ?: return false
                     val t = tabs.find { it.id == id }
