@@ -380,9 +380,6 @@ class MainActivity : AppCompatActivity() {
         fun fetchPage(url: String): String {
             return searchEngine.fetchUrlText(url).toString()
         }
-        try {
-            webView.loadUrl(resolved)
-        } catch (_: Throwable) {}
     }
 }
 
