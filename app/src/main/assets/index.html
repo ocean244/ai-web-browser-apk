@@ -402,21 +402,73 @@
 
 </script>
 
-<script>
-window.directWebSearch = function(query) {
-  const q = String(query || "").trim();
-  if (!q) return;
-  const encoded = encodeURIComponent(q);
-  const targetUrl = /^https?:\/\//i.test(q) ? q : ("https://duckduckgo.com/?q=" + encoded);
-  try {
-    if (window.AndroidNative && typeof window.AndroidNative.openUrl === "function") {
-      window.AndroidNative.openUrl(targetUrl);
-      return;
-    }
-  } catch (e) {}
-  window.location.href = targetUrl;
-};
-</script>
 
+
+<script id="direct-web-search-router">
+(function() {
+  function buildWebTarget(raw) {
+    const q = String(raw || "").trim();
+    if (!q) return null;
+    if (/^https?:\/\//i.test(q)) return q;
+    if (/^[a-z0-9-]+(\.[a-z0-9-]+)+([/?#].*)?$/i.test(q)) return "https://" + q;
+    return "https://duckduckgo.com/?q=" + encodeURIComponent(q);
+  }
+
+  window.directWebSearch = function(query) {
+    const target = buildWebTarget(query);
+    if (!target) return;
+    try {
+      if (window.AndroidNative && typeof window.AndroidNative.openUrl === "function") {
+        window.AndroidNative.openUrl(target);
+        return;
+      }
+    } catch (_) {}
+    try {
+      window.location.assign(target);
+    } catch (_) {
+      window.location.href = target;
+    }
+  };
+
+  function bindDirectSearch() {
+    const btns = document.querySelectorAll(".btn-search, [data-action='search'], #searchBtn, button[type='submit']");
+    btns.forEach(function(btn) {
+      if (btn.dataset.directBound === "1") return;
+      btn.dataset.directBound = "1";
+      btn.addEventListener("click", function(ev) {
+        const container = btn.closest("form, .bar, .toolbar, .search-box, header, div") || document;
+        const input = container.querySelector("input[type='text'], input[type='search'], input:not([type='hidden']), textarea");
+        const val = input ? input.value : "";
+        if (val && val.trim()) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          window.directWebSearch(val);
+        }
+      }, true);
+    });
+
+    document.querySelectorAll("form").forEach(function(form) {
+      if (form.dataset.directFormBound === "1") return;
+      form.dataset.directFormBound = "1";
+      form.addEventListener("submit", function(ev) {
+        const input = form.querySelector("input[type='text'], input[type='search'], input:not([type='hidden']), textarea");
+        const val = input ? input.value : "";
+        if (val && val.trim()) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          window.directWebSearch(val);
+        }
+      }, true);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bindDirectSearch);
+  } else {
+    bindDirectSearch();
+  }
+  setInterval(bindDirectSearch, 1500);
+})();
+</script>
 </body>
 </html>
