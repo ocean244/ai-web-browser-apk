@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PKG_NAME="pl.tomaszewski.aiweb"
-ADB_TARGET="${1:-192.168.1.154:33131}"
+ADB_TARGET="${1:-192.168.1.154:36375}"
 
 adb connect "$ADB_TARGET" >/dev/null 2>&1 || true
 

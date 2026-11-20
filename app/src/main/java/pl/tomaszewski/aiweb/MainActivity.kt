@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         bindListeners()
 
-        val startUrl = urlInput.text.toString().trim().ifEmpty { "https://app.local/" }
+        val startUrl = urlInput.text.toString().trim().let { if (it.isEmpty() || it == "https://app.local/") "file:///android_asset/index.html" else it }
         urlInput.setText(startUrl)
 
         webView.post {

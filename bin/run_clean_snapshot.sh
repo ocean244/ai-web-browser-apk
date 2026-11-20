@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PROJ_DIR="$HOME/ai-web-browser-apk"
-ADB_TARGET="${1:-192.168.1.154:33131}"
+ADB_TARGET="${1:-192.168.1.154:36375}"
 PKG_NAME="pl.tomaszewski.aiweb"
 LOG_OUT="$PROJ_DIR/out/last_clean_log.txt"
 

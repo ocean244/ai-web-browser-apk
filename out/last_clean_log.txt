@@ -1,76 +1,217 @@
-STREAMING_PID=20566 TARGET=192.168.1.154:33131
+STREAMING_PID=5584 TARGET=192.168.1.154:36375
 --------- beginning of main
-11-20 03:21:04.541 I/libprocessgroup(20566): Created cgroup /sys/fs/cgroup/apps/uid_11562/pid_20566
-11-20 03:21:04.553 I/Zygote  (20566): Process 20566 created for pl.tomaszewski.aiweb
-11-20 03:21:04.553 I/maszewski.aiweb(20566): Using generational CollectorTypeCMC GC.
-11-20 03:21:04.566 D/nativeloader(20566): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
-11-20 03:21:04.588 D/CompatChangeReporter(20566): Compat change id reported: 242716250; UID 11562; state: ENABLED
-11-20 03:21:04.591 D/nativeloader(20566): Configuring clns-9 for other apk /data/app/~~tw2QtS6RJ-eupNCcMP5oHw==/pl.tomaszewski.aiweb-DhH22zZH6jTpNgKibYOZqw==/base.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~tw2QtS6RJ-eupNCcMP5oHw==/pl.tomaszewski.aiweb-DhH22zZH6jTpNgKibYOZqw==/lib/arm64, permitted_path=/data:/mnt/expand:/data/user/0/pl.tomaszewski.aiweb
-11-20 03:21:04.594 V/GraphicsEnvironment(20566): Currently set values for:
-11-20 03:21:04.594 V/GraphicsEnvironment(20566):   angle_gl_driver_selection_pkgs=[]
-11-20 03:21:04.594 V/GraphicsEnvironment(20566):   angle_gl_driver_selection_values=[]
-11-20 03:21:04.594 V/GraphicsEnvironment(20566): pl.tomaszewski.aiweb is not listed in per-application setting
-11-20 03:21:04.594 V/GraphicsEnvironment(20566): first_api_level (34) < 36; skipping config_angleAllowList for pl.tomaszewski.aiweb
-11-20 03:21:04.594 V/GraphicsEnvironment(20566): No special selections for ANGLE, returning default driver choice
-11-20 03:21:04.594 V/GraphicsEnvironment(20566): The updatable driver is turned off on this device.
+11-20 07:08:44.522 I/libprocessgroup( 5584): Created cgroup /sys/fs/cgroup/apps/uid_11562/pid_5584
+11-20 07:08:44.533 I/Zygote  ( 5584): Process 5584 created for pl.tomaszewski.aiweb
+11-20 07:08:44.533 I/maszewski.aiweb( 5584): Using generational CollectorTypeCMC GC.
+11-20 07:08:44.536 D/nativeloader( 5584): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+11-20 07:08:44.594 D/CompatChangeReporter( 5584): Compat change id reported: 242716250; UID 11562; state: ENABLED
+11-20 07:08:44.597 D/nativeloader( 5584): Configuring clns-9 for other apk /data/app/~~w8vXGL9L5RAc8u4tVoui8A==/pl.tomaszewski.aiweb-GFJohxtYCl-tEAgFU1RVzA==/base.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~w8vXGL9L5RAc8u4tVoui8A==/pl.tomaszewski.aiweb-GFJohxtYCl-tEAgFU1RVzA==/lib/arm64, permitted_path=/data:/mnt/expand:/data/user/0/pl.tomaszewski.aiweb
+11-20 07:08:44.599 V/GraphicsEnvironment( 5584): Currently set values for:
+11-20 07:08:44.600 V/GraphicsEnvironment( 5584):   angle_gl_driver_selection_pkgs=[]
+11-20 07:08:44.600 V/GraphicsEnvironment( 5584):   angle_gl_driver_selection_values=[]
+11-20 07:08:44.600 V/GraphicsEnvironment( 5584): pl.tomaszewski.aiweb is not listed in per-application setting
+11-20 07:08:44.600 V/GraphicsEnvironment( 5584): first_api_level (34) < 36; skipping config_angleAllowList for pl.tomaszewski.aiweb
+11-20 07:08:44.600 V/GraphicsEnvironment( 5584): No special selections for ANGLE, returning default driver choice
+11-20 07:08:44.600 V/GraphicsEnvironment( 5584): The updatable driver is turned off on this device.
 --------- beginning of system
-11-20 03:21:04.606 D/ActivityThread(20566): pl.tomaszewski.aiweb will use render engine as VK
-11-20 03:21:04.606 D/HWUI    (20566): HWUI - treat SMPTE_170M as sRGB
-11-20 03:21:04.607 I/DisplayManager(20566): Choreographer implicitly registered for the refresh rate.
-11-20 03:21:04.618 D/HWUI    (20566): CacheManager constructor. deviceInfo=(1080, 1920)
-11-20 03:21:04.619 D/DesktopExperienceFlags(20566): Toggle override initialized to: false
-11-20 03:21:04.620 D/AppCompatDelegate(20566): Checking for metadata for AppLocalesMetadataHolderService : Service not found
-11-20 03:21:04.625 E/Adreno-AppProfiles(20566): QSPM AIDL service doesn't exist
-11-20 03:21:04.625 I/AdrenoVK-0(20566): ===== BEGIN DUMP OF OVERRIDDEN SETTINGS =====
-11-20 03:21:04.625 I/AdrenoVK-0(20566): ===== END DUMP OF OVERRIDDEN SETTINGS =====
-11-20 03:21:04.629 I/AdrenoVK-0(20566): QUALCOMM build          : bb11e2f361, Id7183d7088
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Build Date              : 07/24/26
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Shader Compiler Version : E031.45.02.43
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Local Branch            : 
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Remote Branch           : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.14.3.0.R1.00.00.00.000.225
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Remote Branch           : NONE
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Reconstruct Branch      : NOTHING
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Build Config            : S P 16.1.2 AArch64
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Driver Path             : /vendor/lib64/hw/vulkan.adreno.so
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Driver Version          : 0762.48.1
-11-20 03:21:04.629 I/AdrenoVK-0(20566): PFP                     : 0x01520181
-11-20 03:21:04.629 I/AdrenoVK-0(20566): ME                      : 0x01520023
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Application Name    : android framework
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Application Version : 0x00000000
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Engine Name         : android framework
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Engine Version      : 0x00000000
-11-20 03:21:04.629 I/AdrenoVK-0(20566): Api Version         : 0x00401000
-11-20 03:21:04.638 I/DecorView(20566): setWindowBackground: isPopOver=false color=ff141218 d=android.graphics.drawable.ColorDrawable@b4a97a9
-11-20 03:21:04.643 D/ViewRootImpl(20566): desktopMode is false
-11-20 03:21:04.643 I/ViewRootImpl(20566): dVRR is disabled
-11-20 03:21:04.644 D/HardwareRenderer(20566): onDisplayChanged. displayId=0 current wxh=1440x3120 mLargest wxh=0x0
-11-20 03:21:04.644 D/HardwareRenderer(20566): Set largestWidth and largestHeight as logical resolution. (1440x3120)
-11-20 03:21:04.644 D/HWUI    (20566): setMaxSurfaceArea requested wxh=(1440,3120) requestedSurfaceArea(4492800) mMaxSurfaceArea(2073600)
-11-20 03:21:04.644 D/NativeCustomFrequencyManager(20566): [NativeCFMS] BpCustomFrequencyManager::BpCustomFrequencyManager()
-11-20 03:21:04.649 D/InputTransport(20566): Input channel constructed: 'cad49dc', fd=123
-11-20 03:21:04.650 I/VRI[MainActivity]@e2d62c0(20566): synced displayState. AttachInfo displayState=2
-11-20 03:21:04.651 I/VRI[MainActivity]@e2d62c0(20566): setView = com.android.internal.policy.DecorView@ff1f131 IsHRR=false mFlingFrameRateChange=0 TM=true
-11-20 03:21:04.651 I/IDS_TAG (20566): Starting IDS observe window
-11-20 03:21:04.651 I/IDS_TAG (20566): Getting Shared Preference for android.app.Application@30678d0 uid = 11562
-11-20 03:21:04.652 I/IDS_TAG (20566): App android.app.Application@30678d0 has not finished training
-11-20 03:21:04.653 I/IDS_TAG (20566): Closing IDS observe window
-11-20 03:21:04.653 I/IDS_TAG (20566): Getting Shared Preference for android.app.Application@30678d0 uid = 11562
-11-20 03:21:04.653 I/IDS_TAG (20566): IDS count updated to 2 for android.app.Application@30678d0
-11-20 03:21:04.654 D/WindowOnBackDispatcher(20566): setTopOnBackInvokedCallback (unwrapped): android.app.Activity$$ExternalSyntheticLambda1@f7d7a2
-11-20 03:21:04.654 D/VRI[MainActivity]@e2d62c0(20566): WindowInsets changed: 1440x3120 statusBars:[0,129,0,0] navigationBars:[0,0,0,82] ime:[0,0,0,606] mandatorySystemGestures:[0,149,0,82] 
-11-20 03:21:04.657 I/Surface (20566): Creating surface for consumer unnamed-20566-0 with slotExpansion=1 for 64 slots
-11-20 03:21:04.657 W/libc    (20566): Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-11-20 03:21:04.657 I/BufferQueueProducer(20566): [](id:505600000000,api:0,p:0,c:20566) setDequeueTimeout:2077252342
-11-20 03:21:04.658 I/Surface (20566): Creating surface for consumer VRI[MainActivity]@e2d62c0#0(BLAST Consumer)0 with slotExpansion=1 for 64 slots
-11-20 03:21:04.658 W/libc    (20566): Access denied finding property "vendor.display.enable_optimal_refresh_rate"
-11-20 03:21:04.658 I/VRI[MainActivity]@e2d62c0(20566): Relayout returned: old=(0,0,1440,3120) new=(0,0,1440,3120) relayoutAsync=false req=(1440,3120)0 dur=3 res=0x3 s={true 0xb400007250a8d8c0} ch=true seqId=1 syncSeqId=0
-11-20 03:21:04.658 D/VRI[MainActivity]@e2d62c0(20566): reportNextDraw android.view.ViewRootImpl.performTraversals:5295 android.view.ViewRootImpl.doTraversal:4255 android.view.ViewRootImpl$TraversalCallback.onVsync:13896 android.view.Choreographer$CallbackRecord.run:1995 android.view.Choreographer.doCallbacks:1440 
-11-20 03:21:04.658 D/VRI[MainActivity]@e2d62c0(20566): applyTransactionOnDraw applyImmediately
-11-20 03:21:04.658 I/VRI[MainActivity]@e2d62c0(20566): performConfigurationChange setNightDimText nightDimLevel=0
-11-20 03:21:04.658 D/VRI[MainActivity]@e2d62c0(20566): mThreadedRenderer.initialize() mSurface={isValid=true 0xb400007250a8d8c0} hwInitialized=true
-11-20 03:21:04.659 D/VRI[MainActivity]@e2d62c0(20566): reportNextDraw android.view.ViewRootImpl.performTraversals:5940 android.view.ViewRootImpl.doTraversal:4255 android.view.ViewRootImpl$TraversalCallback.onVsync:13896 android.view.Choreographer$CallbackRecord.run:1995 android.view.Choreographer.doCallbacks:1440 
-11-20 03:21:04.659 D/VRI[MainActivity]@e2d62c0(20566): Setup new sync=wmsSync-VRI[MainActivity]@e2d62c0#0
-11-20 03:21:04.659 I/VRI[MainActivity]@e2d62c0(20566): Creating new active sync group VRI[MainActivity]@e2d62c0#1
-11-20 03:21:04.659 D/VRI[MainActivity]@e2d62c0(20566): registerCallbacksForSync syncBuffer=false
-11-20 03:21:04.660 D/VRI[MainActivity]@e2d62c0(20566): Received frameDrawingCallback syncResult=0 frameNum=1.
-11-20 03:21:04.660 I/VR
+11-20 07:08:44.606 D/ActivityThread( 5584): pl.tomaszewski.aiweb will use render engine as VK
+11-20 07:08:44.606 D/HWUI    ( 5584): HWUI - treat SMPTE_170M as sRGB
+11-20 07:08:44.610 I/DisplayManager( 5584): Choreographer implicitly registered for the refresh rate.
+11-20 07:08:44.610 D/HWUI    ( 5584): CacheManager constructor. deviceInfo=(1080, 1920)
+11-20 07:08:44.617 D/DesktopExperienceFlags( 5584): Toggle override initialized to: false
+11-20 07:08:44.618 D/AppCompatDelegate( 5584): Checking for metadata for AppLocalesMetadataHolderService : Service not found
+11-20 07:08:44.629 I/DecorView( 5584): setWindowBackground: isPopOver=false color=ff141218 d=android.graphics.drawable.ColorDrawable@fa1f4cf
+11-20 07:08:44.630 E/Adreno-AppProfiles( 5584): QSPM AIDL service doesn't exist
+11-20 07:08:44.631 I/AdrenoVK-0( 5584): ===== BEGIN DUMP OF OVERRIDDEN SETTINGS =====
+11-20 07:08:44.631 I/AdrenoVK-0( 5584): ===== END DUMP OF OVERRIDDEN SETTINGS =====
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): QUALCOMM build          : bb11e2f361, Id7183d7088
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Build Date              : 07/24/26
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Shader Compiler Version : E031.45.02.43
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Local Branch            : 
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Remote Branch           : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.14.3.0.R1.00.00.00.000.225
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Remote Branch           : NONE
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Reconstruct Branch      : NOTHING
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Build Config            : S P 16.1.2 AArch64
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Driver Path             : /vendor/lib64/hw/vulkan.adreno.so
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Driver Version          : 0762.48.1
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): PFP                     : 0x01520181
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): ME                      : 0x01520023
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Application Name    : android framework
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Application Version : 0x00000000
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Engine Name         : android framework
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Engine Version      : 0x00000000
+11-20 07:08:44.642 I/AdrenoVK-0( 5584): Api Version         : 0x00401000
+11-20 07:08:44.652 I/WebViewFactory( 5584): Loading com.google.android.webview version 159.0.8154.18 (code 815401813)
+11-20 07:08:44.653 V/ResourcesManager( 5584): The following library key has been added: ResourcesKey{ mHash=1f901a8 mResDir=null mSplitDirs=[] mOverlayDirs=[] mLibDirs=[/data/app/~~2gBgmH6n4jWOLfKcuWvsBw==/com.google.android.webview-2EJT597XL60uHVR2WxMzIQ==/base.apk,/system/framework/android.test.base.jar,/system_ext/framework/androidx.window.extensions.jar] mDisplayId=0 mOverrideConfig=v37 mCompatInfo={450dpi always-compat} mLoaders=[]}
+11-20 07:08:44.654 D/ApplicationLoaders( 5584): Returning zygote-cached class loader: /system/framework/android.test.base.jar
+11-20 07:08:44.654 D/ApplicationLoaders( 5584): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+11-20 07:08:44.657 D/nativeloader( 5584): Configuring clns-10 for other apk /data/app/~~2gBgmH6n4jWOLfKcuWvsBw==/com.google.android.webview-2EJT597XL60uHVR2WxMzIQ==/base.apk. target_sdk_version=37, uses_libraries=, library_path=/data/app/~~2gBgmH6n4jWOLfKcuWvsBw==/com.google.android.webview-2EJT597XL60uHVR2WxMzIQ==/lib/arm64:/data/app/~~2gBgmH6n4jWOLfKcuWvsBw==/com.google.android.webview-2EJT597XL60uHVR2WxMzIQ==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand
+11-20 07:08:44.686 I/cr_WVCFactoryProvider( 5584): version=159.0.8154.18 (815401813) minSdkVersion=29 multiprocess=true packageId=2 splits=<none>
+11-20 07:08:44.688 D/nativeloader( 5584): Load /data/app/~~2gBgmH6n4jWOLfKcuWvsBw==/com.google.android.webview-2EJT597XL60uHVR2WxMzIQ==/base.apk!/lib/arm64-v8a/libwebviewchromium.so using class loader ns clns-10 (caller=/data/app/~~2gBgmH6n4jWOLfKcuWvsBw==/com.google.android.webview-2EJT597XL60uHVR2WxMzIQ==/base.apk): ok
+11-20 07:08:44.689 D/nativeloader( 5584): Load /system/lib64/libwebviewchromium_plat_support.so using class loader ns clns-10 (caller=/data/app/~~2gBgmH6n4jWOLfKcuWvsBw==/com.google.android.webview-2EJT597XL60uHVR2WxMzIQ==/base.apk): ok
+11-20 07:08:44.697 E/chromium( 5584): [ERROR:android_webview/browser/variations/variations_seed_loader.cc:36] Seed missing signature.
+11-20 07:08:44.707 I/cr_LibraryLoader( 5584): Successfully loaded native library
+11-20 07:08:44.709 I/cr_CachingUmaRecorder( 5584): Flushed 45 samples from 20 histograms, 0 samples were dropped.
+11-20 07:08:44.710 I/cr_ChildProcLH( 5584): ScopedServiceBindingBatch.tryActivate: false
+11-20 07:08:44.724 I/cr_CombinedPProvider( 5584): #registerProvider() provider:WV.pj@e2de555 isPolicyCacheEnabled:false policyProvidersSize:0
+11-20 07:08:44.724 I/cr_PolicyProvider( 5584): #setManagerAndSource() 0
+11-20 07:08:44.726 I/cr_policy( 5584): registerReceiver succeeded after 2ms
+11-20 07:08:44.728 I/cr_DisplayManager( 5584): Is Display Topology available: false
+11-20 07:08:44.748 I/cr_CombinedPProvider( 5584): #linkNativeInternal() 1
+11-20 07:08:44.749 I/cr_AppResProvider( 5584): #getApplicationRestrictionsFromUserManager() Bundle[EMPTY_PARCEL]
+11-20 07:08:44.749 I/cr_PolicyProvider( 5584): #notifySettingsAvailable() 0
+11-20 07:08:44.749 I/cr_CombinedPProvider( 5584): #onSettingsAvailable() 0
+11-20 07:08:44.749 I/cr_CombinedPProvider( 5584): #flushPolicies()
+11-20 07:08:44.815 W/cr_AwGoldfinchReader( 5584): Seed file does not exist or is not readable at: /data/user/0/com.google.android.gms/app_module_webview/goldfinch/seed
+11-20 07:08:44.845 D/ConnectivityManager( 5584): StackLog: [android.net.ConnectivityManager.sendRequestForNetwork(ConnectivityManager.java:4693)] [android.net.ConnectivityManager.sendRequestForNetwork(ConnectivityManager.java:4863)] [android.net.ConnectivityManager.registerDefaultNetworkCallbackForUid(ConnectivityManager.java:5422)] [android.net.ConnectivityManager.registerDefaultNetworkCallback(ConnectivityManager.java:5390)] [WV.mk1.h(chromium-SystemWebViewGoogle6432.aab-beta-815401813:27)] [WV.lk1.f(chromium-SystemWebViewGoogle6432.aab-beta-815401813:81)] [WV.lk1.a(chromium-SystemWebViewGoogle6432.aab-beta-815401813:1)] [org.chromium.android_webview.AwContentsLifecycleNotifier.onFirstWebViewCreated(chromium-SystemWebViewGoogle6432.aab-beta-815401813:19)] [J.N.OJ(Native Method)] [org.chromium.android_webview.AwContents.<init>(chromium-SystemWebViewGoogle6432.aab-beta-815401813:756)] [WV.dm.a(chromium-SystemWebViewGoogle6432.aab-beta-815401813:35)] [com.android.webview.chromium.h.run(chromium-SystemWebViewGoogle6432.aab-beta-815401813:132)] [WV.b03.run(chromium-SystemWebViewGoogle6432.aab-beta-815401813:13)] [org.chromium.base.task.PostTask.d(chromium-SystemWebViewGoogle6432.aab-beta-815401813:18)] [WV.c03.a(chromium-SystemWebViewGoogle6432.aab-beta-815401813:18)] [com.android.webview.chromium.WebViewChromiumFactoryProvider.a(chromium-SystemWebViewGoogle6432.aab-beta-815401813:7)] [com.android.webview.chromium.WebViewChromium.init(chromium-SystemWebViewGoogle6432.aab-beta-815401813:159)] [com.android.webview.chromium.WebViewChromium.<init>(chromium-SystemWebViewGoogle6432.aab-beta-815401813:132)] [com.android.webview.chromium.WebViewChromiumFactoryProvider.createWebView(chromium-SystemWebViewGoogle6432.aab-beta-815401813:3)] [android.webkit.WebView.ensureProviderCreated(WebView.java:2698)] [android.webkit.WebView.setOverScrollMode(WebView.java:2778)] [android.view.View.<init>(View.java:6348)] [android.view.View.<init>(View.java:6509)] [android.view.ViewGroup.<init>(ViewGroup.java:732)] [android.widget.AbsoluteLayout.<init>(AbsoluteLayout.java:56)] [android.webkit.WebView.<init>(WebView.java:441)] [android.webkit.WebView.<init>(WebView.java:380)] [android.webkit.WebView.<init>(WebView.java:361)] [android.webkit.WebView.<init>(WebView.java:347)] [java.lang.reflect.Constructor.newInstance0(Native Method)] [java.lang.reflect.Constructor.newInstance(Constructor.java:341)] [android.view.LayoutInflater.createView(LayoutInflater.java:759)] [android.view.LayoutInflater.createView(LayoutInflater.java:681)] [com.android.internal.policy.PhoneLayoutInflater.onCreateView(PhoneLayoutInflater.java:58)] [android.view.LayoutInflater.onCreateView(LayoutInflater.java:835)] [android.view.LayoutInflater.onCreateView(LayoutInflater.java:855)] [android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:909)] [android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:866)] [android.view.LayoutInflater.rInflate(LayoutInflater.java:1028)] [android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:989)] [android.view.LayoutInflater.inflate(LayoutInflater.java:577)] [android.view.LayoutInflater.inflate(LayoutInflater.java:468)] [android.view.LayoutInflater.inflate(LayoutInflater.java:419)] [e.B.i(SourceFile:23)] [e.j.setContentView(SourceFile:2)] [pl.tomaszewski.aiweb.MainActivity.onCreate(SourceFile:5)] [android.app.Activity.performCreate(Activity.java:9784)] [android.app.Activity.performCreate(Activity.java:9753)] [android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1546)] [android.app.ActivityThread.performLaunchActivity(ActivityThread.java:5111)] [android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:5377)] [android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:224)] [android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:133)] [android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:103)] [android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:80)] [
+11-20 07:08:44.846 D/ConnectivityManager( 5584): StackLog: [android.net.ConnectivityManager.sendRequestForNetwork(ConnectivityManager.java:4693)] [android.net.ConnectivityManager.sendRequestForNetwork(ConnectivityManager.java:4863)] [android.net.ConnectivityManager.sendRequestForNetwork(ConnectivityManager.java:4869)] [android.net.ConnectivityManager.registerNetworkCallback(ConnectivityManager.java:5283)] [WV.mk1.i(chromium-SystemWebViewGoogle6432.aab-beta-815401813:81)] [WV.lk1.f(chromium-SystemWebViewGoogle6432.aab-beta-815401813:106)] [WV.lk1.a(chromium-SystemWebViewGoogle6432.aab-beta-815401813:1)] [org.chromium.android_webview.AwContentsLifecycleNotifier.onFirstWebViewCreated(chromium-SystemWebViewGoogle6432.aab-beta-815401813:19)] [J.N.OJ(Native Method)] [org.chromium.android_webview.AwContents.<init>(chromium-SystemWebViewGoogle6432.aab-beta-815401813:756)] [WV.dm.a(chromium-SystemWebViewGoogle6432.aab-beta-815401813:35)] [com.android.webview.chromium.h.run(chromium-SystemWebViewGoogle6432.aab-beta-815401813:132)] [WV.b03.run(chromium-SystemWebViewGoogle6432.aab-beta-815401813:13)] [org.chromium.base.task.PostTask.d(chromium-SystemWebViewGoogle6432.aab-beta-815401813:18)] [WV.c03.a(chromium-SystemWebViewGoogle6432.aab-beta-815401813:18)] [com.android.webview.chromium.WebViewChromiumFactoryProvider.a(chromium-SystemWebViewGoogle6432.aab-beta-815401813:7)] [com.android.webview.chromium.WebViewChromium.init(chromium-SystemWebViewGoogle6432.aab-beta-815401813:159)] [com.android.webview.chromium.WebViewChromium.<init>(chromium-SystemWebViewGoogle6432.aab-beta-815401813:132)] [com.android.webview.chromium.WebViewChromiumFactoryProvider.createWebView(chromium-SystemWebViewGoogle6432.aab-beta-815401813:3)] [android.webkit.WebView.ensureProviderCreated(WebView.java:2698)] [android.webkit.WebView.setOverScrollMode(WebView.java:2778)] [android.view.View.<init>(View.java:6348)] [android.view.View.<init>(View.java:6509)] [android.view.ViewGroup.<init>(ViewGroup.java:732)] [android.widget.AbsoluteLayout.<init>(AbsoluteLayout.java:56)] [android.webkit.WebView.<init>(WebView.java:441)] [android.webkit.WebView.<init>(WebView.java:380)] [android.webkit.WebView.<init>(WebView.java:361)] [android.webkit.WebView.<init>(WebView.java:347)] [java.lang.reflect.Constructor.newInstance0(Native Method)] [java.lang.reflect.Constructor.newInstance(Constructor.java:341)] [android.view.LayoutInflater.createView(LayoutInflater.java:759)] [android.view.LayoutInflater.createView(LayoutInflater.java:681)] [com.android.internal.policy.PhoneLayoutInflater.onCreateView(PhoneLayoutInflater.java:58)] [android.view.LayoutInflater.onCreateView(LayoutInflater.java:835)] [android.view.LayoutInflater.onCreateView(LayoutInflater.java:855)] [android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:909)] [android.view.LayoutInflater.createViewFromTag(LayoutInflater.java:866)] [android.view.LayoutInflater.rInflate(LayoutInflater.java:1028)] [android.view.LayoutInflater.rInflateChildren(LayoutInflater.java:989)] [android.view.LayoutInflater.inflate(LayoutInflater.java:577)] [android.view.LayoutInflater.inflate(LayoutInflater.java:468)] [android.view.LayoutInflater.inflate(LayoutInflater.java:419)] [e.B.i(SourceFile:23)] [e.j.setContentView(SourceFile:2)] [pl.tomaszewski.aiweb.MainActivity.onCreate(SourceFile:5)] [android.app.Activity.performCreate(Activity.java:9784)] [android.app.Activity.performCreate(Activity.java:9753)] [android.app.Instrumentation.callActivityOnCreate(Instrumentation.java:1546)] [android.app.ActivityThread.performLaunchActivity(ActivityThread.java:5111)] [android.app.ActivityThread.handleLaunchActivity(ActivityThread.java:5377)] [android.app.servertransaction.LaunchActivityItem.execute(LaunchActivityItem.java:224)] [android.app.servertransaction.TransactionExecutor.executeNonLifecycleItem(TransactionExecutor.java:133)] [android.app.servertransaction.TransactionExecutor.executeTransactionItems(TransactionExecutor.java:103)] [android.app.servertransaction.TransactionExecutor.execute(TransactionExecutor.java:80)] [android.app.ActivityT
+11-20 07:08:44.858 I/AiWebMainActivity( 5584): onCreate completed, views attached
+11-20 07:08:44.859 I/AiWebMainActivity( 5584): onStart
+11-20 07:08:44.859 I/AiWebMainActivity( 5584): onResume
+11-20 07:08:44.860 D/ViewRootImpl( 5584): desktopMode is false
+11-20 07:08:44.861 I/ViewRootImpl( 5584): dVRR is disabled
+11-20 07:08:44.861 D/HardwareRenderer( 5584): onDisplayChanged. displayId=0 current wxh=1440x3120 mLargest wxh=0x0
+11-20 07:08:44.861 D/HardwareRenderer( 5584): Set largestWidth and largestHeight as logical resolution. (1440x3120)
+11-20 07:08:44.861 D/HWUI    ( 5584): setMaxSurfaceArea requested wxh=(1440,3120) requestedSurfaceArea(4492800) mMaxSurfaceArea(2073600)
+11-20 07:08:44.862 D/NativeCustomFrequencyManager( 5584): [NativeCFMS] BpCustomFrequencyManager::BpCustomFrequencyManager()
+11-20 07:08:44.866 D/InputTransport( 5584): Input channel constructed: '4d487ec', fd=179
+11-20 07:08:44.866 I/VRI[MainActivity]@99f1589( 5584): synced displayState. AttachInfo displayState=2
+11-20 07:08:44.867 I/VRI[MainActivity]@99f1589( 5584): setView = com.android.internal.policy.DecorView@46848f2 IsHRR=false mFlingFrameRateChange=0 TM=true
+11-20 07:08:44.874 I/cr_AppResProvider( 5584): #getApplicationRestrictionsFromUserManager() Bundle[EMPTY_PARCEL]
+11-20 07:08:44.874 I/cr_PolicyProvider( 5584): #notifySettingsAvailable() 0
+11-20 07:08:44.874 I/cr_CombinedPProvider( 5584): #onSettingsAvailable() 0
+11-20 07:08:44.874 I/cr_CombinedPProvider( 5584): #flushPolicies()
+11-20 07:08:44.875 I/Choreographer( 5584): Skipped 32 frames!  The application may be doing too much work on its main thread.
+11-20 07:08:44.876 D/WindowOnBackDispatcher( 5584): setTopOnBackInvokedCallback (unwrapped): android.app.Activity$$ExternalSyntheticLambda1@3ccfb43
+11-20 07:08:44.877 I/CameraManagerGlobal( 5584): Connecting to camera service
+11-20 07:08:44.878 D/AutofillManager( 5584): view not autofillable - has multiline input type
+11-20 07:08:44.878 D/AutofillManager( 5584): view not autofillable - has multiline input type
+11-20 07:08:44.879 D/VRI[MainActivity]@99f1589( 5584): WindowInsets changed: 1440x3120 statusBars:[0,129,0,0] navigationBars:[0,0,0,82] ime:[0,0,0,606] mandatorySystemGestures:[0,149,0,82] 
+11-20 07:08:44.879 I/HWUI    ( 5584): Using FreeType backend (prop=Auto)
+11-20 07:08:44.881 D/VendorTagDescriptor( 5584): addVendorDescriptor: vendor tag id 15622750491770684145 added
+11-20 07:08:44.884 D/VendorTagDescriptor( 5584): addVendorDescriptor: vendor tag id 8932615658386372252 added
+11-20 07:08:44.889 I/CameraManager( 5584): registerAvailabilityCallback: Is device callback = false
+11-20 07:08:44.889 I/CameraManagerGlobal( 5584): Camera 0 facing CAMERA_FACING_BACK state now CAMERA_STATE_CLOSED for client com.android.settings API Level 1 User Id 0Device Id 0
+11-20 07:08:44.889 I/CameraManagerGlobal( 5584): postSingleUpdate device: camera id 0 status STATUS_PRESENT
+11-20 07:08:44.889 I/CameraManagerGlobal( 5584): postSingleUpdate device: camera id 1 status STATUS_PRESENT
+11-20 07:08:44.889 I/CameraManagerGlobal( 5584): postSingleUpdate device: camera id 2 status STATUS_PRESENT
+11-20 07:08:44.889 I/CameraManagerGlobal( 5584): postSingleUpdate device: camera id 3 status STATUS_PRESENT
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 1 facing CAMERA_FACING_FRONT state now CAMERA_STATE_CLOSED for client com.samsung.android.smartface API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 2 facing CAMERA_FACING_BACK state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 20 facing CAMERA_FACING_BACK state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 21 facing CAMERA_FACING_BACK state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 23 facing CAMERA_FACING_BACK state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 24 facing CAMERA_FACING_BACK state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 3 facing CAMERA_FACING_FRONT state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 4 facing CAMERA_FACING_FRONT state now CAMERA_STATE_CLOSED for client client.pid<1839> API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 52 facing CAMERA_FACING_BACK state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 54 facing CAMERA_FACING_BACK state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 56 facing CAMERA_FACING_BACK state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 58 facing CAMERA_FACING_BACK state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.890 I/CameraManagerGlobal( 5584): Camera 90 facing CAMERA_FACING_FRONT state now CAMERA_STATE_CLOSED for client android.system API Level 2 User Id 0Device Id 0
+11-20 07:08:44.932 I/Surface ( 5584): Creating surface for consumer unnamed-5584-0 with slotExpansion=1 for 64 slots
+11-20 07:08:44.932 W/libc    ( 5584): Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+11-20 07:08:44.932 I/BufferQueueProducer( 5584): [](id:15d000000000,api:0,p:0,c:5584) setDequeueTimeout:2077252342
+11-20 07:08:44.933 I/Surface ( 5584): Creating surface for consumer VRI[MainActivity]@99f1589#0(BLAST Consumer)0 with slotExpansion=1 for 64 slots
+11-20 07:08:44.933 W/libc    ( 5584): Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+11-20 07:08:44.933 I/VRI[MainActivity]@99f1589( 5584): Relayout returned: old=(0,0,1440,3120) new=(0,0,1440,3120) relayoutAsync=false req=(1440,3120)0 dur=33 res=0x3 s={true 0xb400007250aa0750} ch=true seqId=1 syncSeqId=0
+11-20 07:08:44.933 D/VRI[MainActivity]@99f1589( 5584): reportNextDraw android.view.ViewRootImpl.performTraversals:5295 android.view.ViewRootImpl.doTraversal:4255 android.view.ViewRootImpl$TraversalCallback.onVsync:13896 android.view.Choreographer$CallbackRecord.run:1995 android.view.Choreographer.doCallbacks:1440 
+11-20 07:08:44.933 D/VRI[MainActivity]@99f1589( 5584): applyTransactionOnDraw applyImmediately
+11-20 07:08:44.933 I/VRI[MainActivity]@99f1589( 5584): performConfigurationChange setNightDimText nightDimLevel=0
+11-20 07:08:44.934 D/VRI[MainActivity]@99f1589( 5584): mThreadedRenderer.initialize() mSurface={isValid=true 0xb400007250aa0750} hwInitialized=true
+11-20 07:08:44.934 D/AutofillManager( 5584): view not autofillable - has multiline input type
+11-20 07:08:44.935 D/VRI[MainActivity]@99f1589( 5584): reportNextDraw android.view.ViewRootImpl.performTraversals:5940 android.view.ViewRootImpl.doTraversal:4255 android.view.ViewRootImpl$TraversalCallback.onVsync:13896 android.view.Choreographer$CallbackRecord.run:1995 android.view.Choreographer.doCallbacks:1440 
+11-20 07:08:44.935 D/VRI[MainActivity]@99f1589( 5584): Setup new sync=wmsSync-VRI[MainActivity]@99f1589#0
+11-20 07:08:44.935 I/VRI[MainActivity]@99f1589( 5584): Creating new active sync group VRI[MainActivity]@99f1589#1
+11-20 07:08:44.936 D/VRI[MainActivity]@99f1589( 5584): registerCallbacksForSync syncBuffer=false
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): QUALCOMM build                   : bb11e2f361, Id7183d7088
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): Build Date                       : 07/24/26
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): OpenGL ES Shader Compiler Version: E031.45.02.43
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): Local Branch                     : 
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): Remote Branch                    : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.14.3.0.R1.00.00.00.000.225
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): Remote Branch                    : NONE
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): Reconstruct Branch               : NOTHING
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): Build Config                     : S P 16.1.2 AArch64
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): Driver Path                      : /vendor/lib64/egl/libGLESv2_adreno.so
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): Driver Version                   : 0762.48.1
+11-20 07:08:44.946 I/AdrenoGLES-0( 5584): Process Name                     : pl.tomaszewski.aiweb
+11-20 07:08:44.948 I/AdrenoGLES-0( 5584): PFP: 0x01520181, ME: 0x01520023
+11-20 07:08:44.949 E/Adreno-AppProfiles( 5584): QSPM AIDL service doesn't exist
+11-20 07:08:44.950 I/AdrenoUtils( 5584): <ReadGpuID:357>: Reading chip ID through GSL
+11-20 07:08:44.960 D/VRI[MainActivity]@99f1589( 5584): Received frameDrawingCallback syncResult=0 frameNum=1.
+11-20 07:08:44.960 I/VRI[MainActivity]@99f1589( 5584): Setting up sync and frameCommitCallback
+11-20 07:08:44.968 I/BLASTBufferQueue( 5584): [VRI[MainActivity]@99f1589#0](f:0,a:0,s:0) onFrameAvailable the first frame is available
+11-20 07:08:44.968 I/SurfaceComposerClient( 5584): apply transaction with the first frame. layerId: 41520, bufferData(ID: 23983097380867, frameNumber: 1)
+11-20 07:08:44.968 I/VRI[MainActivity]@99f1589( 5584): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true
+11-20 07:08:44.969 D/HWUI    ( 5584): CFMS:: SetUp Pid : 5584    Tid : 5620
+11-20 07:08:44.971 D/HWUI    ( 5584): HWUI - treat SMPTE_170M as sRGB
+11-20 07:08:44.974 I/AiWebMainActivity( 5584): Bridge AndroidNative attached
+11-20 07:08:44.982 W/cr_media( 5584): BLUETOOTH_CONNECT permission is missing.
+11-20 07:08:44.982 W/cr_media( 5584): getBluetoothAdapter() requires BLUETOOTH permission
+11-20 07:08:44.982 W/cr_media( 5584): registerBluetoothIntentsIfNeeded: Requires BLUETOOTH permission
+11-20 07:08:45.016 D/AudioSystem( 5584): onNewService: media.audio_policy service obtained 0xb400007280af1330
+11-20 07:08:45.017 D/AudioSystem( 5584): getService: IAudioPolicyService retrieved: 0xb400007280af1330  cached: 0xb400007280af1330
+11-20 07:08:45.023 D/VRI[MainActivity]@99f1589( 5584): mThreadedRenderer.initializeIfNeeded()#2 mSurface={isValid=true 0xb400007250aa0750}
+11-20 07:08:45.023 D/InputMethodManager( 5584): setCurrentRootViewLocked: updateReceivingDispatcher
+11-20 07:08:45.024 D/InputMethodManagerUtils( 5584): startInputInner - Id : 0
+11-20 07:08:45.024 I/InputMethodManager( 5584): startInputInner - IInputMethodManagerGlobalInvoker.startInputOrWindowGainedFocus
+11-20 07:08:45.024 D/VRI[MainActivity]@99f1589( 5584): Setup new sync=wmsSync-VRI[MainActivity]@99f1589#2
+11-20 07:08:45.024 I/VRI[MainActivity]@99f1589( 5584): Creating new active sync group VRI[MainActivity]@99f1589#3
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): QUALCOMM build          : bb11e2f361, Id7183d7088
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Build Date              : 07/24/26
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Shader Compiler Version : E031.45.02.43
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Local Branch            : 
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Remote Branch           : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.14.3.0.R1.00.00.00.000.225
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Remote Branch           : NONE
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Reconstruct Branch      : NOTHING
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Build Config            : S P 16.1.2 AArch64
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Driver Path             : /vendor/lib64/hw/vulkan.adreno.so
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Driver Version          : 0762.48.1
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): PFP                     : 0x01520181
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): ME                      : 0x01520023
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Application Name    : Chromium
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Application Version : 0x00000000
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Engine Name         : (null)
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Engine Version      : 0x00000000
+11-20 07:08:45.028 I/AdrenoVK-0( 5584): Api Version         : 0x00401000
+11-20 07:08:45.029 D/InputTransport( 5584): Input channel constructed: 'ClientS', fd=209
+11-20 07:08:45.033 D/VRI[MainActivity]@99f1589( 5584): registerCallbacksForSync syncBuffer=false
+11-20 07:08:45.034 D/VRI[MainActivity]@99f1589( 5584): Received frameDrawingCallback syncResult=0 frameNum=3.
+11-20 07:08:45.035 I/VRI[MainActivity]@99f1589( 5584): Setting up sync and frameCommitCallback
+11-20 07:08:45.036 I/VRI[MainActivity]@99f1589( 5584): Received frameCommittedCallback lastAttemptedDrawFrameNum=3 didProduceBuffer=true
+11-20 07:08:45.038 D/InsetsController( 5584): hide(ime())
+11-20 07:08:45.038 I/ImeTracker( 5584): pl.tomaszewski.aiweb:305454bf: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+11-20 07:08:45.042 D/VRI[MainActivity]@99f1589( 5584): WindowInsets changed: ime:null 
+11-20 07:08:45.054 I/InsetsSourceConsumer( 5584): applyRequestedVisibilityToControl: visible=false, type=ime, host=pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity
+11-20 07:08:45.054 I/InsetsSourceConsumer( 5584): applyRequestedVisibilityToControl: visible=true, type=navigationBars, host=pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity
+11-20 07:08:45.054 I/ImeTracker( 5584): system_server:8f5b202: onCancelled at PHASE_CLIENT_ON_CONTROLS_CHANGED
+11-20 07:08:45.054 D/WindowOnBackDispatcher( 5584): setTopOnBackInvokedCallback (unwrapped): ImeOnBackInvokedCallback@175929905 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@c5349d4
+11-20 07:08:45.054 D/WindowOnBackDispatcher( 5584): setTopOnBackInvokedCallback (unwrapped): android.app.Activity$$ExternalSyntheticLambda1@3ccfb43
+11-20 07:08:45.168 W/VideoCapabilities( 5584): Unrecognized profile/level 32768/256 for video/mp4v-es
+11-20 07:08:45.184 W/VideoCapabilities( 5584): Unrecognized profile/level 32768/256 for video/mp4v-es
+11-20 07:08:45.186 W/cr_VAUtil( 5584): Unknown profile: 8 for codec video/hevc
+11-20 07:08:47.105 I/InsetsSourceConsumer( 5584): applyRequestedVisibilityToControl: visible=true, type=statusBars, host=pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity
+11-20 07:08:47.928 I/AiWebMainActivity( 5584): onPageFinished: https://app.local/
+11-20 07:08:49.534 W/maszewski.aiweb( 5584): Could not open the profile file: /data/misc/profiles/ref/pl.tomaszewski.aiweb/primary.prof: No such file or directory
+11-20 07:08:50.261 D/ProfileInstaller( 5584): Installing profile for pl.tomaszewski.aiweb
+11-20 07:08:50.586 D/SmartClipDataCropperImpl( 5584): doExtractSmartClipData : Extraction start! reqId = 1495  Cropped area = Rect(720, 1560 - 721, 1561)  Package = pl.tomaszewski.aiweb
+11-20 07:08:50.586 D/SmartClipDataCropperImpl( 5584): addAppMetaTag : package name is pl.tomaszewski.aiweb
+11-20 07:08:50.586 D/SmartClipDataCropperImpl( 5584): sendExtractionResultToSmartClipService : -- Extracted SmartClip data information --
+11-20 07:08:50.586 D/SmartClipDataCropperImpl( 5584): sendExtractionResultToSmartClipService : Request Id : 1495
+11-20 07:08:50.586 D/SmartClipDataCropperImpl( 5584): sendExtractionResultToSmartClipService : Extraction mode : 1
+11-20 07:08:50.587 D/SemSmartClipDataRepository( 5584): ----- Start of SmartClip repository informations -----
+11-20 07:08:50.587 D/SemSmartClipDataRepository( 5584): ** Content type : image
+11-20 07:08:50.587 D/SemSmartClipDataRepository( 5584): ** Meta area rect : Rect(0, 0 - 0, 0)
+11-20 07:08:50.587 D/SemSmartClipDataRepository( 5584): ** Captured image file path : null
+11-20 07:08:50.587 D/SemSmartClipDataRepository( 5584): ----- End of SmartClip repository informations -----
+11-20 07:08:50.588 D/SmartClipDataCropperImpl( 5584): sendExtractionResultToSmartClipService : Elapsed = 2
+11-20 07:08:51.758 I/AiWebMainActivity( 5584): onPause
+11-20 07:08:51.778 I/ImeFocusController( 5584): onPreWindowFocus: skipped hasWindowFocus=false mHasImeFocus=true
+11-20 07:08:51.778 I/ImeFocusController( 5584): onPostWindowFocus: skipped hasWindowFocus=false mHasImeFocus=true
+11-20 07:08:51.821 I/VRI[MainActivity]@99f1589( 5584): handleAppVisibility oldVisibility=true newVisibility=false seqId=-1 mSeqId=2
+11-20 07:08:51.821 D/VRI[MainActivity]@99f1589( 5584): visibilityChanged oldVisibility=true newVisibility=false
+11-20 07:08:51.823 D/AutofillManager( 5584): view not autofillable - has multiline input type
+11-20 07:08:51.824 D/HWUI    ( 5584): CacheManager::trimMemory(20)
+11-20 07:08:51.828 I/VRI[MainActivity]@99f1589( 5584): Relayout returned: old=(0,0,1440,3120) new=(0,0,1440,3120) relayoutAsync=true req=(1440,3120)8 dur=0 res=0x0 s={false 0x0} ch=true seqId=2 syncSeqId=0
+11-20 07:08:51.828 D/VRI[MainActivity]@99f1589( 5584): Not drawing due to not visible. Reason=!mAppVisible && !mForceDecorViewVisibility
+11-20 07:08:51.828 D/VRI[MainActivity]@99f1589( 5
