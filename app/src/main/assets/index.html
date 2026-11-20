@@ -146,24 +146,36 @@
     const aiDrawer = document.getElementById('aiDrawer');
     const aiOutput = document.getElementById('aiOutput');
     const aiPrompt = document.getElementById('aiPrompt');
+    const aiEndpointEl = document.getElementById('aiEndpoint');
+    const aiModelEl = document.getElementById('aiModel');
+    const aiKeyEl = document.getElementById('aiKey');
 
     const STORAGE_KEY = 'ai_web_cfg_v1';
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    if (saved.endpoint) document.getElementById('aiEndpoint').value = saved.endpoint;
-    if (saved.model) document.getElementById('aiModel').value = saved.model;
-    if (saved.key) document.getElementById('aiKey').value = saved.key;
-    if (saved.lastUrl) {
-      urlInput.value = saved.lastUrl;
-      frame.src = saved.lastUrl;
+
+    function loadSavedCfg() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (saved.endpoint) aiEndpointEl.value = saved.endpoint;
+        if (saved.model) aiModelEl.value = saved.model;
+        if (saved.key) aiKeyEl.value = saved.key;
+        if (saved.lastUrl) {
+          urlInput.value = saved.lastUrl;
+          setTimeout(() => { frame.src = saved.lastUrl; }, 0);
+        }
+      } catch (_) {}
     }
 
     function saveCfg() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        endpoint: document.getElementById('aiEndpoint').value.trim(),
-        model: document.getElementById('aiModel').value.trim(),
-        key: document.getElementById('aiKey').value,
-        lastUrl: frame.src
-      }));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          endpoint: aiEndpointEl.value.trim(),
+          model: aiModelEl.value.trim(),
+          key: aiKeyEl.value,
+          lastUrl: frame.getAttribute('src') || ''
+        }));
+      } catch (_) {}
     }
 
     function resolveTarget(raw) {
@@ -200,16 +212,17 @@
       try {
         const txt = frame.contentDocument?.body?.innerText || '';
         const clean = txt.replace(/\s+/g, ' ').trim().slice(0, 4000);
-        aiPrompt.value = (aiPrompt.value ? aiPrompt.value + '\n\n' : '') + '[KONTEKST STRONY: ' + frame.src + ']\n' + clean;
+        const currentSrc = frame.getAttribute('src') || '';
+        aiPrompt.value = (aiPrompt.value ? aiPrompt.value + '\n\n' : '') + '[KONTEKST STRONY: ' + currentSrc + ']\n' + clean;
       } catch (err) {
         aiOutput.textContent += '\n[Brak bezpośredniego dostępu DOM cross-origin: ' + err.message + ']';
       }
     });
 
     async function runAi() {
-      const endpoint = document.getElementById('aiEndpoint').value.trim();
-      const model = document.getElementById('aiModel').value.trim() || 'default';
-      const key = document.getElementById('aiKey').value.trim();
+      const endpoint = aiEndpointEl.value.trim();
+      const model = aiModelEl.value.trim() || 'default';
+      const key = aiKeyEl.value.trim();
       const prompt = aiPrompt.value.trim();
       if (!endpoint || !prompt) return;
       saveCfg();
@@ -220,10 +233,14 @@
       const headers = { 'Content-Type': 'application/json' };
       if (key) headers['Authorization'] = 'Bearer ' + key;
 
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 30000);
+
       try {
         const res = await fetch(endpoint, {
           method: 'POST',
           headers,
+          signal: controller.signal,
           body: JSON.stringify({
             model,
             messages: [
@@ -240,10 +257,20 @@
       } catch (err) {
         aiOutput.textContent += '[BŁĄD ENDPOINTU AI: ' + err.message + ']\n';
         aiOutput.scrollTop = aiOutput.scrollHeight;
+      } finally {
+        clearTimeout(timer);
       }
     }
 
     document.getElementById('btnSendAi').addEventListener('click', runAi);
+    aiPrompt.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        runAi();
+      }
+    });
+
+    requestAnimationFrame(() => loadSavedCfg());
   </script>
 </body>
 </html>
