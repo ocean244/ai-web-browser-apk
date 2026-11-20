@@ -380,8 +380,10 @@ class MainActivity : AppCompatActivity() {
         @JavascriptInterface
         fun fetchPage(url: String): String {
             return activity.searchEngine.fetchUrlText(url).toString()
+        }
+    }
 
-    fun loadTargetUrl(url: String) {
+fun loadTargetUrl(url: String) {
         val target = url.trim()
         if (target.isEmpty()) return
         val resolved = if (target.startsWith("http://") || target.startsWith("https://") || target.startsWith("file://")) {
@@ -393,7 +395,6 @@ class MainActivity : AppCompatActivity() {
             webView.loadUrl(resolved)
         } catch (_: Throwable) {}
     }
-}
-}
+
 }
 }
