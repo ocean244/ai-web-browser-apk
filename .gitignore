@@ -8,3 +8,4 @@ tmp/
 out/apk_artifact/
 .aiweb_env
 *.log
+out/
