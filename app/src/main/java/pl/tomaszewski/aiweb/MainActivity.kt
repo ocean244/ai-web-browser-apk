@@ -395,4 +395,3 @@ class MainActivity : AppCompatActivity() {
         } catch (_: Throwable) {}
     }
 }
-}
