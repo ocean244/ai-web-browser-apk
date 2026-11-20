@@ -1,129 +1,130 @@
 ============================================================
-RUN_ID: 44692540341
+RUN_ID: 44692634321
+{"conclusion":"failure","createdAt":"2026-11-20T07:07:24Z","headBranch":"main","headSha":"5bf75634a6fbaff44332dabac1cc611309c7f5e3","status":"completed","url":"https://github.com/ocean244/ai-web-browser-apk/actions/runs/44692634321"}
 --- FAILED LOGS (RAW) ---
-build-and-release	Build Signed Release APK	﻿2026-11-20T07:06:48.5096127Z ##[group]Run gradle assembleRelease --no-daemon
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5096480Z ^[[36;1mgradle assembleRelease --no-daemon^[[0m
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5140486Z shell: /usr/bin/bash -e {0}
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5140719Z env:
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5140983Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5141379Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5141719Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5141975Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5142392Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5142755Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5143145Z   DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE: gradle-actions
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5143408Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5143646Z   RELEASE_STORE_FILE: keystore/release.jks
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5143990Z   RELEASE_STORE_PASSWORD: ***
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5144270Z   RELEASE_KEY_ALIAS: ***
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5144527Z   RELEASE_KEY_PASSWORD: ***
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.5144724Z ##[endgroup]
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.9916657Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.9932135Z Welcome to Gradle 8.7!
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.9932681Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.9933013Z Here are the highlights of this release:
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.9933709Z  - Compiling and testing with Java 22
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.9934435Z  - Cacheable Groovy script compilation
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.9934910Z  - New methods in lazy collection properties
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.9935276Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.9935559Z For more details see https://docs.gradle.org/8.7/release-notes.html
-build-and-release	Build Signed Release APK	2026-11-20T07:06:48.9935926Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:06:49.0896424Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.7/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
-build-and-release	Build Signed Release APK	2026-11-20T07:06:49.9918008Z Daemon will be stopped at the end of the build 
-build-and-release	Build Signed Release APK	2026-11-20T07:07:37.4915022Z > Task :app:buildKotlinToolingMetadata
-build-and-release	Build Signed Release APK	2026-11-20T07:07:37.4916008Z > Task :app:checkKotlinGradlePluginConfigurationErrors
-build-and-release	Build Signed Release APK	2026-11-20T07:07:37.4916669Z > Task :app:preBuild UP-TO-DATE
-build-and-release	Build Signed Release APK	2026-11-20T07:07:37.4917330Z > Task :app:preReleaseBuild UP-TO-DATE
-build-and-release	Build Signed Release APK	2026-11-20T07:07:45.2927800Z > Task :app:generateReleaseResValues
-build-and-release	Build Signed Release APK	2026-11-20T07:07:45.3907728Z > Task :app:checkReleaseAarMetadata
-build-and-release	Build Signed Release APK	2026-11-20T07:07:45.4893059Z > Task :app:mapReleaseSourceSetPaths
-build-and-release	Build Signed Release APK	2026-11-20T07:07:45.4911005Z > Task :app:generateReleaseResources
-build-and-release	Build Signed Release APK	2026-11-20T07:07:47.3893087Z > Task :app:packageReleaseResources
-build-and-release	Build Signed Release APK	2026-11-20T07:07:47.7888707Z > Task :app:mergeReleaseResources
-build-and-release	Build Signed Release APK	2026-11-20T07:07:48.4908012Z > Task :app:createReleaseCompatibleScreenManifests
-build-and-release	Build Signed Release APK	2026-11-20T07:07:48.4937779Z > Task :app:extractDeepLinksRelease
-build-and-release	Build Signed Release APK	2026-11-20T07:07:48.4943303Z > Task :app:parseReleaseLocalResources
-build-and-release	Build Signed Release APK	2026-11-20T07:07:48.6907993Z > Task :app:processReleaseMainManifest
-build-and-release	Build Signed Release APK	2026-11-20T07:07:48.7897932Z > Task :app:processReleaseManifest
-build-and-release	Build Signed Release APK	2026-11-20T07:07:48.7947739Z > Task :app:processReleaseManifestForPackage
-build-and-release	Build Signed Release APK	2026-11-20T07:07:48.7948258Z > Task :app:javaPreCompileRelease
-build-and-release	Build Signed Release APK	2026-11-20T07:07:48.8927938Z > Task :app:extractProguardFiles
-build-and-release	Build Signed Release APK	2026-11-20T07:07:48.9902907Z > Task :app:mergeReleaseJniLibFolders
-build-and-release	Build Signed Release APK	2026-11-20T07:07:49.4901846Z > Task :app:mergeReleaseNativeLibs NO-SOURCE
-build-and-release	Build Signed Release APK	2026-11-20T07:07:49.4927627Z > Task :app:stripReleaseDebugSymbols NO-SOURCE
-build-and-release	Build Signed Release APK	2026-11-20T07:07:49.4953550Z > Task :app:extractReleaseNativeSymbolTables NO-SOURCE
-build-and-release	Build Signed Release APK	2026-11-20T07:07:49.4970500Z > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
-build-and-release	Build Signed Release APK	2026-11-20T07:07:49.7889613Z > Task :app:processReleaseResources
-build-and-release	Build Signed Release APK	2026-11-20T07:07:49.8892481Z > Task :app:checkReleaseDuplicateClasses
-build-and-release	Build Signed Release APK	2026-11-20T07:07:52.6893736Z > Task :app:mergeReleaseStartupProfile
-build-and-release	Build Signed Release APK	2026-11-20T07:07:52.6931453Z > Task :app:mergeReleaseArtProfile
-build-and-release	Build Signed Release APK	2026-11-20T07:07:52.6968096Z > Task :app:mergeReleaseShaders
-build-and-release	Build Signed Release APK	2026-11-20T07:07:52.7021653Z > Task :app:compileReleaseShaders NO-SOURCE
-build-and-release	Build Signed Release APK	2026-11-20T07:07:52.7067768Z > Task :app:generateReleaseAssets UP-TO-DATE
-build-and-release	Build Signed Release APK	2026-11-20T07:07:52.7901252Z > Task :app:mergeReleaseAssets
-build-and-release	Build Signed Release APK	2026-11-20T07:07:52.8907969Z > Task :app:compressReleaseAssets
-build-and-release	Build Signed Release APK	2026-11-20T07:07:52.8908981Z > Task :app:extractReleaseVersionControlInfo
-build-and-release	Build Signed Release APK	2026-11-20T07:07:52.8922681Z > Task :app:processApplicationManifestReleaseForBundle
-build-and-release	Build Signed Release APK	2026-11-20T07:07:52.9932778Z > Task :app:collectReleaseDependencies
-build-and-release	Build Signed Release APK	2026-11-20T07:07:53.0907806Z > Task :app:sdkReleaseDependencyData
-build-and-release	Build Signed Release APK	2026-11-20T07:07:53.0947497Z > Task :app:validateSigningRelease
-build-and-release	Build Signed Release APK	2026-11-20T07:07:53.0948229Z > Task :app:writeReleaseAppMetadata
-build-and-release	Build Signed Release APK	2026-11-20T07:07:53.1897908Z > Task :app:writeReleaseSigningConfigVersions
-build-and-release	Build Signed Release APK	2026-11-20T07:07:53.5897799Z > Task :app:bundleReleaseResources
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0896250Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0898161Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:398:1 Expecting a top level declaration
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0899463Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:338:31 Unresolved reference: modelInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0900716Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:344:27 Unresolved reference: configStore
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0907517Z > Task :app:compileReleaseKotlin FAILED
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0918171Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:345:13 Unresolved reference: configStore
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0919425Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:353:13 Unresolved reference: runOnUiThread
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0920641Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:354:17 Unresolved reference: endpointInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0921842Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:355:17 Unresolved reference: modelInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0923052Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:356:17 Unresolved reference: apiKeyInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0924279Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:363:47 Unresolved reference: lastPageText
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0925480Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:364:23 Unresolved reference: aiClient
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0926717Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:367:36 Unresolved reference: endpointInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0927983Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:368:33 Unresolved reference: modelInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0929123Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:369:34 Unresolved reference: apiKeyInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0929939Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:376:20 Unresolved reference: searchEngine
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0930803Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:381:20 Unresolved reference: searchEngine
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.1917065Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.1917665Z 33 actionable tasks: 33 executed
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.1947562Z FAILURE: Build failed with an exception.
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.1977717Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.1985852Z * What went wrong:
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.1986384Z Execution failed for task ':app:compileReleaseKotlin'.
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2005900Z > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2007892Z    > Compilation error. See log for more details
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2008327Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2008559Z * Try:
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2008992Z > Run with --stacktrace option to get the stack trace.
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2009567Z > Run with --info or --debug option to get more log output.
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2010095Z > Run with --scan to get full insights.
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2010617Z > Get more help at https://help.gradle.org.
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2011198Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2011445Z BUILD FAILED in 1m 9s
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.6026346Z ##[error]Process completed with exit code 1.
+build-and-release	Build Signed Release APK	﻿2026-11-20T07:07:35.3372566Z ##[group]Run gradle assembleRelease --no-daemon
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3373029Z ^[[36;1mgradle assembleRelease --no-daemon^[[0m
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3423143Z shell: /usr/bin/bash -e {0}
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3423430Z env:
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3423758Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3424298Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3424748Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3425077Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3425587Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3426047Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3426560Z   DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE: gradle-actions
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3426913Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3427460Z   RELEASE_STORE_FILE: keystore/release.jks
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3427850Z   RELEASE_STORE_PASSWORD: ***
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3428202Z   RELEASE_KEY_ALIAS: ***
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3428491Z   RELEASE_KEY_PASSWORD: ***
+build-and-release	Build Signed Release APK	2026-11-20T07:07:35.3428744Z ##[endgroup]
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.4820835Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.4828237Z Welcome to Gradle 8.7!
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.4829276Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.4829860Z Here are the highlights of this release:
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.4830752Z  - Compiling and testing with Java 22
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.4831619Z  - Cacheable Groovy script compilation
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.4832531Z  - New methods in lazy collection properties
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.4833444Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.4834113Z For more details see https://docs.gradle.org/8.7/release-notes.html
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.4840403Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:07:36.7739273Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.7/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+build-and-release	Build Signed Release APK	2026-11-20T07:07:38.6734995Z Daemon will be stopped at the end of the build 
+build-and-release	Build Signed Release APK	2026-11-20T07:08:37.6798981Z > Task :app:buildKotlinToolingMetadata
+build-and-release	Build Signed Release APK	2026-11-20T07:08:37.6828060Z > Task :app:checkKotlinGradlePluginConfigurationErrors
+build-and-release	Build Signed Release APK	2026-11-20T07:08:37.6838329Z > Task :app:preBuild UP-TO-DATE
+build-and-release	Build Signed Release APK	2026-11-20T07:08:37.6839128Z > Task :app:preReleaseBuild UP-TO-DATE
+build-and-release	Build Signed Release APK	2026-11-20T07:08:41.9741257Z > Task :app:generateReleaseResValues
+build-and-release	Build Signed Release APK	2026-11-20T07:08:41.9742455Z > Task :app:checkReleaseAarMetadata
+build-and-release	Build Signed Release APK	2026-11-20T07:08:42.0748509Z > Task :app:mapReleaseSourceSetPaths
+build-and-release	Build Signed Release APK	2026-11-20T07:08:42.0768519Z > Task :app:generateReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T07:08:44.2742109Z > Task :app:packageReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T07:08:45.4738946Z > Task :app:createReleaseCompatibleScreenManifests
+build-and-release	Build Signed Release APK	2026-11-20T07:08:45.4748342Z > Task :app:extractDeepLinksRelease
+build-and-release	Build Signed Release APK	2026-11-20T07:08:45.5753741Z > Task :app:mergeReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T07:08:45.5766536Z > Task :app:parseReleaseLocalResources
+build-and-release	Build Signed Release APK	2026-11-20T07:08:45.8736640Z > Task :app:processReleaseMainManifest
+build-and-release	Build Signed Release APK	2026-11-20T07:08:45.9752159Z > Task :app:processReleaseManifest
+build-and-release	Build Signed Release APK	2026-11-20T07:08:45.9778218Z > Task :app:javaPreCompileRelease
+build-and-release	Build Signed Release APK	2026-11-20T07:08:45.9807957Z > Task :app:extractProguardFiles
+build-and-release	Build Signed Release APK	2026-11-20T07:08:45.9822131Z > Task :app:processReleaseManifestForPackage
+build-and-release	Build Signed Release APK	2026-11-20T07:08:46.1733089Z > Task :app:mergeReleaseJniLibFolders
+build-and-release	Build Signed Release APK	2026-11-20T07:08:46.5798509Z > Task :app:mergeReleaseNativeLibs NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T07:08:46.5799578Z > Task :app:stripReleaseDebugSymbols NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T07:08:46.5855093Z > Task :app:extractReleaseNativeSymbolTables NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T07:08:46.5907853Z > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T07:08:47.2738444Z > Task :app:checkReleaseDuplicateClasses
+build-and-release	Build Signed Release APK	2026-11-20T07:08:47.2757673Z > Task :app:mergeReleaseStartupProfile
+build-and-release	Build Signed Release APK	2026-11-20T07:08:47.2758252Z > Task :app:mergeReleaseArtProfile
+build-and-release	Build Signed Release APK	2026-11-20T07:08:47.3738505Z > Task :app:mergeReleaseShaders
+build-and-release	Build Signed Release APK	2026-11-20T07:08:47.3800706Z > Task :app:compileReleaseShaders NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T07:08:47.3842504Z > Task :app:generateReleaseAssets UP-TO-DATE
+build-and-release	Build Signed Release APK	2026-11-20T07:08:47.3860021Z > Task :app:processReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T07:08:47.4765848Z > Task :app:mergeReleaseAssets
+build-and-release	Build Signed Release APK	2026-11-20T07:08:50.7758152Z > Task :app:compressReleaseAssets
+build-and-release	Build Signed Release APK	2026-11-20T07:08:50.8758462Z > Task :app:extractReleaseVersionControlInfo
+build-and-release	Build Signed Release APK	2026-11-20T07:08:50.8787898Z > Task :app:processApplicationManifestReleaseForBundle
+build-and-release	Build Signed Release APK	2026-11-20T07:08:50.9778152Z > Task :app:collectReleaseDependencies
+build-and-release	Build Signed Release APK	2026-11-20T07:08:51.0747295Z > Task :app:sdkReleaseDependencyData
+build-and-release	Build Signed Release APK	2026-11-20T07:08:51.0768659Z > Task :app:validateSigningRelease
+build-and-release	Build Signed Release APK	2026-11-20T07:08:51.0769548Z > Task :app:writeReleaseAppMetadata
+build-and-release	Build Signed Release APK	2026-11-20T07:08:51.0769902Z > Task :app:writeReleaseSigningConfigVersions
+build-and-release	Build Signed Release APK	2026-11-20T07:08:51.6733640Z > Task :app:bundleReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7744556Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:398:1 Expecting a top level declaration
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7745728Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7762138Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:338:31 Unresolved reference: modelInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7763548Z > Task :app:compileReleaseKotlin FAILED
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7780431Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:344:27 Unresolved reference: configStore
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7782869Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:345:13 Unresolved reference: configStore
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7785151Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:353:13 Unresolved reference: runOnUiThread
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7787721Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:354:17 Unresolved reference: endpointInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7791881Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:355:17 Unresolved reference: modelInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7794986Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:356:17 Unresolved reference: apiKeyInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7801028Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:363:47 Unresolved reference: lastPageText
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7813132Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:364:23 Unresolved reference: aiClient
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7858482Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:367:36 Unresolved reference: endpointInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7860640Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:368:33 Unresolved reference: modelInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7862727Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:369:34 Unresolved reference: apiKeyInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7864738Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:376:20 Unresolved reference: searchEngine
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7866817Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:381:20 Unresolved reference: searchEngine
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8777682Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8778277Z 33 actionable tasks: 33 executed
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8807896Z FAILURE: Build failed with an exception.
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8820069Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8830844Z * What went wrong:
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8831572Z Execution failed for task ':app:compileReleaseKotlin'.
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8833192Z > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8835043Z    > Compilation error. See log for more details
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8835594Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8835887Z * Try:
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8836507Z > Run with --stacktrace option to get the stack trace.
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8837529Z > Run with --info or --debug option to get more log output.
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8838323Z > Run with --scan to get full insights.
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8839047Z > Get more help at https://help.gradle.org.
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8839850Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8840179Z BUILD FAILED in 1m 22s
+build-and-release	Build Signed Release APK	2026-11-20T07:08:58.4035542Z ##[error]Process completed with exit code 1.
 --- EXTRACTED ERROR LINES ---
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0898161Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:398:1 Expecting a top level declaration
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0899463Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:338:31 Unresolved reference: modelInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0900716Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:344:27 Unresolved reference: configStore
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0907517Z > Task :app:compileReleaseKotlin FAILED
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0918171Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:345:13 Unresolved reference: configStore
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0919425Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:353:13 Unresolved reference: runOnUiThread
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0920641Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:354:17 Unresolved reference: endpointInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0921842Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:355:17 Unresolved reference: modelInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0923052Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:356:17 Unresolved reference: apiKeyInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0924279Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:363:47 Unresolved reference: lastPageText
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0925480Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:364:23 Unresolved reference: aiClient
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0926717Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:367:36 Unresolved reference: endpointInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0927983Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:368:33 Unresolved reference: modelInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0929123Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:369:34 Unresolved reference: apiKeyInput
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0929939Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:376:20 Unresolved reference: searchEngine
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.0930803Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:381:20 Unresolved reference: searchEngine
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.1947562Z FAILURE: Build failed with an exception.
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.1986384Z Execution failed for task ':app:compileReleaseKotlin'.
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2005900Z > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2007892Z    > Compilation error. See log for more details
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.2011445Z BUILD FAILED in 1m 9s
-build-and-release	Build Signed Release APK	2026-11-20T07:07:58.6026346Z ##[error]Process completed with exit code 1.
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7744556Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:398:1 Expecting a top level declaration
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7762138Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:338:31 Unresolved reference: modelInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7763548Z > Task :app:compileReleaseKotlin FAILED
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7780431Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:344:27 Unresolved reference: configStore
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7782869Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:345:13 Unresolved reference: configStore
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7785151Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:353:13 Unresolved reference: runOnUiThread
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7787721Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:354:17 Unresolved reference: endpointInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7791881Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:355:17 Unresolved reference: modelInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7794986Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:356:17 Unresolved reference: apiKeyInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7801028Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:363:47 Unresolved reference: lastPageText
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7813132Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:364:23 Unresolved reference: aiClient
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7858482Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:367:36 Unresolved reference: endpointInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7860640Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:368:33 Unresolved reference: modelInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7862727Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:369:34 Unresolved reference: apiKeyInput
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7864738Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:376:20 Unresolved reference: searchEngine
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.7866817Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:381:20 Unresolved reference: searchEngine
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8807896Z FAILURE: Build failed with an exception.
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8831572Z Execution failed for task ':app:compileReleaseKotlin'.
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8833192Z > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8835043Z    > Compilation error. See log for more details
+build-and-release	Build Signed Release APK	2026-11-20T07:08:57.8840179Z BUILD FAILED in 1m 22s
+build-and-release	Build Signed Release APK	2026-11-20T07:08:58.4035542Z ##[error]Process completed with exit code 1.
