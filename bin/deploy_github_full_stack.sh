@@ -7,8 +7,8 @@ BRANCH_NAME="${3:-main}"
 
 cd "$PROJECT_DIR"
 
-if [[ "$REMOTE_URL" == *"<"* || "$REMOTE_URL" == *">"* || -z "$REMOTE_URL" ]]; then
-  echo "ERR: Podaj prawdziwy URL repozytorium GitHub (np. https://github.com/LOGIN/REPO.git)" >&2
+if [ -z "$REMOTE_URL" ] || [[ "$REMOTE_URL" == *"TWOJ_LOGIN"* ]] || [[ "$REMOTE_URL" == *"TWOJE_REPO"* ]] || [[ "$REMOTE_URL" == *"<"* ]] || [[ "$REMOTE_URL" == *">"* ]]; then
+  echo "ERR: Podaj realny adres istniejącego repozytorium GitHub jako 2. argument (np. https://github.com/USER/REPO.git)" >&2
   exit 1
 fi
 
