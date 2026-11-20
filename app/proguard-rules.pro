@@ -22,3 +22,8 @@
 # AndroidX / WebView
 -dontwarn androidx.webkit.**
 -keep class androidx.webkit.** { *; }
+
+# JavascriptInterface w AndroidNative
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}

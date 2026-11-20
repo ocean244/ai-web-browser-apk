@@ -1,143 +1,196 @@
 package pl.tomaszewski.aiweb
 
-import android.annotation.SuppressLint
-import android.graphics.Bitmap
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
-import android.webkit.WebResourceRequest
-import android.webkit.WebSettings
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.FrameLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
-    private var rootContainer: FrameLayout? = null
-    private var webView: WebView? = null
-    private var isWebInitialized = false
+    private val mainHandler = Handler(Looper.getMainLooper())
+
+    private val httpClient: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(45, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .callTimeout(60, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
+            .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
-
-        val container = FrameLayout(this).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            setBackgroundColor(0xFF0B0E14.toInt())
-        }
-        rootContainer = container
-        setContentView(container)
-
-        ViewCompat.setOnApplyWindowInsetsListener(container) { v, insets ->
-            val sysBars = insets.getInsets(
-                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime()
-            )
-            v.setPadding(sysBars.left, sysBars.top, sysBars.right, sysBars.bottom)
-            insets
-        }
-
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val wv = webView
-                if (wv != null && wv.canGoBack()) {
-                    wv.goBack()
-                } else {
-                    isEnabled = false
-                    onBackPressedDispatcher.onBackPressed()
-                }
-            }
-        })
-
-        scheduleDeferredWebInit(container)
-    }
-
-    private fun scheduleDeferredWebInit(container: FrameLayout) {
-        container.post {
-            Looper.myQueue().addIdleHandler {
-                if (!isFinishing && !isDestroyed && !isWebInitialized) {
-                    initWebView(container)
-                }
-                false
-            }
-        }
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun initWebView(container: FrameLayout) {
-        isWebInitialized = true
-
-        val wv = WebView(applicationContext).apply {
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
-            )
-            setBackgroundColor(0xFF0B0E14.toInt())
-
-            settings.apply {
-                javaScriptEnabled = true
-                domStorageEnabled = true
-                databaseEnabled = true
-                allowFileAccess = true
-                allowContentAccess = true
-                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-                cacheMode = WebSettings.LOAD_DEFAULT
-                mediaPlaybackRequiresUserGesture = false
-            }
-
-            webChromeClient = WebChromeClient()
-            webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(
-                    view: WebView?,
-                    request: WebResourceRequest?
-                ): Boolean = false
-
-                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                    super.onPageStarted(view, url, favicon)
-                }
-            }
-        }
-
-        container.removeAllViews()
-        container.addView(wv)
-        webView = wv
-
-        wv.post {
-            if (!isFinishing && !isDestroyed) {
-                wv.loadUrl("file:///android_asset/index.html")
-            }
-        }
+        attachBridgeWhenReady()
     }
 
     override fun onResume() {
         super.onResume()
-        webView?.onResume()
-        webView?.resumeTimers()
+        attachBridgeWhenReady()
     }
 
-    override fun onPause() {
-        webView?.onPause()
-        super.onPause()
-    }
-
-    override fun onDestroy() {
-        webView?.apply {
-            stopLoading()
-            webChromeClient = null
-            (parent as? ViewGroup)?.removeView(this)
-            removeAllViews()
-            destroy()
+    private fun attachBridgeWhenReady(attempt: Int = 0) {
+        val webView = findWebView(window.decorView)
+        if (webView != null) {
+            webView.settings.javaScriptEnabled = true
+            webView.settings.domStorageEnabled = true
+            webView.removeJavascriptInterface("AndroidNative")
+            webView.addJavascriptInterface(AndroidNative(webView), "AndroidNative")
+            return
         }
-        webView = null
-        rootContainer = null
-        super.onDestroy()
+        if (attempt < 40) {
+            mainHandler.postDelayed({ attachBridgeWhenReady(attempt + 1) }, 50L)
+        }
+    }
+
+    private fun findWebView(root: View?): WebView? {
+        if (root == null) return null
+        if (root is WebView) return root
+        if (root is ViewGroup) {
+            for (i in 0 until root.childCount) {
+                val found = findWebView(root.getChildAt(i))
+                if (found != null) return found
+            }
+        }
+        return null
+    }
+
+    inner class AndroidNative(private val webView: WebView) {
+
+        @JavascriptInterface
+        fun openExternalUrl(url: String?) {
+            val cleanUrl = url?.trim().orEmpty()
+            if (cleanUrl.isEmpty()) return
+            mainHandler.post {
+                try {
+                    val uri = Uri.parse(cleanUrl)
+                    val scheme = uri.scheme?.lowercase()
+                    if (scheme == "http" || scheme == "https") {
+                        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                            addCategory(Intent.CATEGORY_BROWSABLE)
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+                        startActivity(intent)
+                    } else if (cleanUrl.startsWith("file://") || cleanUrl.startsWith("about:")) {
+                        webView.loadUrl(cleanUrl)
+                    }
+                } catch (e: Exception) {
+                    emitJsError("openExternalUrl: ${e.message ?: "intent error"}")
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun goBack() {
+            mainHandler.post {
+                try {
+                    if (webView.canGoBack()) {
+                        webView.goBack()
+                    }
+                } catch (e: Exception) {
+                    emitJsError("goBack: ${e.message ?: "error"}")
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun goForward() {
+            mainHandler.post {
+                try {
+                    if (webView.canGoForward()) {
+                        webView.goForward()
+                    }
+                } catch (e: Exception) {
+                    emitJsError("goForward: ${e.message ?: "error"}")
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun postChatCompletion(
+            endpoint: String?,
+            model: String?,
+            apiKey: String?,
+            payloadJson: String?
+        ): String {
+            val targetUrl = endpoint?.trim().orEmpty()
+            if (targetUrl.isEmpty()) {
+                return JSONObject().put("error", "Brak endpointu AI").toString()
+            }
+            val rawBody = payloadJson?.trim().orEmpty()
+            if (rawBody.isEmpty()) {
+                return JSONObject().put("error", "Pusty ładunek JSON").toString()
+            }
+
+            val normalizedBody = try {
+                val obj = JSONObject(rawBody)
+                if (!model.isNullOrBlank()) {
+                    obj.put("model", model.trim())
+                }
+                obj.toString()
+            } catch (e: Exception) {
+                return JSONObject().put("error", "Niepoprawny JSON żądania: ${e.message}").toString()
+            }
+
+            return try {
+                val mediaType = "application/json; charset=utf-8".toMediaType()
+                val body = normalizedBody.toRequestBody(mediaType)
+                val reqBuilder = Request.Builder()
+                    .url(targetUrl)
+                    .post(body)
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+
+                val cleanKey = apiKey?.trim().orEmpty()
+                if (cleanKey.isNotEmpty()) {
+                    reqBuilder.header("Authorization", "Bearer $cleanKey")
+                }
+
+                httpClient.newCall(reqBuilder.build()).execute().use { response ->
+                    val responseBody = response.body?.string().orEmpty()
+                    if (!response.isSuccessful) {
+                        JSONObject()
+                            .put("error", "HTTP ${response.code}: ${response.message} ${responseBody.take(400)}")
+                            .toString()
+                    } else if (responseBody.isBlank()) {
+                        JSONObject().put("error", "Pusta odpowiedź z endpointu AI").toString()
+                    } else {
+                        responseBody
+                    }
+                }
+            } catch (e: Exception) {
+                JSONObject()
+                    .put("error", "${e.javaClass.simpleName}: ${e.message ?: "błąd połączenia"}")
+                    .toString()
+            }
+        }
+
+        private fun emitJsError(message: String) {
+            val escaped = JSONObject.quote("[BRIDGE] $message")
+            webView.evaluateJavascript(
+                """
+                (function() {
+                  var out = document.getElementById('aiOutput');
+                  if (out) {
+                    out.textContent += '\n' + $escaped + '\n';
+                    out.scrollTop = out.scrollHeight;
+                  }
+                })();
+                """.trimIndent(),
+                null
+            )
+        }
     }
 }
