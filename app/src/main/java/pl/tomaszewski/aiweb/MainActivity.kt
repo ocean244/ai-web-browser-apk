@@ -295,54 +295,55 @@ class MainActivity : AppCompatActivity() {
     }
 
     class AndroidNativeBridge(private val activity: MainActivity) {
-    @android.webkit.JavascriptInterface
-    fun saveConfig(jsonStr: String): String {
-        return try {
-            val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
-            prefs.edit().putString("cfg_json", jsonStr).apply()
-            "{\"ok\":true,\"saved\":true}"
-        } catch (e: Throwable) {
-            val msg = (e.message ?: "error").replace("\"", "'")
-            "{\"ok\":false,\"error\":\"$msg\"}"
-        }
-    }
 
-    @android.webkit.JavascriptInterface
-    fun getConfig(): String {
-        return try {
-            val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
-            prefs.getString("cfg_json", "{}") ?: "{}"
-        } catch (_: Throwable) {
-            "{}"
-        }
-    }
-
-    @android.webkit.JavascriptInterface
-    fun openUrl(url: String): String {
-        return try {
-            activity.runOnUiThread {
-                activity.loadTargetUrl(url)
+        @JavascriptInterface
+        fun saveConfig(jsonStr: String): String {
+            return try {
+                val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
+                prefs.edit().putString("cfg_json", jsonStr).apply()
+                "{\"ok\":true,\"saved\":true}"
+            } catch (e: Throwable) {
+                val msg = (e.message ?: "error").replace("\"", "'")
+                "{\"ok\":false,\"error\":\"$msg\"}"
             }
-            "{\"ok\":true}"
-        } catch (e: Throwable) {
-            val msg = (e.message ?: "error").replace("\"", "'")
-            "{\"ok\":false,\"error\":\"$msg\"}"
         }
-    }
+
+        @JavascriptInterface
+        fun getConfig(): String {
+            return try {
+                val prefs = activity.getSharedPreferences("aiweb_cfg", android.content.Context.MODE_PRIVATE)
+                prefs.getString("cfg_json", "{}") ?: "{}"
+            } catch (_: Throwable) {
+                "{}"
+            }
+        }
+
+        @JavascriptInterface
+        fun openUrl(url: String): String {
+            return try {
+                activity.runOnUiThread {
+                    activity.loadTargetUrl(url)
+                }
+                "{\"ok\":true}"
+            } catch (e: Throwable) {
+                val msg = (e.message ?: "error").replace("\"", "'")
+                "{\"ok\":false,\"error\":\"$msg\"}"
+            }
+        }
 
         @JavascriptInterface
         fun ping(): String {
             return JSONObject()
                 .put("ok", true)
                 .put("bridge", "AndroidNative")
-                .put("model", modelInput.text.toString())
+                .put("model", activity.modelInput.text.toString())
                 .toString()
         }
 
         @JavascriptInterface
         fun setConfig(endpoint: String, model: String, apiKey: String, systemPrompt: String): String {
-            val current = configStore.load()
-            configStore.save(
+            val current = activity.configStore.load()
+            activity.configStore.save(
                 current.copy(
                     endpoint = endpoint.ifBlank { current.endpoint },
                     model = model.ifBlank { current.model },
@@ -350,35 +351,35 @@ class MainActivity : AppCompatActivity() {
                     systemPrompt = systemPrompt.ifBlank { current.systemPrompt }
                 )
             )
-            runOnUiThread {
-                endpointInput.setText(endpoint.ifBlank { current.endpoint })
-                modelInput.setText(model.ifBlank { current.model })
-                apiKeyInput.setText(apiKey)
+            activity.runOnUiThread {
+                activity.endpointInput.setText(endpoint.ifBlank { current.endpoint })
+                activity.modelInput.setText(model.ifBlank { current.model })
+                activity.apiKeyInput.setText(apiKey)
             }
             return JSONObject().put("ok", true).toString()
         }
 
         @JavascriptInterface
         fun askAi(prompt: String, includePageContext: Boolean): String {
-            val ctx = if (includePageContext) lastPageText else ""
-            val res = aiClient.chatCompletion(
+            val ctx = if (includePageContext) activity.lastPageText else ""
+            val res = activity.aiClient.chatCompletion(
                 userPrompt = prompt,
                 contextText = ctx,
-                overrideEndpoint = endpointInput.text.toString().trim(),
-                overrideModel = modelInput.text.toString().trim(),
-                overrideApiKey = apiKeyInput.text.toString().trim()
+                overrideEndpoint = activity.endpointInput.text.toString().trim(),
+                overrideModel = activity.modelInput.text.toString().trim(),
+                overrideApiKey = activity.apiKeyInput.text.toString().trim()
             )
             return res.toString()
         }
 
         @JavascriptInterface
         fun webSearch(query: String, limit: Int): String {
-            return searchEngine.search(query, limit.coerceIn(1, 15)).toString()
+            return activity.searchEngine.search(query, limit.coerceIn(1, 15)).toString()
         }
 
         @JavascriptInterface
         fun fetchPage(url: String): String {
-            return searchEngine.fetchUrlText(url).toString()
+            return activity.searchEngine.fetchUrlText(url).toString()
         }
     }
 
@@ -394,5 +395,4 @@ class MainActivity : AppCompatActivity() {
             webView.loadUrl(resolved)
         } catch (_: Throwable) {}
     }
-}
 }
