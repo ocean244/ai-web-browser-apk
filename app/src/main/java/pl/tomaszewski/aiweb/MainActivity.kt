@@ -381,13 +381,6 @@ class MainActivity : AppCompatActivity() {
             return searchEngine.fetchUrlText(url).toString()
         }
     }
-}
-else {
-            "https://$target"
-        }
-        try {
-            webView.loadUrl(resolved)
-        } catch (_: Throwable) {}
 
     fun loadTargetUrl(url: String) {
         val target = url.trim()
@@ -401,4 +394,5 @@ else {
             webView.loadUrl(resolved)
         } catch (_: Throwable) {}
     }
+}
 }
