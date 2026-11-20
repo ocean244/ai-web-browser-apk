@@ -401,5 +401,22 @@
 })();
 
 </script>
+
+<script>
+window.directWebSearch = function(query) {
+  const q = String(query || "").trim();
+  if (!q) return;
+  const encoded = encodeURIComponent(q);
+  const targetUrl = /^https?:\/\//i.test(q) ? q : ("https://duckduckgo.com/?q=" + encoded);
+  try {
+    if (window.AndroidNative && typeof window.AndroidNative.openUrl === "function") {
+      window.AndroidNative.openUrl(targetUrl);
+      return;
+    }
+  } catch (e) {}
+  window.location.href = targetUrl;
+};
+</script>
+
 </body>
 </html>
