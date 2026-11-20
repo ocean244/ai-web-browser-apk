@@ -1,764 +1,329 @@
 package pl.tomaszewski.aiweb
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
-import android.graphics.Color
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.Looper
-import android.text.InputType
 import android.util.Log
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowInsets
-import android.view.inputmethod.EditorInfo
-import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
-import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
-import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
-import java.util.concurrent.TimeUnit
+import java.net.URLEncoder
+import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        private const val TAG = "AiWebMainActivity"
-        private const val BRIDGE_NAME = "AndroidNative"
-        private const val PREFS_NAME = "ai_web_browser_prefs"
-        private const val KEY_ENDPOINT = "ai_endpoint"
-        private const val KEY_MODEL = "ai_model"
-        private const val KEY_API_KEY = "ai_api_key"
-        private const val KEY_PAYLOAD = "ai_payload"
-    }
+    private val tag = "AiWebMainActivity"
+    private val ioPool = Executors.newCachedThreadPool()
 
-    private val mainHandler = Handler(Looper.getMainLooper())
-    private val ioThread = HandlerThread("AiBridgeIoThread").apply { start() }
-    private val bgHandler = Handler(ioThread.looper)
+    private lateinit var configStore: AiConfigStore
+    private lateinit var aiClient: OpenAiClient
+    private lateinit var searchEngine: WebSearchEngine
 
-    private lateinit var rootLayout: LinearLayout
     private lateinit var webView: WebView
     private lateinit var urlInput: EditText
-    private lateinit var statusText: TextView
     private lateinit var endpointInput: EditText
     private lateinit var modelInput: EditText
     private lateinit var apiKeyInput: EditText
-    private lateinit var aiPromptInput: EditText
-    private lateinit var aiOutputView: TextView
+    private lateinit var promptInput: EditText
+    private lateinit var statusView: TextView
+    private lateinit var outputView: TextView
 
-    private val prefs by lazy {
-        getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-    }
-
-    private val defaultHomeHtml: String by lazy {
-        """
-        <!DOCTYPE html>
-        <html lang="pl">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <link rel="icon" href="data:," />
-          <title>AI Web Browser</title>
-          <style>
-            * { box-sizing: border-box; }
-            body {
-              margin: 0;
-              padding: 16px;
-              background: #0d1117;
-              color: #e6edf3;
-              font-family: sans-serif;
-              line-height: 1.45;
-            }
-            .box {
-              background: #161b22;
-              border: 1px solid #30363d;
-              border-radius: 10px;
-              padding: 14px;
-            }
-            h1 { margin: 0 0 8px 0; font-size: 19px; color: #58a6ff; }
-            .row { margin: 8px 0; font-size: 14px; }
-            button {
-              background: #238636;
-              color: #ffffff;
-              border: none;
-              border-radius: 8px;
-              padding: 10px 14px;
-              font-size: 14px;
-              margin-right: 8px;
-              margin-top: 6px;
-            }
-            pre {
-              background: #090c10;
-              border: 1px solid #262c36;
-              border-radius: 8px;
-              padding: 10px;
-              color: #7ee787;
-              font-size: 12px;
-              white-space: pre-wrap;
-              min-height: 80px;
-              margin-top: 10px;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="box">
-            <h1>AI Web Browser — Gotowy</h1>
-            <div class="row">Mostek: <span id="bridgeStatus">sprawdzanie...</span></div>
-            <button type="button" onclick="pingBridge()">Test Bridge</button>
-            <button type="button" onclick="goExample()">Otwórz example.com</button>
-            <pre id="webConsole">Inicjalizacja strony startowej...</pre>
-          </div>
-          <script>
-            (function() {
-              var st = document.getElementById('bridgeStatus');
-              var hasBridge = !!(window.AndroidNative && typeof window.AndroidNative.postChatCompletion === 'function');
-              if (st) {
-                st.textContent = hasBridge ? 'AKTYWNY (AndroidNative)' : 'BRAK';
-              }
-            })();
-            function logWeb(msg) {
-              var el = document.getElementById('webConsole');
-              if (el) {
-                el.textContent += '\n' + msg;
-              }
-            }
-            function pingBridge() {
-              if (!window.AndroidNative) {
-                logWeb('[ERR] window.AndroidNative == null');
-                return;
-              }
-              var out = window.AndroidNative.postChatCompletion('', '', '', '');
-              logWeb('[PING] ' + out);
-            }
-            function goExample() {
-              if (window.AndroidNative && typeof window.AndroidNative.openExternalUrl === 'function') {
-                window.AndroidNative.openExternalUrl('https://example.com');
-              } else {
-                window.location.href = 'https://example.com';
-              }
-            }
-          </script>
-        </body>
-        </html>
-        """.trimIndent()
-    }
-
-    private val httpClient: OkHttpClient by lazy {
-        OkHttpClient.Builder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(45, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .callTimeout(60, TimeUnit.SECONDS)
-            .retryOnConnectionFailure(true)
-            .build()
-    }
+    private var lastPageText: String = ""
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i(TAG, "onCreate start")
+        setContentView(R.layout.activity_main)
 
-        buildUserInterface()
-        setupWebView()
-        loadHomePage()
+        configStore = AiConfigStore(this)
+        aiClient = OpenAiClient(configStore)
+        searchEngine = WebSearchEngine(configStore)
 
-        Log.i(TAG, "onCreate completed, views attached")
-    }
+        webView = findViewById(R.id.webView)
+        urlInput = findViewById(R.id.urlInput)
+        endpointInput = findViewById(R.id.endpointInput)
+        modelInput = findViewById(R.id.modelInput)
+        apiKeyInput = findViewById(R.id.apiKeyInput)
+        promptInput = findViewById(R.id.promptInput)
+        statusView = findViewById(R.id.statusView)
+        outputView = findViewById(R.id.outputView)
 
-    override fun onStart() {
-        super.onStart()
-        Log.i(TAG, "onStart")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.i(TAG, "onResume")
-        if (::webView.isInitialized) {
-            attachBridge(webView)
-            webView.onResume()
-            webView.resumeTimers()
-        }
-    }
-
-    override fun onPause() {
-        Log.i(TAG, "onPause")
-        persistAiConfig()
-        if (::webView.isInitialized) {
-            webView.onPause()
-        }
-        super.onPause()
-    }
-
-    override fun onStop() {
-        Log.i(TAG, "onStop")
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        Log.i(TAG, "onDestroy")
-        if (::webView.isInitialized) {
-            webView.removeJavascriptInterface(BRIDGE_NAME)
-            webView.destroy()
-        }
-        ioThread.quitSafely()
-        super.onDestroy()
-    }
-
-    private fun persistAiConfig() {
-        if (!::endpointInput.isInitialized) return
-        prefs.edit()
-            .putString(KEY_ENDPOINT, endpointInput.text.toString().trim())
-            .putString(KEY_MODEL, modelInput.text.toString().trim())
-            .putString(KEY_API_KEY, apiKeyInput.text.toString().trim())
-            .putString(KEY_PAYLOAD, aiPromptInput.text.toString())
-            .apply()
-    }
-
-    private fun loadHomePage() {
-        webView.loadDataWithBaseURL(
-            "https://app.local/",
-            defaultHomeHtml,
-            "text/html",
-            "UTF-8",
-            null
-        )
-    }
-
-    private fun createField(
-        hintText: String,
-        initialText: String,
-        inputTypeFlags: Int,
-        weight: Float = 0f,
-        marginEndPx: Int = 0
-    ): EditText = EditText(this).apply {
-        hint = hintText
-        setText(initialText)
-        setTextColor(Color.WHITE)
-        setHintTextColor(Color.parseColor("#8B949E"))
-        setBackgroundColor(Color.parseColor("#0D1117"))
-        visibility = View.VISIBLE
-        inputType = inputTypeFlags
-        setSingleLine(true)
-        textSize = 12f
-        setPadding(14, 10, 14, 10)
-        layoutParams = if (weight > 0f) {
-            LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, weight).apply {
-                marginEnd = marginEndPx
-            }
-        } else {
-            LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                marginEnd = marginEndPx
-            }
-        }
-    }
-
-    private fun buildUserInterface() {
-        rootLayout = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setBackgroundColor(Color.parseColor("#0D1117"))
-            visibility = View.VISIBLE
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            setPadding(20, 136, 20, 96)
+        val initialCfg = configStore.load()
+        endpointInput.setText(initialCfg.endpoint)
+        modelInput.setText(initialCfg.model)
+        apiKeyInput.setText(initialCfg.apiKey)
+        if (promptInput.text.isNullOrBlank()) {
+            promptInput.setText("{\"messages\":[{\"role\":\"user\",\"content\":\"ping\"}]}")
         }
 
-        rootLayout.setOnApplyWindowInsetsListener { v, insets ->
-            val topPad = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                val sysTop = insets.getInsets(WindowInsets.Type.systemBars()).top
-                if (sysTop > 132) sysTop else 132
-            } else {
-                @Suppress("DEPRECATION")
-                if (insets.systemWindowInsetTop > 132) insets.systemWindowInsetTop else 132
-            }
-            val bottomPad = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                val sysBot = insets.getInsets(WindowInsets.Type.systemBars()).bottom
-                val imeBot = insets.getInsets(WindowInsets.Type.ime()).bottom
-                val maxBot = if (sysBot > imeBot) sysBot else imeBot
-                if (maxBot > 90) maxBot else 90
-            } else {
-                @Suppress("DEPRECATION")
-                if (insets.systemWindowInsetBottom > 90) insets.systemWindowInsetBottom else 90
-            }
-            v.setPadding(20, topPad, 20, bottomPad)
-            insets
-        }
-
-        val navRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            visibility = View.VISIBLE
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        }
-
-        fun createActionButton(label: String, bgHex: String, action: () -> Unit): Button = Button(this).apply {
-            text = label
-            setTextColor(Color.WHITE)
-            setBackgroundColor(Color.parseColor(bgHex))
-            visibility = View.VISIBLE
-            minWidth = 0
-            minimumWidth = 0
-            setPadding(18, 10, 18, 10)
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            setOnClickListener { action() }
-        }
-
-        val btnBack = createActionButton("<", "#21262D") {
-            if (::webView.isInitialized && webView.canGoBack()) {
-                webView.goBack()
-            }
-        }.apply {
-            (layoutParams as LinearLayout.LayoutParams).marginEnd = 8
-        }
-        val btnFwd = createActionButton(">", "#21262D") {
-            if (::webView.isInitialized && webView.canGoForward()) {
-                webView.goForward()
-            }
-        }.apply {
-            (layoutParams as LinearLayout.LayoutParams).marginEnd = 8
-        }
-        val btnHome = createActionButton("Home", "#21262D") {
-            if (::webView.isInitialized) {
-                loadHomePage()
-            }
-        }.apply {
-            (layoutParams as LinearLayout.LayoutParams).marginEnd = 8
-        }
-
-        urlInput = createField(
-            "https://example.com",
-            "https://example.com",
-            InputType.TYPE_TEXT_VARIATION_URI,
-            weight = 1f,
-            marginEndPx = 8
-        ).apply {
-            imeOptions = EditorInfo.IME_ACTION_GO
-            setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE) {
-                    navigateTo(text.toString())
-                    true
-                } else {
-                    false
-                }
-            }
-        }
-
-        val btnGo = createActionButton("Idź", "#21262D") {
-            navigateTo(urlInput.text.toString())
-        }
-
-        navRow.addView(btnBack)
-        navRow.addView(btnFwd)
-        navRow.addView(btnHome)
-        navRow.addView(urlInput)
-        navRow.addView(btnGo)
-
-        statusText = TextView(this).apply {
-            text = "Status: UI_READY | Bridge: $BRIDGE_NAME"
-            setTextColor(Color.parseColor("#58A6FF"))
-            setBackgroundColor(Color.parseColor("#11161D"))
-            visibility = View.VISIBLE
-            textSize = 13f
-            setPadding(12, 8, 12, 8)
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                topMargin = 6
-                bottomMargin = 6
-            }
-        }
-
-        webView = WebView(this).apply {
-            visibility = View.VISIBLE
-            setBackgroundColor(Color.parseColor("#0D1117"))
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                0,
-                1f
-            )
-        }
-
-        val aiPanel = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setBackgroundColor(Color.parseColor("#161B22"))
-            visibility = View.VISIBLE
-            setPadding(12, 10, 12, 10)
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                topMargin = 8
-            }
-        }
-
-        endpointInput = createField(
-            "Endpoint: http://127.0.0.1:8080/v1/chat/completions",
-            prefs.getString(KEY_ENDPOINT, "") ?: "",
-            InputType.TYPE_TEXT_VARIATION_URI
-        )
-
-        val metaRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            visibility = View.VISIBLE
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                topMargin = 6
-            }
-        }
-
-        modelInput = createField(
-            "Model",
-            prefs.getString(KEY_MODEL, "") ?: "",
-            InputType.TYPE_CLASS_TEXT,
-            weight = 1f,
-            marginEndPx = 8
-        )
-        apiKeyInput = createField(
-            "API Key (opcjonalnie)",
-            prefs.getString(KEY_API_KEY, "") ?: "",
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD,
-            weight = 1f,
-            marginEndPx = 0
-        )
-
-        metaRow.addView(modelInput)
-        metaRow.addView(apiKeyInput)
-
-        val aiRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            visibility = View.VISIBLE
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                topMargin = 6
-            }
-        }
-
-        aiPromptInput = createField(
-            """{"messages":[{"role":"user","content":"ping"}]}""",
-            prefs.getString(KEY_PAYLOAD, """{"messages":[{"role":"user","content":"ping"}]}""")
-                ?: """{"messages":[{"role":"user","content":"ping"}]}""",
-            InputType.TYPE_CLASS_TEXT,
-            weight = 1f,
-            marginEndPx = 8
-        )
-
-        val btnTestAi = createActionButton("Test AI", "#238636") {
-            persistAiConfig()
-            val ep = endpointInput.text.toString().trim()
-            val mdl = modelInput.text.toString().trim()
-            val key = apiKeyInput.text.toString().trim()
-            val payload = aiPromptInput.text.toString()
-            bgHandler.post {
-                val res = AndroidNative(webView).postChatCompletion(ep, mdl, key, payload)
-                mainHandler.post {
-                    aiOutputView.append("\n[TEST] $res")
-                    statusText.text = "Status: TEST_OK | Bridge: $BRIDGE_NAME"
-                }
-            }
-        }
-
-        aiRow.addView(aiPromptInput)
-        aiRow.addView(btnTestAi)
-
-        val logScroll = ScrollView(this).apply {
-            visibility = View.VISIBLE
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                190
-            ).apply {
-                topMargin = 6
-            }
-        }
-
-        aiOutputView = TextView(this).apply {
-            text = "[READY] MainActivity UI widoczne. Mostek: $BRIDGE_NAME"
-            setTextColor(Color.parseColor("#E6EDF3"))
-            setBackgroundColor(Color.parseColor("#090C10"))
-            visibility = View.VISIBLE
-            textSize = 12f
-            setPadding(12, 8, 12, 8)
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-        }
-
-        logScroll.addView(aiOutputView)
-        aiPanel.addView(endpointInput)
-        aiPanel.addView(metaRow)
-        aiPanel.addView(aiRow)
-        aiPanel.addView(logScroll)
-
-        rootLayout.addView(navRow)
-        rootLayout.addView(statusText)
-        rootLayout.addView(webView)
-        rootLayout.addView(aiPanel)
-
-        setContentView(rootLayout)
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun setupWebView() {
-        webView.settings.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            databaseEnabled = true
-            loadWithOverviewMode = true
-            useWideViewPort = true
-            cacheMode = WebSettings.LOAD_DEFAULT
-            mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
-            userAgentString = "$userAgentString AiWebBrowser/1.3"
-        }
-
-        attachBridge(webView)
-
-        webView.webChromeClient = object : WebChromeClient() {
-            override fun onProgressChanged(view: WebView?, newProgress: Int) {
-                super.onProgressChanged(view, newProgress)
-                mainHandler.post {
-                    statusText.text = "Status: WebView ${newProgress}% | Bridge: $BRIDGE_NAME"
-                }
-            }
-
-            override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
-                consoleMessage?.let {
-                    Log.d(TAG, "JS[${it.messageLevel()}]: ${it.message()} (${it.sourceId()}:${it.lineNumber()})")
-                }
-                return super.onConsoleMessage(consoleMessage)
-            }
-        }
-
+        webView.settings.javaScriptEnabled = true
+        webView.settings.domStorageEnabled = true
+        webView.settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        webView.webChromeClient = WebChromeClient()
         webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
-                val url = request?.url?.toString().orEmpty()
-                if (url.isNotEmpty()) {
-                    mainHandler.post { urlInput.setText(url) }
-                }
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                val targetUrl = request?.url?.toString() ?: return false
+                urlInput.setText(targetUrl)
                 return false
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                val currentUrl = url.orEmpty()
-                Log.i(TAG, "onPageFinished: $currentUrl")
-                mainHandler.post {
-                    if (currentUrl.isNotEmpty() && !currentUrl.startsWith("data:")) {
-                        urlInput.setText(currentUrl)
-                    }
-                    statusText.text = "Status: LOADED | Bridge: $BRIDGE_NAME"
-                }
-            }
-
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                super.onReceivedError(view, request, error)
-                val desc = error?.description?.toString().orEmpty()
-                val reqUrl = request?.url?.toString().orEmpty()
-                val isMainFrame = request?.isForMainFrame ?: true
-                if (!isMainFrame || reqUrl.endsWith("/favicon.ico", ignoreCase = true)) {
-                    Log.w(TAG, "Ignored subresource error ($reqUrl): $desc")
-                    return
-                }
-                Log.e(TAG, "WebView error ($reqUrl): $desc")
-                mainHandler.post {
-                    statusText.text = "Status: WEB_ERR | $desc"
-                    aiOutputView.append("\n[WEB_ERR] $reqUrl -> $desc")
-                }
-            }
-        }
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun attachBridge(target: WebView) {
-        target.settings.javaScriptEnabled = true
-        target.settings.domStorageEnabled = true
-        target.removeJavascriptInterface(BRIDGE_NAME)
-        target.addJavascriptInterface(AndroidNative(target), BRIDGE_NAME)
-        Log.i(TAG, "Bridge $BRIDGE_NAME attached")
-    }
-
-    private fun navigateTo(raw: String) {
-        val trimmed = raw.trim()
-        if (trimmed.isEmpty()) return
-        val url = when {
-            trimmed.startsWith("http://", ignoreCase = true) ||
-                trimmed.startsWith("https://", ignoreCase = true) ||
-                trimmed.startsWith("file://", ignoreCase = true) ||
-                trimmed.startsWith("about:", ignoreCase = true) -> trimmed
-            trimmed.contains(".") && !trimmed.contains(" ") -> "https://$trimmed"
-            else -> "https://duckduckgo.com/?q=${Uri.encode(trimmed)}"
-        }
-        Log.i(TAG, "navigateTo: $url")
-        urlInput.setText(url)
-        webView.loadUrl(url)
-    }
-
-    inner class AndroidNative(private val targetWebView: WebView) {
-
-        @JavascriptInterface
-        fun openExternalUrl(url: String?) {
-            val cleanUrl = url?.trim().orEmpty()
-            if (cleanUrl.isEmpty()) return
-            mainHandler.post {
-                try {
-                    val uri = Uri.parse(cleanUrl)
-                    val scheme = uri.scheme?.lowercase()
-                    if (scheme == "http" || scheme == "https") {
-                        val intent = Intent(Intent.ACTION_VIEW, uri).apply {
-                            addCategory(Intent.CATEGORY_BROWSABLE)
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                Log.i(tag, "onPageFinished: $url")
+                statusView.text = "Status: LOADED | Bridge: AndroidNative"
+                val currentUrl = url ?: ""
+                if (currentUrl.startsWith("http")) {
+                    ioPool.execute {
+                        val fetched = searchEngine.fetchUrlText(currentUrl)
+                        if (fetched.optBoolean("ok")) {
+                            lastPageText = fetched.optString("text", "")
                         }
-                        startActivity(intent)
-                    } else {
-                        targetWebView.loadUrl(cleanUrl)
                     }
-                } catch (e: Exception) {
-                    Log.e(TAG, "openExternalUrl failed", e)
-                    emitJsError("openExternalUrl: ${e.message ?: "error"}")
                 }
             }
+        }
+        webView.addJavascriptInterface(AndroidNativeBridge(), "AndroidNative")
+
+        findViewById<Button>(R.id.goButton).setOnClickListener {
+            navigateOrSearch(urlInput.text.toString())
+        }
+
+        findViewById<Button>(R.id.testAiButton).setOnClickListener {
+            persistInputsToConfig()
+            val rawPrompt = promptInput.text.toString().trim()
+            val userText = extractUserTextFromPrompt(rawPrompt)
+            runAiQuery(userText, usePageContext = false)
+        }
+
+        findViewById<Button>(R.id.searchAndAskButton)?.setOnClickListener {
+            persistInputsToConfig()
+            val query = urlInput.text.toString().trim().ifEmpty {
+                extractUserTextFromPrompt(promptInput.text.toString())
+            }
+            runSearchAndAi(query)
+        }
+
+        val startUrl = urlInput.text.toString().trim().ifEmpty { "https://app.local/" }
+        urlInput.setText(startUrl)
+        webView.loadUrl(startUrl)
+        Log.i(tag, "onCreate completed, views attached")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i(tag, "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i(tag, "onResume")
+        webView.addJavascriptInterface(AndroidNativeBridge(), "AndroidNative")
+        Log.i(tag, "Bridge AndroidNative attached")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.i(tag, "onPause")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i(tag, "onStop")
+    }
+
+    override fun onDestroy() {
+        ioPool.shutdownNow()
+        super.onDestroy()
+    }
+
+    private fun persistInputsToConfig() {
+        val current = configStore.load()
+        configStore.save(
+            current.copy(
+                endpoint = endpointInput.text.toString().trim().ifEmpty { current.endpoint },
+                model = modelInput.text.toString().trim().ifEmpty { current.model },
+                apiKey = apiKeyInput.text.toString().trim()
+            )
+        )
+    }
+
+    private fun navigateOrSearch(input: String) {
+        val raw = input.trim()
+        if (raw.isEmpty()) return
+        val isUrl = raw.startsWith("http://") || raw.startsWith("https://") ||
+            (!raw.contains(" ") && raw.contains("."))
+        val finalUrl = if (isUrl) {
+            if (raw.startsWith("http")) raw else "https://$raw"
+        } else {
+            val cfg = configStore.load()
+            val enc = URLEncoder.encode(raw, "UTF-8")
+            if (cfg.searchEndpoint.contains("q=")) "${cfg.searchEndpoint}$enc" else "${cfg.searchEndpoint}?q=$enc"
+        }
+        urlInput.setText(finalUrl)
+        webView.loadUrl(finalUrl)
+    }
+
+    private fun extractUserTextFromPrompt(raw: String): String {
+        if (raw.startsWith("{")) {
+            try {
+                val obj = JSONObject(raw)
+                val msgs = obj.optJSONArray("messages")
+                if (msgs != null && msgs.length() > 0) {
+                    val last = msgs.optJSONObject(msgs.length() - 1)
+                    val content = last?.optString("content", "")
+                    if (!content.isNullOrBlank()) return content
+                }
+            } catch (_: Exception) {
+            }
+        }
+        return raw.ifEmpty { "ping" }
+    }
+
+    private fun runAiQuery(userText: String, usePageContext: Boolean) {
+        val ep = endpointInput.text.toString().trim()
+        val mdl = modelInput.text.toString().trim()
+        val key = apiKeyInput.text.toString().trim()
+        val ctx = if (usePageContext) lastPageText else ""
+
+        runOnUiThread { statusView.text = "Status: AI_RUNNING | Bridge: AndroidNative" }
+
+        ioPool.execute {
+            val res = aiClient.chatCompletion(
+                userPrompt = userText,
+                contextText = ctx,
+                overrideEndpoint = ep,
+                overrideModel = mdl,
+                overrideApiKey = key
+            )
+            val replyContent = res.optString("content", "")
+            val formatted = if (res.optBoolean("ok") && replyContent.isNotEmpty()) {
+                val synthetic = JSONObject()
+                    .put("id", "ai-live")
+                    .put(
+                        "choices",
+                        JSONArray().put(
+                            JSONObject().put(
+                                "message",
+                                JSONObject().put("role", "assistant").put("content", replyContent)
+                            )
+                        )
+                    )
+                "[TEST] $synthetic"
+            } else {
+                "[ERR] $res"
+            }
+
+            runOnUiThread {
+                statusView.text = if (res.optBoolean("ok")) {
+                    "Status: TEST_OK | Bridge: AndroidNative"
+                } else {
+                    "Status: AI_ERR | Bridge: AndroidNative"
+                }
+                outputView.text = formatted
+                webView.evaluateJavascript(
+                    "if(window.onNativeAiResult){window.onNativeAiResult(${JSONObject.quote(res.toString())});}",
+                    null
+                )
+            }
+        }
+    }
+
+    private fun runSearchAndAi(query: String) {
+        if (query.isBlank()) return
+        runOnUiThread { statusView.text = "Status: SEARCH_AI | Bridge: AndroidNative" }
+
+        ioPool.execute {
+            val searchRes = searchEngine.search(query, limit = 6)
+            val resultsArr = searchRes.optJSONArray("results")
+            val sb = StringBuilder()
+            if (resultsArr != null) {
+                for (i in 0 until minOf(resultsArr.length(), 3)) {
+                    val item = resultsArr.optJSONObject(i) ?: continue
+                    val rUrl = item.optString("url", "")
+                    val rTitle = item.optString("title", "")
+                    if (rUrl.isNotEmpty()) {
+                        val page = searchEngine.fetchUrlText(rUrl, maxChars = 3500)
+                        sb.append("SOURCE: $rTitle ($rUrl)\n")
+                        sb.append(page.optString("text", "")).append("\n\n")
+                    }
+                }
+            }
+            val aiRes = aiClient.chatCompletion(
+                userPrompt = "Na podstawie poniższych wyników wyszukiwania sieciowego odpowiedz precyzyjnie na zapytanie: $query",
+                contextText = sb.toString(),
+                overrideEndpoint = endpointInput.text.toString().trim(),
+                overrideModel = modelInput.text.toString().trim(),
+                overrideApiKey = apiKeyInput.text.toString().trim()
+            )
+            val answer = if (aiRes.optBoolean("ok")) aiRes.optString("content", "") else aiRes.toString()
+            runOnUiThread {
+                statusView.text = if (aiRes.optBoolean("ok")) {
+                    "Status: SEARCH_OK | Bridge: AndroidNative"
+                } else {
+                    "Status: SEARCH_ERR | Bridge: AndroidNative"
+                }
+                outputView.text = "[SEARCH+AI] $answer"
+            }
+        }
+    }
+
+    inner class AndroidNativeBridge {
+        @JavascriptInterface
+        fun ping(): String {
+            return JSONObject()
+                .put("ok", true)
+                .put("bridge", "AndroidNative")
+                .put("model", modelInput.text.toString())
+                .toString()
         }
 
         @JavascriptInterface
-        fun goBack() {
-            mainHandler.post {
-                try {
-                    if (targetWebView.canGoBack()) {
-                        targetWebView.goBack()
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "goBack failed", e)
-                }
+        fun setConfig(endpoint: String, model: String, apiKey: String, systemPrompt: String): String {
+            val current = configStore.load()
+            configStore.save(
+                current.copy(
+                    endpoint = endpoint.ifBlank { current.endpoint },
+                    model = model.ifBlank { current.model },
+                    apiKey = apiKey,
+                    systemPrompt = systemPrompt.ifBlank { current.systemPrompt }
+                )
+            )
+            runOnUiThread {
+                endpointInput.setText(endpoint.ifBlank { current.endpoint })
+                modelInput.setText(model.ifBlank { current.model })
+                apiKeyInput.setText(apiKey)
             }
+            return JSONObject().put("ok", true).toString()
         }
 
         @JavascriptInterface
-        fun goForward() {
-            mainHandler.post {
-                try {
-                    if (targetWebView.canGoForward()) {
-                        targetWebView.goForward()
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG, "goForward failed", e)
-                }
-            }
+        fun askAi(prompt: String, includePageContext: Boolean): String {
+            val ctx = if (includePageContext) lastPageText else ""
+            val res = aiClient.chatCompletion(
+                userPrompt = prompt,
+                contextText = ctx,
+                overrideEndpoint = endpointInput.text.toString().trim(),
+                overrideModel = modelInput.text.toString().trim(),
+                overrideApiKey = apiKeyInput.text.toString().trim()
+            )
+            return res.toString()
         }
 
         @JavascriptInterface
-        fun postChatCompletion(
-            endpoint: String?,
-            model: String?,
-            apiKey: String?,
-            payloadJson: String?
-        ): String {
-            val url = endpoint?.trim().orEmpty()
-            if (url.isEmpty()) {
-                return JSONObject().put("error", "Brak endpointu AI").toString()
-            }
-            val rawPayload = payloadJson?.trim().orEmpty()
-            if (rawPayload.isEmpty()) {
-                return JSONObject().put("error", "Pusty ładunek JSON").toString()
-            }
-
-            val bodyJson = try {
-                val obj = JSONObject(rawPayload)
-                if (!model.isNullOrBlank()) {
-                    obj.put("model", model.trim())
-                }
-                obj.toString()
-            } catch (e: Exception) {
-                return JSONObject().put("error", "Błędny JSON: ${e.message}").toString()
-            }
-
-            return try {
-                val mediaType = "application/json; charset=utf-8".toMediaType()
-                val reqBody = bodyJson.toRequestBody(mediaType)
-                val reqBuilder = Request.Builder()
-                    .url(url)
-                    .post(reqBody)
-                    .header("Content-Type", "application/json")
-                    .header("Accept", "application/json")
-
-                val token = apiKey?.trim().orEmpty()
-                if (token.isNotEmpty()) {
-                    reqBuilder.header("Authorization", "Bearer $token")
-                }
-
-                httpClient.newCall(reqBuilder.build()).execute().use { resp ->
-                    val respText = resp.body?.string().orEmpty()
-                    if (!resp.isSuccessful) {
-                        JSONObject()
-                            .put("error", "HTTP ${resp.code}: ${resp.message} ${respText.take(400)}")
-                            .toString()
-                    } else if (respText.isBlank()) {
-                        JSONObject().put("error", "Pusta odpowiedź endpointu").toString()
-                    } else {
-                        respText
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "postChatCompletion failed", e)
-                JSONObject()
-                    .put("error", "${e.javaClass.simpleName}: ${e.message ?: "network error"}")
-                    .toString()
-            }
+        fun webSearch(query: String, limit: Int): String {
+            return searchEngine.search(query, limit.coerceIn(1, 15)).toString()
         }
 
-        private fun emitJsError(msg: String) {
-            val quoted = JSONObject.quote("[BRIDGE] $msg")
-            val script = """
-                (function() {
-                  var el = document.getElementById('webConsole');
-                  if (el) {
-                    el.textContent += '\n' + $quoted;
-                  }
-                })();
-            """.trimIndent()
-            mainHandler.post {
-                try {
-                    targetWebView.evaluateJavascript(script, null)
-                } catch (_: Exception) {
-                }
-            }
+        @JavascriptInterface
+        fun fetchPage(url: String): String {
+            return searchEngine.fetchUrlText(url).toString()
         }
     }
 }
