@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="duck_ai"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/shortcut_1_short"
+        android:shortcutLongLabel="@string/shortcut_1_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="pl.tomaszewski.aiweb"
+            android:targetClass="pl.tomaszewski.aiweb.MainActivity"
+            android:data="https://duck.ai" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="ddg_search"
+        android:enabled="true"
+        android:shortcutShortLabel="@string/shortcut_2_short"
+        android:shortcutLongLabel="@string/shortcut_2_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="pl.tomaszewski.aiweb"
+            android:targetClass="pl.tomaszewski.aiweb.MainActivity"
+            android:data="https://duckduckgo.com" />
+    </shortcut>
+</shortcuts>
