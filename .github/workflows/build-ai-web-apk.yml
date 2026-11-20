@@ -8,6 +8,9 @@ on:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    env:
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,11 +21,23 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-        with:
-          api-level: 34
-          build-tools: "34.0.0"
+      - name: Configure Android SDK and licenses
+        run: |
+          mkdir -p "$ANDROID_HOME/licenses"
+          printf "8933bad161af4178b1185d1a37fbf41ea5269c55\nd56f5187479451eabf01fb78af6dfcb131a6481e\n24333f8a63b6825ea9c5514f83c2829b004d1fee\n" > "$ANDROID_HOME/licenses/android-sdk-license"
+          printf "84831b9409646a918e30573bab4c9c91346d8abd\n" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          SDKM=""
+          for c in "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "$ANDROID_HOME/cmdline-tools/16.0/bin/sdkmanager" "$(command -v sdkmanager 2>/dev/null || true)"; do
+            if [ -n "$c" ] && [ -x "$c" ]; then
+              SDKM="$c"
+              break
+            fi
+          done
+          if [ -n "$SDKM" ]; then
+            yes | "$SDKM" --sdk_root="$ANDROID_HOME" "platform-tools" "platforms;android-34" "build-tools;34.0.0" >/dev/null || true
+          fi
+          ls -la "$ANDROID_HOME/platforms" "$ANDROID_HOME/build-tools" || true
 
       - name: Ensure Gradle Wrapper if missing
         run: |
@@ -33,7 +48,8 @@ jobs:
 
       - name: Build Debug and Release APK
         run: |
-          ./gradlew --no-daemon assembleDebug assembleRelease --stacktrace || ./gradlew --no-daemon assembleDebug --stacktrace
+          ./gradlew --no-daemon assembleDebug --stacktrace
+          ./gradlew --no-daemon assembleRelease --stacktrace || true
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
