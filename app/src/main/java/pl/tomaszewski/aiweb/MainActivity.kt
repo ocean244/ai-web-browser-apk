@@ -382,7 +382,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
- else {
+else {
             "https://$target"
         }
         try {
