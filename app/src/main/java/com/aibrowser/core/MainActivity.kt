@@ -1,4 +1,6 @@
 package com.aibrowser.core
+import android.os.Message
+import android.webkit.CookieManager
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         webView = WebView(this)
+        configureAuthResilientWebView(webView)
         setContentView(webView)
 
         val settings = webView.settings
@@ -241,4 +244,111 @@ class MainActivity : AppCompatActivity() {
         ioExecutor.shutdownNow()
         super.onDestroy()
     }
+
+    private fun authStateResilienceJs(): String = """
+        (function() {
+          try {
+            if (window.__authStateBridgeInstalled) return;
+            window.__authStateBridgeInstalled = true;
+            var PREFIX = "__ai_auth_state__:";
+            function writeCookie(k, v) {
+              try {
+                if (!v || v.length > 3500) return;
+                document.cookie = encodeURIComponent(PREFIX + k) + "=" + encodeURIComponent(v) + "; path=/; max-age=1800; SameSite=Lax";
+              } catch (_) {}
+            }
+            function readCookie(k) {
+              try {
+                var target = encodeURIComponent(PREFIX + k) + "=";
+                var parts = (document.cookie || "").split(";");
+                for (var i = 0; i < parts.length; i++) {
+                  var c = parts[i].trim();
+                  if (c.indexOf(target) === 0) {
+                    return decodeURIComponent(c.substring(target.length));
+                  }
+                }
+              } catch (_) {}
+              return null;
+            }
+            var mem = {};
+            var origSetItem = Storage.prototype.setItem;
+            var origGetItem = Storage.prototype.getItem;
+            var origRemoveItem = Storage.prototype.removeItem;
+            Storage.prototype.setItem = function(k, v) {
+              var sKey = String(k);
+              var sVal = String(v);
+              mem[sKey] = sVal;
+              try { origSetItem.call(this, sKey, sVal); } catch (_) {}
+              try { if (this === window.sessionStorage) { window.localStorage.setItem(PREFIX + sKey, sVal); writeCookie(sKey, sVal); } } catch (_) {}
+            };
+            Storage.prototype.getItem = function(k) {
+              var sKey = String(k);
+              try {
+                var direct = origGetItem.call(this, sKey);
+                if (direct !== null && direct !== undefined) return direct;
+              } catch (_) {}
+              if (this === window.sessionStorage) {
+                try {
+                  var ls = window.localStorage.getItem(PREFIX + sKey);
+                  if (ls !== null && ls !== undefined) return ls;
+                } catch (_) {}
+                var ck = readCookie(sKey);
+                if (ck !== null && ck !== undefined) return ck;
+              }
+              return Object.prototype.hasOwnProperty.call(mem, sKey) ? mem[sKey] : null;
+            };
+            Storage.prototype.removeItem = function(k) {
+              var sKey = String(k);
+              delete mem[sKey];
+              try { origRemoveItem.call(this, sKey); } catch (_) {}
+              try { if (this === window.sessionStorage) { window.localStorage.removeItem(PREFIX + sKey); } } catch (_) {}
+            };
+            try {
+              for (var i = 0; i < window.localStorage.length; i++) {
+                var lk = window.localStorage.key(i);
+                if (lk && lk.indexOf(PREFIX) === 0) {
+                  var realK = lk.substring(PREFIX.length);
+                  var lv = window.localStorage.getItem(lk);
+                  if (lv !== null && window.sessionStorage.getItem(realK) === null) {
+                    origSetItem.call(window.sessionStorage, realK, lv);
+                  }
+                }
+              }
+            } catch (_) {}
+          } catch (_) {}
+        })();
+    """.trimIndent()
+
+    private fun configureAuthResilientWebView(targetWebView: WebView) {
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.setAcceptCookie(true)
+        cookieManager.setAcceptThirdPartyCookies(targetWebView, true)
+        cookieManager.flush()
+
+        targetWebView.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            databaseEnabled = true
+            javaScriptCanOpenWindowsAutomatically = true
+            setSupportMultipleWindows(true)
+            mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            cacheMode = WebSettings.LOAD_DEFAULT
+        }
+
+        targetWebView.webChromeClient = object : WebChromeClient() {
+            override fun onCreateWindow(
+                view: WebView?,
+                isDialog: Boolean,
+                isUserGesture: Boolean,
+                resultMsg: Message?
+            ): Boolean {
+                val transport = resultMsg?.obj as? WebView.WebViewTransport ?: return false
+                val popupTarget = view ?: targetWebView
+                transport.webView = popupTarget
+                resultMsg.sendToTarget()
+                return true
+            }
+        }
+    }
+
 }
