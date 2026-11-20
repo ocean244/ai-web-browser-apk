@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <link rel="icon" href="data:," />
           <title>AI Web Browser</title>
           <style>
             * { box-sizing: border-box; }
@@ -521,6 +522,11 @@ class MainActivity : AppCompatActivity() {
                 super.onReceivedError(view, request, error)
                 val desc = error?.description?.toString().orEmpty()
                 val reqUrl = request?.url?.toString().orEmpty()
+                val isMainFrame = request?.isForMainFrame ?: true
+                if (!isMainFrame || reqUrl.endsWith("/favicon.ico", ignoreCase = true)) {
+                    Log.w(TAG, "Ignored subresource error ($reqUrl): $desc")
+                    return
+                }
                 Log.e(TAG, "WebView error ($reqUrl): $desc")
                 mainHandler.post {
                     statusText.text = "Status: WEB_ERR | $desc"
