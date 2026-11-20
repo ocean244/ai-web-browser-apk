@@ -383,6 +383,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+}
+
     fun loadTargetUrl(url: String) {
         val target = url.trim()
         if (target.isEmpty()) return
@@ -395,5 +397,4 @@ class MainActivity : AppCompatActivity() {
             webView.loadUrl(resolved)
         } catch (_: Throwable) {}
     }
-}
 }

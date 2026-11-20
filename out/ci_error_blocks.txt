@@ -1,515 +1,102 @@
 ============================================================
-RUN_ID: 44693541373
-{"conclusion":"failure","createdAt":"2026-11-20T07:14:48Z","headBranch":"main","headSha":"7feccac7a1215fd0cfaceebdb254327a38f079fc","status":"completed","url":"https://github.com/ocean244/ai-web-browser-apk/actions/runs/44693541373"}
+RUN_ID: 44693896258
+{"conclusion":"failure","createdAt":"2026-11-20T07:17:38Z","headBranch":"main","headSha":"926dc9560742c2beb304b08ae3768d9dd7194a15","status":"completed","url":"https://github.com/ocean244/ai-web-browser-apk/actions/runs/44693896258"}
 --- FAILED LOGS (RAW) ---
-build-and-release	Build Signed Release APK	﻿2026-11-20T07:15:05.5503238Z ##[group]Run gradle assembleRelease --no-daemon
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5503644Z ^[[36;1mgradle assembleRelease --no-daemon^[[0m
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5519034Z shell: /usr/bin/bash -e {0}
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5519287Z env:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5519633Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5520109Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5520498Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5521142Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5521647Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5522067Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5522508Z   DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE: gradle-actions
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5522843Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5523203Z   RELEASE_STORE_FILE: keystore/release.jks
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5523671Z   RELEASE_STORE_PASSWORD: ***
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5524095Z   RELEASE_KEY_ALIAS: ***
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5524384Z   RELEASE_KEY_PASSWORD: ***
-build-and-release	Build Signed Release APK	2026-11-20T07:15:05.5524649Z ##[endgroup]
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.6070279Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.6071451Z Welcome to Gradle 8.7!
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.6071894Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.6072206Z Here are the highlights of this release:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.6072971Z  - Compiling and testing with Java 22
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.6073479Z  - Cacheable Groovy script compilation
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.6074105Z  - New methods in lazy collection properties
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.6074493Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.6075403Z For more details see https://docs.gradle.org/8.7/release-notes.html
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.6075861Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:15:06.8054383Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.7/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:08.2062682Z Daemon will be stopped at the end of the build 
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2073963Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2129702Z FAILURE: Build failed with an exception.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2168539Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2197731Z * What went wrong:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2242160Z A problem occurred configuring root project 'AIWebBrowser'.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2258805Z > Could not resolve all artifacts for configuration ':classpath'.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2259935Z    > Could not find org.jetbrains.kotlin:kotlin-reflect:1.9.22.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2260685Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2261791Z        - https://dl.google.com/dl/android/maven2/org/jetbrains/kotlin/kotlin-reflect/1.9.22/kotlin-reflect-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2262888Z        - https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.9.22/kotlin-reflect-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2263681Z        - https://plugins.gradle.org/m2/org/jetbrains/kotlin/kotlin-reflect/1.9.22/kotlin-reflect-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2264327Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2264704Z          project :
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2265151Z    > Could not find org.jetbrains:annotations:13.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2265657Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2266245Z        - https://dl.google.com/dl/android/maven2/org/jetbrains/annotations/13.0/annotations-13.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2267989Z        - https://repo.maven.apache.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2268713Z        - https://plugins.gradle.org/m2/org/jetbrains/annotations/13.0/annotations-13.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2269403Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2269785Z          project :
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2270157Z    > Could not find org.jetbrains.kotlin:kotlin-stdlib:1.9.22.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2270596Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2271461Z        - https://dl.google.com/dl/android/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.9.22/kotlin-stdlib-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2273278Z        - https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.9.22/kotlin-stdlib-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2274120Z        - https://plugins.gradle.org/m2/org/jetbrains/kotlin/kotlin-stdlib/1.9.22/kotlin-stdlib-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2274735Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2275007Z          project :
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2275499Z    > Could not resolve org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2275983Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2276452Z          project : > org.jetbrains.kotlin.android:org.jetbrains.kotlin.android.gradle.plugin:1.9.24
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2277354Z       > Could not resolve org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2278173Z          > Could not parse POM https://plugins.gradle.org/m2/org/jetbrains/kotlin/kotlin-gradle-plugin/1.9.24/kotlin-gradle-plugin-1.9.24.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2279018Z             > Could not find org.jetbrains.kotlin:kotlin-gradle-plugins-bom:1.9.24.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2279606Z               Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2280468Z                 - https://dl.google.com/dl/android/maven2/org/jetbrains/kotlin/kotlin-gradle-plugins-bom/1.9.24/kotlin-gradle-plugins-bom-1.9.24.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2284703Z                 - https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-gradle-plugins-bom/1.9.24/kotlin-gradle-plugins-bom-1.9.24.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2285905Z                 - https://plugins.gradle.org/m2/org/jetbrains/kotlin/kotlin-gradle-plugins-bom/1.9.24/kotlin-gradle-plugins-bom-1.9.24.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2286731Z    > Could not find org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.20.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2287494Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2288363Z        - https://dl.google.com/dl/android/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.9.20/kotlin-stdlib-jdk8-1.9.20.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2289303Z        - https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.9.20/kotlin-stdlib-jdk8-1.9.20.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2290250Z        - https://plugins.gradle.org/m2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.9.20/kotlin-stdlib-jdk8-1.9.20.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2291216Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2292017Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2293389Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:gradle-settings-api:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2294817Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2296304Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:repository:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2297582Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:aaptcompiler:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2298836Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.analytics-library:shared:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2300060Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.lint:lint-model:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2303552Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > androidx.databinding:databinding-compiler-common:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2305390Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-host-emulator-control-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2307515Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-host-retention-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2308971Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2310244Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder-model:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2312061Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:gradle-api:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2313456Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2 > com.android.tools:common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2315236Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2 > com.android.tools.analytics-library:tracker:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2317129Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2 > com.android.tools.build:manifest-merger:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2318265Z    > Could not find org.apache.httpcomponents:httpmime:4.5.6.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2318874Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2319516Z        - https://dl.google.com/dl/android/maven2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2320437Z        - https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2321438Z        - https://plugins.gradle.org/m2/org/apache/httpcomponents/httpmime/4.5.6/httpmime-4.5.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2322051Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2322738Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2323878Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdklib:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2325612Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.analytics-library:crash:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2326537Z    > Could not find commons-io:commons-io:2.13.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2327040Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2327566Z        - https://dl.google.com/dl/android/maven2/commons-io/commons-io/2.13.0/commons-io-2.13.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2328309Z        - https://repo.maven.apache.org/maven2/commons-io/commons-io/2.13.0/commons-io-2.13.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2329088Z        - https://plugins.gradle.org/m2/commons-io/commons-io/2.13.0/commons-io-2.13.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2329585Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2330405Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2332803Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > androidx.databinding:databinding-compiler-common:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2333629Z    > Could not find org.ow2.asm:asm:9.6.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2334022Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2334464Z        - https://dl.google.com/dl/android/maven2/org/ow2/asm/asm/9.6/asm-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2335046Z        - https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.6/asm-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2335774Z        - https://plugins.gradle.org/m2/org/ow2/asm/asm/9.6/asm-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2336605Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2337277Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2338573Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.lint:lint-typedef-remover:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2339883Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:gradle-api:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2341061Z    > Could not find org.ow2.asm:asm-analysis:9.6.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2341562Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2342134Z        - https://dl.google.com/dl/android/maven2/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2342909Z        - https://repo.maven.apache.org/maven2/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2343552Z        - https://plugins.gradle.org/m2/org/ow2/asm/asm-analysis/9.6/asm-analysis-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2344102Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2344758Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2345480Z    > Could not find org.ow2.asm:asm-commons:9.6.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2345885Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2346415Z        - https://dl.google.com/dl/android/maven2/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2347128Z        - https://repo.maven.apache.org/maven2/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2347790Z        - https://plugins.gradle.org/m2/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2348246Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2348806Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2353033Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2357419Z    > Could not find org.ow2.asm:asm-util:9.6.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2357859Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2358461Z        - https://dl.google.com/dl/android/maven2/org/ow2/asm/asm-util/9.6/asm-util-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2359097Z        - https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/9.6/asm-util-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2359808Z        - https://plugins.gradle.org/m2/org/ow2/asm/asm-util/9.6/asm-util-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2360245Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2360666Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2361716Z    > Could not find org.bouncycastle:bcpkix-jdk18on:1.77.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2362130Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2362722Z        - https://dl.google.com/dl/android/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2363521Z        - https://repo.maven.apache.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2364443Z        - https://plugins.gradle.org/m2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2365064Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2365761Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2366930Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2368057Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2369744Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2 > com.android.tools.build:apkzlib:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2370807Z    > Could not find org.glassfish.jaxb:jaxb-runtime:2.3.2.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2371535Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2372202Z        - https://dl.google.com/dl/android/maven2/org/glassfish/jaxb/jaxb-runtime/2.3.2/jaxb-runtime-2.3.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2373240Z        - https://repo.maven.apache.org/maven2/org/glassfish/jaxb/jaxb-runtime/2.3.2/jaxb-runtime-2.3.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2374104Z        - https://plugins.gradle.org/m2/org/glassfish/jaxb/jaxb-runtime/2.3.2/jaxb-runtime-2.3.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2374740Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2375453Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2376498Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2377338Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdklib:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2378269Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:repository:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2379184Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > androidx.databinding:databinding-compiler-common:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2379878Z    > Could not find net.sf.jopt-simple:jopt-simple:4.9.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2380192Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2380623Z        - https://dl.google.com/dl/android/maven2/net/sf/jopt-simple/jopt-simple/4.9/jopt-simple-4.9.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2381538Z        - https://repo.maven.apache.org/maven2/net/sf/jopt-simple/jopt-simple/4.9/jopt-simple-4.9.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2382198Z        - https://plugins.gradle.org/m2/net/sf/jopt-simple/jopt-simple/4.9/jopt-simple-4.9.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2382664Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2383325Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2383970Z    > Could not find com.squareup:javapoet:1.10.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2384417Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2384960Z        - https://dl.google.com/dl/android/maven2/com/squareup/javapoet/1.10.0/javapoet-1.10.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2385769Z        - https://repo.maven.apache.org/maven2/com/squareup/javapoet/1.10.0/javapoet-1.10.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2386463Z        - https://plugins.gradle.org/m2/com/squareup/javapoet/1.10.0/javapoet-1.10.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2387035Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2387619Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2388745Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > androidx.databinding:databinding-compiler-common:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2389404Z    > Could not find com.google.protobuf:protobuf-java:3.22.3.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2389760Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2390245Z        - https://dl.google.com/dl/android/maven2/com/google/protobuf/protobuf-java/3.22.3/protobuf-java-3.22.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2391088Z        - https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-java/3.22.3/protobuf-java-3.22.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2392013Z        - https://plugins.gradle.org/m2/com/google/protobuf/protobuf-java/3.22.3/protobuf-java-3.22.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2392825Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2393441Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2394809Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2396137Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.ddms:ddmlib:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2397723Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:aapt2-proto:8.5.2-11315950
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2399175Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:aaptcompiler:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2400706Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-device-provider-ddmlib-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2402527Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-device-provider-gradle-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2404260Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-host-additional-test-output-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2406045Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-host-coverage-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2407760Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-host-emulator-control-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2409501Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-host-logcat-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2411543Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-host-apk-installer-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2413281Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-host-retention-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2415003Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-result-listener-gradle-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2416640Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:bundletool:1.16.0
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2418285Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.analytics-library:shared:31.5.2 > com.android.tools.analytics-library:protos:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2420153Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2 > com.android.tools.analytics-library:tracker:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2421579Z    > Could not find com.google.protobuf:protobuf-java-util:3.22.3.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2422123Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2423078Z        - https://dl.google.com/dl/android/maven2/com/google/protobuf/protobuf-java-util/3.22.3/protobuf-java-util-3.22.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2424276Z        - https://repo.maven.apache.org/maven2/com/google/protobuf/protobuf-java-util/3.22.3/protobuf-java-util-3.22.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2425343Z        - https://plugins.gradle.org/m2/com/google/protobuf/protobuf-java-util/3.22.3/protobuf-java-util-3.22.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2426092Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2426739Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2427988Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:bundletool:1.16.0
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2429016Z    > Could not find com.google.code.gson:gson:2.10.1.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2429506Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2430123Z        - https://dl.google.com/dl/android/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2431076Z        - https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2431836Z        - https://plugins.gradle.org/m2/com/google/code/gson/gson/2.10.1/gson-2.10.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2432429Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2433129Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2434305Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2435666Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdklib:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2437038Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.analytics-library:shared:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2438550Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > androidx.databinding:databinding-compiler-common:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2440139Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-result-listener-gradle-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2442021Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2 > com.android.tools.build:manifest-merger:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2443146Z    > Could not find io.grpc:grpc-core:1.57.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2443574Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2444309Z        - https://dl.google.com/dl/android/maven2/io/grpc/grpc-core/1.57.0/grpc-core-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2445087Z        - https://repo.maven.apache.org/maven2/io/grpc/grpc-core/1.57.0/grpc-core-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2445816Z        - https://plugins.gradle.org/m2/io/grpc/grpc-core/1.57.0/grpc-core-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2446423Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2447105Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2448540Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-result-listener-gradle-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2449674Z    > Could not find io.grpc:grpc-netty:1.57.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2450121Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2450706Z        - https://dl.google.com/dl/android/maven2/io/grpc/grpc-netty/1.57.0/grpc-netty-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2451696Z        - https://repo.maven.apache.org/maven2/io/grpc/grpc-netty/1.57.0/grpc-netty-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2452464Z        - https://plugins.gradle.org/m2/io/grpc/grpc-netty/1.57.0/grpc-netty-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2452922Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2453516Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2454716Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-result-listener-gradle-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2455806Z    > Could not find io.grpc:grpc-protobuf:1.57.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2456230Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2456833Z        - https://dl.google.com/dl/android/maven2/io/grpc/grpc-protobuf/1.57.0/grpc-protobuf-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2457737Z        - https://repo.maven.apache.org/maven2/io/grpc/grpc-protobuf/1.57.0/grpc-protobuf-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2458505Z        - https://plugins.gradle.org/m2/io/grpc/grpc-protobuf/1.57.0/grpc-protobuf-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2459088Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2459765Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2461326Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-result-listener-gradle-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2462435Z    > Could not find io.grpc:grpc-stub:1.57.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2462885Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2463480Z        - https://dl.google.com/dl/android/maven2/io/grpc/grpc-stub/1.57.0/grpc-stub-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2464259Z        - https://repo.maven.apache.org/maven2/io/grpc/grpc-stub/1.57.0/grpc-stub-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2464981Z        - https://plugins.gradle.org/m2/io/grpc/grpc-stub/1.57.0/grpc-stub-1.57.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2465532Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2466217Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2467585Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-result-listener-gradle-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2468665Z    > Could not find com.google.crypto.tink:tink:1.7.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2469178Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2469771Z        - https://dl.google.com/dl/android/maven2/com/google/crypto/tink/tink/1.7.0/tink-1.7.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2470543Z        - https://repo.maven.apache.org/maven2/com/google/crypto/tink/tink/1.7.0/tink-1.7.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2471564Z        - https://plugins.gradle.org/m2/com/google/crypto/tink/tink/1.7.0/tink-1.7.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2472091Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2472822Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2473574Z    > Could not find net.sf.kxml:kxml2:2.3.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2474006Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2474579Z        - https://dl.google.com/dl/android/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2475289Z        - https://repo.maven.apache.org/maven2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2475985Z        - https://plugins.gradle.org/m2/net/sf/kxml/kxml2/2.3.0/kxml2-2.3.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2476510Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2477179Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2478363Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2480037Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.ddms:ddmlib:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2481561Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.lint:lint-model:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2482998Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.layoutlib:layoutlib-api:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2484556Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2 > com.android.tools.build:manifest-merger:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2485795Z    > Could not find com.google.flatbuffers:flatbuffers-java:1.12.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2486356Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2487113Z        - https://dl.google.com/dl/android/maven2/com/google/flatbuffers/flatbuffers-java/1.12.0/flatbuffers-java-1.12.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2488219Z        - https://repo.maven.apache.org/maven2/com/google/flatbuffers/flatbuffers-java/1.12.0/flatbuffers-java-1.12.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2489225Z        - https://plugins.gradle.org/m2/com/google/flatbuffers/flatbuffers-java/1.12.0/flatbuffers-java-1.12.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2489916Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2490641Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2491607Z    > Could not find org.tensorflow:tensorflow-lite-metadata:0.1.0-rc2.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2492228Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2493061Z        - https://dl.google.com/dl/android/maven2/org/tensorflow/tensorflow-lite-metadata/0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2494215Z        - https://repo.maven.apache.org/maven2/org/tensorflow/tensorflow-lite-metadata/0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2495352Z        - https://plugins.gradle.org/m2/org/tensorflow/tensorflow-lite-metadata/0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2496052Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2496724Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2497535Z    > Could not find com.google.guava:guava:32.0.1-jre.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2498004Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2498568Z        - https://dl.google.com/dl/android/maven2/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2499356Z        - https://repo.maven.apache.org/maven2/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2500076Z        - https://plugins.gradle.org/m2/com/google/guava/guava/32.0.1-jre/guava-32.0.1-jre.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2500641Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2501852Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2503061Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:aaptcompiler:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2504421Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.analytics-library:crash:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2505927Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.analytics-library:shared:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2507477Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.lint:lint-typedef-remover:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2509153Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > androidx.databinding:databinding-compiler-common:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2510663Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder-test-api:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2512477Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-result-listener-gradle-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2514192Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:bundletool:1.16.0
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2515659Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:gradle-api:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2517004Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2 > com.android.tools:common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2518642Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2 > com.android.tools.analytics-library:tracker:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2520317Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2 > com.android.tools.build:apkzlib:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2521572Z    > Could not find javax.inject:javax.inject:1.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2522089Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2522671Z        - https://dl.google.com/dl/android/maven2/javax/inject/javax.inject/1/javax.inject-1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2523523Z        - https://repo.maven.apache.org/maven2/javax/inject/javax.inject/1/javax.inject-1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2524342Z        - https://plugins.gradle.org/m2/javax/inject/javax.inject/1/javax.inject-1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2524885Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2525733Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2527062Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:bundletool:1.16.0
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2528485Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2529441Z    > Could not find org.bouncycastle:bcprov-jdk18on:1.77.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2529931Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2530659Z        - https://dl.google.com/dl/android/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2531780Z        - https://repo.maven.apache.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2532706Z        - https://plugins.gradle.org/m2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2533345Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2534152Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2535522Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2537004Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2 > com.android.tools.build:apkzlib:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2538248Z    > Could not find org.jetbrains.intellij.deps:trove4j:1.0.20200330.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2538772Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2539513Z        - https://dl.google.com/dl/android/maven2/org/jetbrains/intellij/deps/trove4j/1.0.20200330/trove4j-1.0.20200330.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2540550Z        - https://repo.maven.apache.org/maven2/org/jetbrains/intellij/deps/trove4j/1.0.20200330/trove4j-1.0.20200330.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2541980Z        - https://plugins.gradle.org/m2/org/jetbrains/intellij/deps/trove4j/1.0.20200330/trove4j-1.0.20200330.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2542644Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2543467Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2544471Z    > Could not find org.jetbrains.kotlin:kotlin-reflect:1.9.22.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2544975Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2545712Z        - https://dl.google.com/dl/android/maven2/org/jetbrains/kotlin/kotlin-reflect/1.9.22/kotlin-reflect-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2546673Z        - https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-reflect/1.9.22/kotlin-reflect-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2547615Z        - https://plugins.gradle.org/m2/org/jetbrains/kotlin/kotlin-reflect/1.9.22/kotlin-reflect-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2548249Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2549008Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2549986Z    > Could not find org.apache.commons:commons-compress:1.21.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2550451Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2551316Z        - https://dl.google.com/dl/android/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2552313Z        - https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/1.21/commons-compress-1.21.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2553503Z        - https://plugins.gradle.org/m2/org/apache/commons/commons-compress/1.21/commons-compress-1.21.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2554149Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2554893Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdklib:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2556260Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:repository:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2557200Z    > Could not find org.apache.httpcomponents:httpcore:4.4.16.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2557699Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2558340Z        - https://dl.google.com/dl/android/maven2/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2559262Z        - https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2560131Z        - https://plugins.gradle.org/m2/org/apache/httpcomponents/httpcore/4.4.16/httpcore-4.4.16.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2560726Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2561674Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdklib:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2562973Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.analytics-library:crash:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2564171Z    > Could not find com.google.jimfs:jimfs:1.1.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2564602Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2565141Z        - https://dl.google.com/dl/android/maven2/com/google/jimfs/jimfs/1.1/jimfs-1.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2566179Z        - https://repo.maven.apache.org/maven2/com/google/jimfs/jimfs/1.1/jimfs-1.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2566898Z        - https://plugins.gradle.org/m2/com/google/jimfs/jimfs/1.1/jimfs-1.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2567463Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2568275Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:repository:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2569244Z    > Could not find com.sun.activation:javax.activation:1.2.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2569887Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2570591Z        - https://dl.google.com/dl/android/maven2/com/sun/activation/javax.activation/1.2.0/javax.activation-1.2.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2571885Z        - https://repo.maven.apache.org/maven2/com/sun/activation/javax.activation/1.2.0/javax.activation-1.2.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2572870Z        - https://plugins.gradle.org/m2/com/sun/activation/javax.activation/1.2.0/javax.activation-1.2.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2573565Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2574389Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:repository:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2575351Z    > Could not find org.jetbrains:annotations:13.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2575843Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2576448Z        - https://dl.google.com/dl/android/maven2/org/jetbrains/annotations/13.0/annotations-13.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2577349Z        - https://repo.maven.apache.org/maven2/org/jetbrains/annotations/13.0/annotations-13.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2578158Z        - https://plugins.gradle.org/m2/org/jetbrains/annotations/13.0/annotations-13.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2578822Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2579617Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.ddms:ddmlib:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2581182Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.layoutlib:layoutlib-api:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2582306Z    > Could not find org.apache.httpcomponents:httpclient:4.5.14.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2582822Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2583543Z        - https://dl.google.com/dl/android/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2584546Z        - https://repo.maven.apache.org/maven2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2585465Z        - https://plugins.gradle.org/m2/org/apache/httpcomponents/httpclient/4.5.14/httpclient-4.5.14.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2586145Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2586987Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.analytics-library:crash:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2587991Z    > Could not find net.java.dev.jna:jna-platform:5.6.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2588475Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2589134Z        - https://dl.google.com/dl/android/maven2/net/java/dev/jna/jna-platform/5.6.0/jna-platform-5.6.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2589997Z        - https://repo.maven.apache.org/maven2/net/java/dev/jna/jna-platform/5.6.0/jna-platform-5.6.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2590997Z        - https://plugins.gradle.org/m2/net/java/dev/jna/jna-platform/5.6.0/jna-platform-5.6.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2591635Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2592481Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.analytics-library:shared:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2594031Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools:sdk-common:31.5.2 > com.android.tools:common:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2595318Z    > Could not find com.googlecode.juniversalchardet:juniversalchardet:1.0.3.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2595928Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2596697Z        - https://dl.google.com/dl/android/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2597858Z        - https://repo.maven.apache.org/maven2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2599080Z        - https://plugins.gradle.org/m2/com/googlecode/juniversalchardet/juniversalchardet/1.0.3/juniversalchardet-1.0.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2599787Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2600706Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > androidx.databinding:databinding-compiler-common:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2601876Z    > Could not find javax.annotation:javax.annotation-api:1.3.2.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2602445Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2603174Z        - https://dl.google.com/dl/android/maven2/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2604220Z        - https://repo.maven.apache.org/maven2/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2605513Z        - https://plugins.gradle.org/m2/javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2606205Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2607284Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.utp:android-test-plugin-result-listener-gradle-proto:31.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2608537Z    > Could not find com.google.auto.value:auto-value-annotations:1.6.2.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2609125Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2609949Z        - https://dl.google.com/dl/android/maven2/com/google/auto/value/auto-value-annotations/1.6.2/auto-value-annotations-1.6.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2611396Z        - https://repo.maven.apache.org/maven2/com/google/auto/value/auto-value-annotations/1.6.2/auto-value-annotations-1.6.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2612614Z        - https://plugins.gradle.org/m2/com/google/auto/value/auto-value-annotations/1.6.2/auto-value-annotations-1.6.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2613395Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2614294Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:bundletool:1.16.0
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2615372Z    > Could not find com.google.errorprone:error_prone_annotations:2.3.1.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2616003Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2616817Z        - https://dl.google.com/dl/android/maven2/com/google/errorprone/error_prone_annotations/2.3.1/error_prone_annotations-2.3.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2617989Z        - https://repo.maven.apache.org/maven2/com/google/errorprone/error_prone_annotations/2.3.1/error_prone_annotations-2.3.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2619154Z        - https://plugins.gradle.org/m2/com/google/errorprone/error_prone_annotations/2.3.1/error_prone_annotations-2.3.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2619829Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2620746Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:bundletool:1.16.0
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2621886Z    > Could not find com.google.dagger:dagger:2.28.3.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2622328Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2623044Z        - https://dl.google.com/dl/android/maven2/com/google/dagger/dagger/2.28.3/dagger-2.28.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2623867Z        - https://repo.maven.apache.org/maven2/com/google/dagger/dagger/2.28.3/dagger-2.28.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2624642Z        - https://plugins.gradle.org/m2/com/google/dagger/dagger/2.28.3/dagger-2.28.3.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2625379Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2626185Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:bundletool:1.16.0
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2627160Z    > Could not find org.bitbucket.b_c:jose4j:0.9.5.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2627579Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2628195Z        - https://dl.google.com/dl/android/maven2/org/bitbucket/b_c/jose4j/0.9.5/jose4j-0.9.5.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2629094Z        - https://repo.maven.apache.org/maven2/org/bitbucket/b_c/jose4j/0.9.5/jose4j-0.9.5.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2629818Z        - https://plugins.gradle.org/m2/org/bitbucket/b_c/jose4j/0.9.5/jose4j-0.9.5.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2630353Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2631358Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:bundletool:1.16.0
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2632238Z    > Could not find org.slf4j:slf4j-api:1.7.30.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2632666Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2633304Z        - https://dl.google.com/dl/android/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2634050Z        - https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2634769Z        - https://plugins.gradle.org/m2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2635334Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2636110Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:bundletool:1.16.0
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2637103Z    > Could not find com.google.code.gson:gson:2.10.1.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2637540Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2638123Z        - https://dl.google.com/dl/android/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2638898Z        - https://repo.maven.apache.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2639603Z        - https://plugins.gradle.org/m2/com/google/code/gson/gson/2.10.1/gson-2.10.1.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2640161Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2641175Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build.jetifier:jetifier-core:1.0.0-beta10
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2642232Z    > Could not find org.jetbrains.kotlin:kotlin-stdlib:1.9.22.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2642702Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2643444Z        - https://dl.google.com/dl/android/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.9.22/kotlin-stdlib-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2644459Z        - https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.9.22/kotlin-stdlib-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2645419Z        - https://plugins.gradle.org/m2/org/jetbrains/kotlin/kotlin-stdlib/1.9.22/kotlin-stdlib-1.9.22.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2646056Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2646941Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build.jetifier:jetifier-core:1.0.0-beta10
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2648516Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta10
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2649470Z    > Could not find org.ow2.asm:asm:9.6.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2649950Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2650462Z        - https://dl.google.com/dl/android/maven2/org/ow2/asm/asm/9.6/asm-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2651310Z        - https://repo.maven.apache.org/maven2/org/ow2/asm/asm/9.6/asm-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2652136Z        - https://plugins.gradle.org/m2/org/ow2/asm/asm/9.6/asm-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2652601Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2653487Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta10
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2654476Z    > Could not find org.ow2.asm:asm-util:9.6.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2654921Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2655487Z        - https://dl.google.com/dl/android/maven2/org/ow2/asm/asm-util/9.6/asm-util-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2656292Z        - https://repo.maven.apache.org/maven2/org/ow2/asm/asm-util/9.6/asm-util-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2657001Z        - https://plugins.gradle.org/m2/org/ow2/asm/asm-util/9.6/asm-util-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2657524Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2658457Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta10
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2659442Z    > Could not find org.ow2.asm:asm-commons:9.6.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2659903Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2660525Z        - https://dl.google.com/dl/android/maven2/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2661517Z        - https://repo.maven.apache.org/maven2/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2662286Z        - https://plugins.gradle.org/m2/org/ow2/asm/asm-commons/9.6/asm-commons-9.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2662813Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2663690Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta10
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2664701Z    > Could not find org.jdom:jdom2:2.0.6.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2665082Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2665644Z        - https://dl.google.com/dl/android/maven2/org/jdom/jdom2/2.0.6/jdom2-2.0.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2666332Z        - https://repo.maven.apache.org/maven2/org/jdom/jdom2/2.0.6/jdom2-2.0.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2666968Z        - https://plugins.gradle.org/m2/org/jdom/jdom2/2.0.6/jdom2-2.0.6.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2667475Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2668355Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build.jetifier:jetifier-processor:1.0.0-beta10
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2669385Z    > Could not find commons-codec:commons-codec:1.10.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2669836Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2670513Z        - https://dl.google.com/dl/android/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2671641Z        - https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2672541Z        - https://plugins.gradle.org/m2/commons-codec/commons-codec/1.10/commons-codec-1.10.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2673111Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2674879Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2675816Z    > Could not find com.squareup:javawriter:2.5.0.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2676234Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2676918Z        - https://dl.google.com/dl/android/maven2/com/squareup/javawriter/2.5.0/javawriter-2.5.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2677716Z        - https://repo.maven.apache.org/maven2/com/squareup/javawriter/2.5.0/javawriter-2.5.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2678538Z        - https://plugins.gradle.org/m2/com/squareup/javawriter/2.5.0/javawriter-2.5.0.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2679088Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2679785Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2681071Z    > Could not find com.google.code.findbugs:jsr305:3.0.2.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2681675Z      Searched in the following locations:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2682382Z        - https://dl.google.com/dl/android/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2683214Z        - https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2684316Z        - https://plugins.gradle.org/m2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.pom
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2684929Z      Required by:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2685992Z          project : > com.android.application:com.android.application.gradle.plugin:8.5.2 > com.android.tools.build:gradle:8.5.2 > com.android.tools.build:builder:8.5.2 > com.android.tools.build:apkzlib:8.5.2
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2686894Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2687035Z * Try:
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2687409Z > Run with --stacktrace option to get the stack trace.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2688094Z > Run with --info or --debug option to get more log output.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2688582Z > Run with --scan to get full insights.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2689012Z > Get more help at https://help.gradle.org.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2689299Z 
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2689448Z BUILD FAILED in 22s
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.6399625Z ##[error]Process completed with exit code 1.
+build-and-release	Build Signed Release APK	﻿2026-11-20T07:17:50.2762150Z ##[group]Run gradle assembleRelease --no-daemon
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2762578Z ^[[36;1mgradle assembleRelease --no-daemon^[[0m
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2808516Z shell: /usr/bin/bash -e {0}
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2808793Z env:
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2809120Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2809649Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/x64
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2810112Z   GRADLE_ACTION_ID: gradle/actions/setup-gradle
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2810455Z   GRADLE_BUILD_ACTION_SETUP_COMPLETED: true
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2810967Z   GRADLE_BUILD_ACTION_CACHE_RESTORED: true
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2811423Z   DEVELOCITY_INJECTION_INIT_SCRIPT_NAME: gradle-actions.inject-develocity.init.gradle
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2811947Z   DEVELOCITY_AUTO_INJECTION_CUSTOM_VALUE: gradle-actions
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2812296Z   GITHUB_DEPENDENCY_GRAPH_ENABLED: false
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2812601Z   RELEASE_STORE_FILE: keystore/release.jks
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2812971Z   RELEASE_STORE_PASSWORD: ***
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2813295Z   RELEASE_KEY_ALIAS: ***
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2813606Z   RELEASE_KEY_PASSWORD: ***
+build-and-release	Build Signed Release APK	2026-11-20T07:17:50.2814150Z ##[endgroup]
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.1711869Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.1713379Z Welcome to Gradle 8.7!
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.1714047Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.1714772Z Here are the highlights of this release:
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.1722630Z  - Compiling and testing with Java 22
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.1723442Z  - Cacheable Groovy script compilation
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.1724241Z  - New methods in lazy collection properties
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.1724740Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.1725104Z For more details see https://docs.gradle.org/8.7/release-notes.html
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.1725633Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:17:51.3655765Z To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.7/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+build-and-release	Build Signed Release APK	2026-11-20T07:17:52.8649672Z Daemon will be stopped at the end of the build 
+build-and-release	Build Signed Release APK	2026-11-20T07:18:50.3690427Z > Task :app:buildKotlinToolingMetadata
+build-and-release	Build Signed Release APK	2026-11-20T07:18:50.3691449Z > Task :app:checkKotlinGradlePluginConfigurationErrors
+build-and-release	Build Signed Release APK	2026-11-20T07:18:50.3692417Z > Task :app:preBuild UP-TO-DATE
+build-and-release	Build Signed Release APK	2026-11-20T07:18:50.3693193Z > Task :app:preReleaseBuild UP-TO-DATE
+build-and-release	Build Signed Release APK	2026-11-20T07:18:56.4654110Z > Task :app:generateReleaseResValues
+build-and-release	Build Signed Release APK	2026-11-20T07:18:56.5655051Z > Task :app:checkReleaseAarMetadata
+build-and-release	Build Signed Release APK	2026-11-20T07:18:56.6648899Z > Task :app:mapReleaseSourceSetPaths
+build-and-release	Build Signed Release APK	2026-11-20T07:18:56.6649893Z > Task :app:generateReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T07:18:58.7695428Z > Task :app:packageReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T07:18:59.8649028Z > Task :app:mergeReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T07:18:59.9650680Z > Task :app:createReleaseCompatibleScreenManifests
+build-and-release	Build Signed Release APK	2026-11-20T07:18:59.9652020Z > Task :app:extractDeepLinksRelease
+build-and-release	Build Signed Release APK	2026-11-20T07:19:00.0654804Z > Task :app:parseReleaseLocalResources
+build-and-release	Build Signed Release APK	2026-11-20T07:19:00.2689756Z > Task :app:processReleaseMainManifest
+build-and-release	Build Signed Release APK	2026-11-20T07:19:00.3672055Z > Task :app:processReleaseManifest
+build-and-release	Build Signed Release APK	2026-11-20T07:19:00.3696794Z > Task :app:processReleaseManifestForPackage
+build-and-release	Build Signed Release APK	2026-11-20T07:19:00.5654416Z > Task :app:javaPreCompileRelease
+build-and-release	Build Signed Release APK	2026-11-20T07:19:00.5685466Z > Task :app:extractProguardFiles
+build-and-release	Build Signed Release APK	2026-11-20T07:19:00.5724147Z > Task :app:mergeReleaseJniLibFolders
+build-and-release	Build Signed Release APK	2026-11-20T07:19:01.0685355Z > Task :app:mergeReleaseNativeLibs NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T07:19:01.0706112Z > Task :app:stripReleaseDebugSymbols NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T07:19:01.0707247Z > Task :app:extractReleaseNativeSymbolTables NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T07:19:01.0708384Z > Task :app:mergeReleaseNativeDebugMetadata NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T07:19:01.5655314Z > Task :app:processReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T07:19:01.6664984Z > Task :app:checkReleaseDuplicateClasses
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.1652360Z > Task :app:mergeReleaseStartupProfile
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.1659527Z > Task :app:mergeReleaseArtProfile
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.1675684Z > Task :app:mergeReleaseShaders
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.1677089Z > Task :app:compileReleaseShaders NO-SOURCE
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.1707887Z > Task :app:generateReleaseAssets UP-TO-DATE
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.2649789Z > Task :app:mergeReleaseAssets
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.2674592Z > Task :app:compressReleaseAssets
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.3674980Z > Task :app:extractReleaseVersionControlInfo
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.3704899Z > Task :app:processApplicationManifestReleaseForBundle
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.5656353Z > Task :app:collectReleaseDependencies
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.6660500Z > Task :app:sdkReleaseDependencyData
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.6686199Z > Task :app:validateSigningRelease
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.6687644Z > Task :app:writeReleaseAppMetadata
+build-and-release	Build Signed Release APK	2026-11-20T07:19:05.6688468Z > Task :app:writeReleaseSigningConfigVersions
+build-and-release	Build Signed Release APK	2026-11-20T07:19:06.2654989Z > Task :app:bundleReleaseResources
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.8655921Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:399:1 Expecting a top level declaration
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.8657191Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.8657857Z > Task :app:compileReleaseKotlin FAILED
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9675558Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9676160Z 33 actionable tasks: 33 executed
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9686667Z FAILURE: Build failed with an exception.
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9687412Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9687925Z * What went wrong:
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9688688Z Execution failed for task ':app:compileReleaseKotlin'.
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9690261Z > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9696887Z    > Compilation error. See log for more details
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9697565Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9697914Z * Try:
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9698580Z > Run with --stacktrace option to get the stack trace.
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9699494Z > Run with --info or --debug option to get more log output.
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9700359Z > Run with --scan to get full insights.
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9701114Z > Get more help at https://help.gradle.org.
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9701689Z 
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9702048Z BUILD FAILED in 1m 21s
+build-and-release	Build Signed Release APK	2026-11-20T07:19:12.3921062Z ##[error]Process completed with exit code 1.
 --- EXTRACTED ERROR LINES ---
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2129702Z FAILURE: Build failed with an exception.
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.2689448Z BUILD FAILED in 22s
-build-and-release	Build Signed Release APK	2026-11-20T07:15:28.6399625Z ##[error]Process completed with exit code 1.
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.8655921Z e: file:///home/runner/work/ai-web-browser-apk/ai-web-browser-apk/app/src/main/java/pl/tomaszewski/aiweb/MainActivity.kt:399:1 Expecting a top level declaration
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.8657857Z > Task :app:compileReleaseKotlin FAILED
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9686667Z FAILURE: Build failed with an exception.
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9688688Z Execution failed for task ':app:compileReleaseKotlin'.
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9690261Z > A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9696887Z    > Compilation error. See log for more details
+build-and-release	Build Signed Release APK	2026-11-20T07:19:11.9702048Z BUILD FAILED in 1m 21s
+build-and-release	Build Signed Release APK	2026-11-20T07:19:12.3921062Z ##[error]Process completed with exit code 1.
