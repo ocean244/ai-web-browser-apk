@@ -27,7 +27,7 @@ android {
             val envStoreFile = System.getenv("RELEASE_STORE_FILE")
             val storePath = if (!envStoreFile.isNullOrBlank()) envStoreFile
             else localProps.getProperty("RELEASE_STORE_FILE", "keystore/release.jks")
-            storeFile = file(storePath)
+            storeFile = rootProject.file(storePath)
 
             storePassword = System.getenv("RELEASE_STORE_PASSWORD")
                 ?.takeIf { it.isNotBlank() }

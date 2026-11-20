@@ -26,13 +26,25 @@ jobs:
         with:
           gradle-version: 8.7
 
-      - name: Restore Release Keystore from Secret
-        if: env.RELEASE_KEYSTORE_BASE64 != ''
+      - name: Prepare Release Keystore
         env:
           RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
         run: |
           mkdir -p keystore
-          echo "$RELEASE_KEYSTORE_BASE64" | base64 -d > keystore/release.jks
+          if [ -n "$RELEASE_KEYSTORE_BASE64" ]; then
+            echo "$RELEASE_KEYSTORE_BASE64" | base64 -d > keystore/release.jks
+          else
+            keytool -genkeypair -v \
+              -keystore keystore/release.jks \
+              -alias aiweb_release_key \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -storepass AIWebRelease2026! \
+              -keypass AIWebRelease2026! \
+              -dname "CN=Rafal Tomaszewski, OU=Systems, O=AIWebCore, L=Darlowo, S=Zachodniopomorskie, C=PL"
+          fi
+          ls -lh keystore/release.jks
 
       - name: Build Signed Release APK
         env:
