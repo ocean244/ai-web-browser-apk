@@ -1,7 +1,8 @@
 .gradle/
 build/
-app/build/
-keystore/
+**/build/
 local.properties
-*.iml
 .idea/
+*.iml
+tmp/
+*.log

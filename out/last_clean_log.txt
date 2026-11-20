@@ -1,0 +1,76 @@
+STREAMING_PID=20566 TARGET=192.168.1.154:33131
+--------- beginning of main
+11-20 03:21:04.541 I/libprocessgroup(20566): Created cgroup /sys/fs/cgroup/apps/uid_11562/pid_20566
+11-20 03:21:04.553 I/Zygote  (20566): Process 20566 created for pl.tomaszewski.aiweb
+11-20 03:21:04.553 I/maszewski.aiweb(20566): Using generational CollectorTypeCMC GC.
+11-20 03:21:04.566 D/nativeloader(20566): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+11-20 03:21:04.588 D/CompatChangeReporter(20566): Compat change id reported: 242716250; UID 11562; state: ENABLED
+11-20 03:21:04.591 D/nativeloader(20566): Configuring clns-9 for other apk /data/app/~~tw2QtS6RJ-eupNCcMP5oHw==/pl.tomaszewski.aiweb-DhH22zZH6jTpNgKibYOZqw==/base.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~tw2QtS6RJ-eupNCcMP5oHw==/pl.tomaszewski.aiweb-DhH22zZH6jTpNgKibYOZqw==/lib/arm64, permitted_path=/data:/mnt/expand:/data/user/0/pl.tomaszewski.aiweb
+11-20 03:21:04.594 V/GraphicsEnvironment(20566): Currently set values for:
+11-20 03:21:04.594 V/GraphicsEnvironment(20566):   angle_gl_driver_selection_pkgs=[]
+11-20 03:21:04.594 V/GraphicsEnvironment(20566):   angle_gl_driver_selection_values=[]
+11-20 03:21:04.594 V/GraphicsEnvironment(20566): pl.tomaszewski.aiweb is not listed in per-application setting
+11-20 03:21:04.594 V/GraphicsEnvironment(20566): first_api_level (34) < 36; skipping config_angleAllowList for pl.tomaszewski.aiweb
+11-20 03:21:04.594 V/GraphicsEnvironment(20566): No special selections for ANGLE, returning default driver choice
+11-20 03:21:04.594 V/GraphicsEnvironment(20566): The updatable driver is turned off on this device.
+--------- beginning of system
+11-20 03:21:04.606 D/ActivityThread(20566): pl.tomaszewski.aiweb will use render engine as VK
+11-20 03:21:04.606 D/HWUI    (20566): HWUI - treat SMPTE_170M as sRGB
+11-20 03:21:04.607 I/DisplayManager(20566): Choreographer implicitly registered for the refresh rate.
+11-20 03:21:04.618 D/HWUI    (20566): CacheManager constructor. deviceInfo=(1080, 1920)
+11-20 03:21:04.619 D/DesktopExperienceFlags(20566): Toggle override initialized to: false
+11-20 03:21:04.620 D/AppCompatDelegate(20566): Checking for metadata for AppLocalesMetadataHolderService : Service not found
+11-20 03:21:04.625 E/Adreno-AppProfiles(20566): QSPM AIDL service doesn't exist
+11-20 03:21:04.625 I/AdrenoVK-0(20566): ===== BEGIN DUMP OF OVERRIDDEN SETTINGS =====
+11-20 03:21:04.625 I/AdrenoVK-0(20566): ===== END DUMP OF OVERRIDDEN SETTINGS =====
+11-20 03:21:04.629 I/AdrenoVK-0(20566): QUALCOMM build          : bb11e2f361, Id7183d7088
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Build Date              : 07/24/26
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Shader Compiler Version : E031.45.02.43
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Local Branch            : 
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Remote Branch           : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.14.3.0.R1.00.00.00.000.225
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Remote Branch           : NONE
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Reconstruct Branch      : NOTHING
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Build Config            : S P 16.1.2 AArch64
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Driver Path             : /vendor/lib64/hw/vulkan.adreno.so
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Driver Version          : 0762.48.1
+11-20 03:21:04.629 I/AdrenoVK-0(20566): PFP                     : 0x01520181
+11-20 03:21:04.629 I/AdrenoVK-0(20566): ME                      : 0x01520023
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Application Name    : android framework
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Application Version : 0x00000000
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Engine Name         : android framework
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Engine Version      : 0x00000000
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Api Version         : 0x00401000
+11-20 03:21:04.638 I/DecorView(20566): setWindowBackground: isPopOver=false color=ff141218 d=android.graphics.drawable.ColorDrawable@b4a97a9
+11-20 03:21:04.643 D/ViewRootImpl(20566): desktopMode is false
+11-20 03:21:04.643 I/ViewRootImpl(20566): dVRR is disabled
+11-20 03:21:04.644 D/HardwareRenderer(20566): onDisplayChanged. displayId=0 current wxh=1440x3120 mLargest wxh=0x0
+11-20 03:21:04.644 D/HardwareRenderer(20566): Set largestWidth and largestHeight as logical resolution. (1440x3120)
+11-20 03:21:04.644 D/HWUI    (20566): setMaxSurfaceArea requested wxh=(1440,3120) requestedSurfaceArea(4492800) mMaxSurfaceArea(2073600)
+11-20 03:21:04.644 D/NativeCustomFrequencyManager(20566): [NativeCFMS] BpCustomFrequencyManager::BpCustomFrequencyManager()
+11-20 03:21:04.649 D/InputTransport(20566): Input channel constructed: 'cad49dc', fd=123
+11-20 03:21:04.650 I/VRI[MainActivity]@e2d62c0(20566): synced displayState. AttachInfo displayState=2
+11-20 03:21:04.651 I/VRI[MainActivity]@e2d62c0(20566): setView = com.android.internal.policy.DecorView@ff1f131 IsHRR=false mFlingFrameRateChange=0 TM=true
+11-20 03:21:04.651 I/IDS_TAG (20566): Starting IDS observe window
+11-20 03:21:04.651 I/IDS_TAG (20566): Getting Shared Preference for android.app.Application@30678d0 uid = 11562
+11-20 03:21:04.652 I/IDS_TAG (20566): App android.app.Application@30678d0 has not finished training
+11-20 03:21:04.653 I/IDS_TAG (20566): Closing IDS observe window
+11-20 03:21:04.653 I/IDS_TAG (20566): Getting Shared Preference for android.app.Application@30678d0 uid = 11562
+11-20 03:21:04.653 I/IDS_TAG (20566): IDS count updated to 2 for android.app.Application@30678d0
+11-20 03:21:04.654 D/WindowOnBackDispatcher(20566): setTopOnBackInvokedCallback (unwrapped): android.app.Activity$$ExternalSyntheticLambda1@f7d7a2
+11-20 03:21:04.654 D/VRI[MainActivity]@e2d62c0(20566): WindowInsets changed: 1440x3120 statusBars:[0,129,0,0] navigationBars:[0,0,0,82] ime:[0,0,0,606] mandatorySystemGestures:[0,149,0,82] 
+11-20 03:21:04.657 I/Surface (20566): Creating surface for consumer unnamed-20566-0 with slotExpansion=1 for 64 slots
+11-20 03:21:04.657 W/libc    (20566): Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+11-20 03:21:04.657 I/BufferQueueProducer(20566): [](id:505600000000,api:0,p:0,c:20566) setDequeueTimeout:2077252342
+11-20 03:21:04.658 I/Surface (20566): Creating surface for consumer VRI[MainActivity]@e2d62c0#0(BLAST Consumer)0 with slotExpansion=1 for 64 slots
+11-20 03:21:04.658 W/libc    (20566): Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+11-20 03:21:04.658 I/VRI[MainActivity]@e2d62c0(20566): Relayout returned: old=(0,0,1440,3120) new=(0,0,1440,3120) relayoutAsync=false req=(1440,3120)0 dur=3 res=0x3 s={true 0xb400007250a8d8c0} ch=true seqId=1 syncSeqId=0
+11-20 03:21:04.658 D/VRI[MainActivity]@e2d62c0(20566): reportNextDraw android.view.ViewRootImpl.performTraversals:5295 android.view.ViewRootImpl.doTraversal:4255 android.view.ViewRootImpl$TraversalCallback.onVsync:13896 android.view.Choreographer$CallbackRecord.run:1995 android.view.Choreographer.doCallbacks:1440 
+11-20 03:21:04.658 D/VRI[MainActivity]@e2d62c0(20566): applyTransactionOnDraw applyImmediately
+11-20 03:21:04.658 I/VRI[MainActivity]@e2d62c0(20566): performConfigurationChange setNightDimText nightDimLevel=0
+11-20 03:21:04.658 D/VRI[MainActivity]@e2d62c0(20566): mThreadedRenderer.initialize() mSurface={isValid=true 0xb400007250a8d8c0} hwInitialized=true
+11-20 03:21:04.659 D/VRI[MainActivity]@e2d62c0(20566): reportNextDraw android.view.ViewRootImpl.performTraversals:5940 android.view.ViewRootImpl.doTraversal:4255 android.view.ViewRootImpl$TraversalCallback.onVsync:13896 android.view.Choreographer$CallbackRecord.run:1995 android.view.Choreographer.doCallbacks:1440 
+11-20 03:21:04.659 D/VRI[MainActivity]@e2d62c0(20566): Setup new sync=wmsSync-VRI[MainActivity]@e2d62c0#0
+11-20 03:21:04.659 I/VRI[MainActivity]@e2d62c0(20566): Creating new active sync group VRI[MainActivity]@e2d62c0#1
+11-20 03:21:04.659 D/VRI[MainActivity]@e2d62c0(20566): registerCallbacksForSync syncBuffer=false
+11-20 03:21:04.660 D/VRI[MainActivity]@e2d62c0(20566): Received frameDrawingCallback syncResult=0 frameNum=1.
+11-20 03:21:04.660 I/VR

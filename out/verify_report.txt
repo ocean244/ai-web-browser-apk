@@ -1,0 +1,903 @@
+=== WERYFIKACJA CELU: 192.168.1.154:33131 | PAKIET: pl.tomaszewski.aiweb | 2026-11-20T03:21:03+01:00 ===
+--- [1/4] STAN PAKIETU I PROCESU ---
+package:/data/app/~~tw2QtS6RJ-eupNCcMP5oHw==/pl.tomaszewski.aiweb-DhH22zZH6jTpNgKibYOZqw==/base.apk
+    versionCode=2 minSdk=26 targetSdk=34
+    versionName=1.1.0-release
+    User 0: ceDataInode=4817436 deDataInode=3010795 pccCeDataInode=0 pccDeDataInode=0 installed=true hidden=false suspended=false appLockEnabled=false distractionFlags=0 stopped=false notLaunched=false enabled=0 instant=false virtual=false quarantined=false
+    User 95: ceDataInode=8109546 deDataInode=6527514 pccCeDataInode=0 pccDeDataInode=0 installed=true hidden=false suspended=false appLockEnabled=false distractionFlags=0 stopped=true notLaunched=false enabled=0 instant=false virtual=false quarantined=false
+u0_a1562     20355  1759   17528740 114368 0                   0 S pl.tomaszewski.aiweb
+--- [2/4] KONTROLA KODU MainActivity.kt ---
+   1  package pl.tomaszewski.aiweb
+   2  
+   3  import android.annotation.SuppressLint
+   4  import android.content.Intent
+   5  import android.graphics.Color
+   6  import android.net.Uri
+   7  import android.os.Bundle
+   8  import android.os.Handler
+   9  import android.os.Looper
+  10  import android.text.InputType
+  11  import android.view.Gravity
+  12  import android.view.View
+  13  import android.view.ViewGroup
+  14  import android.view.inputmethod.EditorInfo
+  15  import android.webkit.JavascriptInterface
+  16  import android.webkit.WebChromeClient
+  17  import android.webkit.WebResourceRequest
+  18  import android.webkit.WebSettings
+  19  import android.webkit.WebView
+  20  import android.webkit.WebViewClient
+  21  import android.widget.Button
+  22  import android.widget.EditText
+  23  import android.widget.HorizontalScrollView
+  24  import android.widget.LinearLayout
+  25  import android.widget.ScrollView
+  26  import android.widget.TextView
+  27  import androidx.appcompat.app.AppCompatActivity
+  28  import okhttp3.MediaType.Companion.toMediaType
+  29  import okhttp3.OkHttpClient
+  30  import okhttp3.Request
+  31  import okhttp3.RequestBody.Companion.toRequestBody
+  32  import org.json.JSONObject
+  33  import java.util.concurrent.TimeUnit
+  34  
+  35  class MainActivity : AppCompatActivity() {
+  36  
+  37      private val mainHandler = Handler(Looper.getMainLooper())
+  38      private val ioHandler = android.os.HandlerThread("AiBridgeIoThread").apply { start() }
+  39      private val bgHandler = Handler(ioHandler.looper)
+  40  
+  41      private lateinit var webView: WebView
+  42      private lateinit var urlInput: EditText
+  43      private lateinit var statusText: TextView
+  44      private lateinit var aiPromptInput: EditText
+  45      private lateinit var aiOutputView: TextView
+  46  
+  47      private val defaultHomeHtml: String by lazy {
+  48          """
+  49          <!DOCTYPE html>
+  50          <html lang="pl">
+  51          <head>
+  52            <meta charset="UTF-8" />
+  53            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  54            <title>AI Web Browser</title>
+  55            <style>
+  56              body {
+  57                margin: 0;
+  58                padding: 18px;
+  59                background: #0e1117;
+  60                color: #e6edf3;
+  61                font-family: sans-serif;
+  62                line-height: 1.5;
+  63              }
+  64              .card {
+  65                background: #161b22;
+  66                border: 1px solid #30363d;
+  67                border-radius: 10px;
+  68                padding: 16px;
+  69                margin-bottom: 14px;
+  70              }
+  71              h1 { margin: 0 0 8px 0; font-size: 20px; color: #58a6ff; }
+  72              code { background: #21262d; padding: 2px 6px; border-radius: 4px; }
+  73              button {
+  74                background: #238636;
+  75                color: #ffffff;
+  76                border: none;
+  77                border-radius: 8px;
+  78                padding: 10px 14px;
+  79                font-size: 14px;
+  80                margin-right: 8px;
+  81                margin-top: 8px;
+  82              }
+  83              #aiOutput {
+  84                white-space: pre-wrap;
+  85                background: #0b0e14;
+  86                border: 1px solid #262c36;
+  87                border-radius: 8px;
+  88                padding: 12px;
+  89                min-height: 90px;
+  90                margin-top: 10px;
+  91                font-family: monospace;
+  92                font-size: 12px;
+  93              }
+  94            </style>
+  95          </head>
+  96          <body>
+  97            <div class="card">
+  98              <h1>AI Web Browser — Aktywny</h1>
+  99              <div>Mostek natywny: <strong id="bridgeStatus">sprawdzanie...</strong></div>
+ 100              <button onclick="runBridgePing()">Test AndroidNative</button>
+ 101              <button onclick="openSampleSite()">Otwórz example.com</button>
+ 102              <div id="aiOutput">Gotowy do pracy.</div>
+ 103            </div>
+ 104            <script>
+ 105              (function initPage() {
+ 106                var el = document.getElementById('bridgeStatus');
+ 107                if (el) {
+ 108                  el.textContent = (window.AndroidNative && typeof window.AndroidNative.postChatCompletion === 'function')
+ 109                    ? 'AKTYWNY (AndroidNative)'
+ 110                    : 'BRAK MOSTKA';
+ 111                }
+ 112              })();
+ 113              function appendOut(msg) {
+ 114                var out = document.getElementById('aiOutput');
+ 115                if (out) {
+ 116                  out.textContent += '\n' + msg;
+ 117                  out.scrollTop = out.scrollHeight;
+ 118                }
+ 119              }
+ 120              function runBridgePing() {
+ 121                if (!window.AndroidNative) {
+ 122                  appendOut('[ERR] window.AndroidNative niedostępny');
+ 123                  return;
+ 124                }
+ 125                var res = window.AndroidNative.postChatCompletion('', '', '', '');
+ 126                appendOut('[PING] ' + res);
+ 127              }
+ 128              function openSampleSite() {
+ 129                if (window.AndroidNative && typeof window.AndroidNative.openExternalUrl === 'function') {
+ 130                  window.AndroidNative.openExternalUrl('https://example.com');
+ 131                } else {
+ 132                  window.location.href = 'https://example.com';
+ 133                }
+ 134              }
+ 135            </script>
+ 136          </body>
+ 137          </html>
+ 138          """.trimIndent()
+ 139      }
+ 140  
+ 141      private val httpClient: OkHttpClient by lazy {
+ 142          OkHttpClient.Builder()
+ 143              .connectTimeout(10, TimeUnit.SECONDS)
+ 144              .readTimeout(45, TimeUnit.SECONDS)
+ 145              .writeTimeout(15, TimeUnit.SECONDS)
+ 146              .callTimeout(60, TimeUnit.SECONDS)
+ 147              .retryOnConnectionFailure(true)
+ 148              .build()
+ 149      }
+ 150  
+ 151      @SuppressLint("SetJavaScriptEnabled")
+ 152      override fun onCreate(savedInstanceState: Bundle?) {
+ 153          super.onCreate(savedInstanceState)
+ 154          buildUserInterface()
+ 155          setupWebView()
+ 156          webView.loadDataWithBaseURL(
+ 157              "https://app.local/",
+ 158              defaultHomeHtml,
+ 159              "text/html",
+ 160              "UTF-8",
+ 161              null
+ 162          )
+ 163      }
+ 164  
+ 165      override fun onResume() {
+ 166          super.onResume()
+ 167          if (::webView.isInitialized) {
+ 168              attachBridge(webView)
+ 169              webView.onResume()
+ 170          }
+ 171      }
+ 172  
+ 173      override fun onPause() {
+ 174          if (::webView.isInitialized) {
+ 175              webView.onPause()
+ 176          }
+ 177          super.onPause()
+ 178      }
+ 179  
+ 180      override fun onDestroy() {
+ 181          if (::webView.isInitialized) {
+ 182              webView.removeJavascriptInterface("AndroidNative")
+ 183              webView.destroy()
+ 184          }
+ 185          ioHandler.quitSafely()
+ 186          super.onDestroy()
+ 187      }
+ 188  
+ 189      private fun buildUserInterface() {
+ 190          val root = LinearLayout(this).apply {
+ 191              orientation = LinearLayout.VERTICAL
+ 192              setBackgroundColor(Color.parseColor("#0E1117"))
+ 193              layoutParams = ViewGroup.LayoutParams(
+ 194                  ViewGroup.LayoutParams.MATCH_PARENT,
+ 195                  ViewGroup.LayoutParams.MATCH_PARENT
+ 196              )
+ 197              setPadding(16, 48, 16, 16)
+ 198          }
+ 199  
+ 200          val navRow = LinearLayout(this).apply {
+ 201              orientation = LinearLayout.HORIZONTAL
+ 202              gravity = Gravity.CENTER_VERTICAL
+ 203              layoutParams = LinearLayout.LayoutParams(
+ 204                  ViewGroup.LayoutParams.MATCH_PARENT,
+ 205                  ViewGroup.LayoutParams.WRAP_CONTENT
+ 206              )
+ 207          }
+ 208  
+ 209          fun makeBtn(label: String, onClick: () -> Unit): Button = Button(this).apply {
+ 210              text = label
+ 211              setTextColor(Color.WHITE)
+ 212              setBackgroundColor(Color.parseColor("#21262D"))
+ 213              setPadding(18, 10, 18, 10)
+ 214              val lp = LinearLayout.LayoutParams(
+ 215                  ViewGroup.LayoutParams.WRAP_CONTENT,
+ 216                  ViewGroup.LayoutParams.WRAP_CONTENT
+ 217              ).apply {
+ 218                  marginEnd = 8
+ 219              }
+ 220              layoutParams = lp
+ 221              setOnClickListener { onClick() }
+ 222          }
+ 223  
+ 224          val btnBack = makeBtn("<") {
+ 225              if (webView.canGoBack()) webView.goBack()
+ 226          }
+ 227          val btnFwd = makeBtn(">") {
+ 228              if (webView.canGoForward()) webView.goForward()
+ 229          }
+ 230          val btnHome = makeBtn("Home") {
+ 231              webView.loadDataWithBaseURL(
+ 232                  "https://app.local/",
+ 233                  defaultHomeHtml,
+ 234                  "text/html",
+ 235                  "UTF-8",
+ 236                  null
+ 237              )
+ 238          }
+ 239  
+ 240          urlInput = EditText(this).apply {
+ 241              hint = "https://..."
+ 242              setText("https://example.com")
+ 243              setTextColor(Color.WHITE)
+ 244              setHintTextColor(Color.parseColor("#8B949E"))
+ 245              setBackgroundColor(Color.parseColor("#161B22"))
+ 246              setPadding(16, 12, 16, 12)
+ 247              inputType = InputType.TYPE_TEXT_VARIATION_URI
+ 248              imeOptions = EditorInfo.IME_ACTION_GO
+ 249              layoutParams = LinearLayout.LayoutParams(
+ 250                  0,
+ 251                  ViewGroup.LayoutParams.WRAP_CONTENT,
+ 252                  1f
+ 253              ).apply {
+ 254                  marginEnd = 8
+ 255              }
+ 256              setOnEditorActionListener { _, actionId, _ ->
+ 257                  if (actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_DONE) {
+ 258                      navigateTo(text.toString())
+ 259                      true
+ 260                  } else {
+ 261                      false
+ 262                  }
+ 263              }
+ 264          }
+ 265  
+ 266          val btnGo = makeBtn("Idź") {
+ 267              navigateTo(urlInput.text.toString())
+ 268          }
+ 269  
+ 270          navRow.addView(btnBack)
+ 271          navRow.addView(btnFwd)
+ 272          navRow.addView(btnHome)
+ 273          navRow.addView(urlInput)
+ 274          navRow.addView(btnGo)
+ 275  
+ 276          statusText = TextView(this).apply {
+ 277              text = "Status: GOTOWY | Bridge: AndroidNative"
+ 278              setTextColor(Color.parseColor("#58A6FF"))
+ 279              textSize = 12f
+ 280              setPadding(4, 10, 4, 8)
+ 281          }
+ 282  
+ 283          webView = WebView(this).apply {
+ 284              layoutParams = LinearLayout.LayoutParams(
+ 285                  ViewGroup.LayoutParams.MATCH_PARENT,
+ 286                  0,
+ 287                  1f
+ 288              )
+ 289              setBackgroundColor(Color.parseColor("#0E1117"))
+ 290          }
+ 291  
+ 292          val aiPanel = LinearLayout(this).apply {
+ 293              orientation = LinearLayout.VERTICAL
+ 294              setBackgroundColor(Color.parseColor("#161B22"))
+ 295              setPadding(14, 14, 14, 14)
+ 296              layoutParams = LinearLayout.LayoutParams(
+ 297                  ViewGroup.LayoutParams.MATCH_PARENT,
+ 298                  ViewGroup.LayoutParams.WRAP_CONTENT
+ 299              ).apply {
+ 300                  topMargin = 10
+ 301              }
+ 302          }
+ 303  
+ 304          val aiRow = LinearLayout(this).apply {
+ 305              orientation = LinearLayout.HORIZONTAL
+ 306              gravity = Gravity.CENTER_VERTICAL
+ 307              layoutParams = LinearLayout.LayoutParams(
+ 308                  ViewGroup.LayoutParams.MATCH_PARENT,
+ 309                  ViewGroup.LayoutParams.WRAP_CONTENT
+ 310              )
+ 311          }
+ 312  
+ 313          aiPromptInput = EditText(this).apply {
+ 314              hint = "Prompt JSON lub tekst testowy..."
+ 315              setText("""{"messages":[{"role":"user","content":"ping"}]}""")
+ 316              setTextColor(Color.WHITE)
+ 317              setHintTextColor(Color.parseColor("#8B949E"))
+ 318              setBackgroundColor(Color.parseColor("#0D1117"))
+ 319              setPadding(14, 10, 14, 10)
+ 320              layoutParams = LinearLayout.LayoutParams(
+ 321                  0,
+ 322                  ViewGroup.LayoutParams.WRAP_CONTENT,
+ 323                  1f
+ 324              ).apply {
+ 325                  marginEnd = 8
+ 326              }
+ 327          }
+ 328  
+ 329          val btnTestBridge = Button(this).apply {
+ 330              text = "Test AI"
+ 331              setTextColor(Color.WHITE)
+ 332              setBackgroundColor(Color.parseColor("#238636"))
+ 333              setPadding(16, 10, 16, 10)
+ 334              setOnClickListener {
+ 335                  val prompt = aiPromptInput.text.toString()
+ 336                  bgHandler.post {
+ 337                      val result = AndroidNative(webView).postChatCompletion(
+ 338                          "",
+ 339                          "",
+ 340                          "",
+ 341                          prompt
+ 342                      )
+ 343                      mainHandler.post {
+ 344                          aiOutputView.append("\n[TEST] $result")
+ 345                          statusText.text = "Status: BRIDGE_OK"
+ 346                      }
+ 347                  }
+ 348              }
+ 349          }
+ 350  
+ 351          aiRow.addView(aiPromptInput)
+ 352          aiRow.addView(btnTestBridge)
+ 353  
+ 354          val scrollOut = ScrollView(this).apply {
+ 355              layoutParams = LinearLayout.LayoutParams(
+ 356                  ViewGroup.LayoutParams.MATCH_PARENT,
+ 357                  220
+ 358              ).apply {
+ 359                  topMargin = 8
+ 360              }
+ 361          }
+ 362  
+ 363          aiOutputView = TextView(this).apply {
+ 364              text = "[INIT] Aktywność uruchomiona i widoczna."
+ 365              setTextColor(Color.parseColor("#C9D1D9"))
+ 366              setBackgroundColor(Color.parseColor("#0B0E14"))
+ 367              setPadding(12, 10, 12, 10)
+ 368              textSize = 12f
+ 369              layoutParams = ViewGroup.LayoutParams(
+ 370                  ViewGroup.LayoutParams.MATCH_PARENT,
+ 371                  ViewGroup.LayoutParams.WRAP_CONTENT
+ 372              )
+ 373          }
+ 374  
+ 375          scrollOut.addView(aiOutputView)
+ 376          aiPanel.addView(aiRow)
+ 377          aiPanel.addView(scrollOut)
+ 378  
+ 379          root.addView(navRow)
+ 380          root.addView(statusText)
+ 381          root.addView(webView)
+ 382          root.addView(aiPanel)
+ 383  
+ 384          setContentView(root)
+ 385      }
+ 386  
+ 387      @SuppressLint("SetJavaScriptEnabled")
+ 388      private fun setupWebView() {
+ 389          webView.settings.apply {
+ 390              javaScriptEnabled = true
+ 391              domStorageEnabled = true
+ 392              databaseEnabled = true
+ 393              cacheMode = WebSettings.LOAD_DEFAULT
+ 394              mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+ 395              userAgentString = "$userAgentString AiWebBrowser/1.1"
+ 396          }
+ 397          attachBridge(webView)
+ 398  
+ 399          webView.webChromeClient = object : WebChromeClient() {
+ 400              override fun onProgressChanged(view: WebView?, newProgress: Int) {
+ 401                  super.onProgressChanged(view, newProgress)
+ 402                  mainHandler.post {
+ 403                      statusText.text = "Status: Ładowanie ${newProgress}% | Bridge: AndroidNative"
+ 404                  }
+ 405              }
+ 406          }
+ 407  
+ 408          webView.webViewClient = object : WebViewClient() {
+ 409              override fun shouldOverrideUrlLoading(
+ 410                  view: WebView?,
+ 411                  request: WebResourceRequest?
+ 412              ): Boolean {
+ 413                  val target = request?.url?.toString().orEmpty()
+ 414                  if (target.startsWith("http://") || target.startsWith("https://")) {
+ 415                      mainHandler.post { urlInput.setText(target) }
+ 416                      return false
+ 417                  }
+ 418                  return false
+ 419              }
+ 420  
+ 421              override fun onPageFinished(view: WebView?, url: String?) {
+ 422                  super.onPageFinished(view, url)
+ 423                  mainHandler.post {
+ 424                      val current = url.orEmpty()
+ 425                      if (current.isNotEmpty() && !current.startsWith("data:")) {
+ 426                          urlInput.setText(current)
+ 427                      }
+ 428                      statusText.text = "Status: ZAŁADOWANO | Bridge: AndroidNative"
+ 429                  }
+ 430              }
+ 431          }
+ 432      }
+ 433  
+ 434      @SuppressLint("SetJavaScriptEnabled")
+ 435      private fun attachBridge(targetWebView: WebView) {
+ 436          targetWebView.settings.javaScriptEnabled = true
+ 437          targetWebView.settings.domStorageEnabled = true
+ 438          targetWebView.removeJavascriptInterface("AndroidNative")
+ 439          targetWebView.addJavascriptInterface(AndroidNative(targetWebView), "AndroidNative")
+ 440      }
+ 441  
+ 442      private fun navigateTo(rawInput: String) {
+ 443          val trimmed = rawInput.trim()
+ 444          if (trimmed.isEmpty()) return
+ 445          val normalized = if (
+ 446              trimmed.startsWith("http://", ignoreCase = true) ||
+ 447              trimmed.startsWith("https://", ignoreCase = true) ||
+ 448              trimmed.startsWith("file://", ignoreCase = true) ||
+ 449              trimmed.startsWith("about:", ignoreCase = true)
+ 450          ) {
+ 451              trimmed
+ 452          } else if (trimmed.contains(".") && !trimmed.contains(" ")) {
+ 453              "https://$trimmed"
+ 454          } else {
+ 455              "https://duckduckgo.com/?q=${Uri.encode(trimmed)}"
+ 456          }
+ 457          urlInput.setText(normalized)
+ 458          webView.loadUrl(normalized)
+ 459      }
+ 460  
+ 461      inner class AndroidNative(private val webView: WebView) {
+ 462  
+ 463          @JavascriptInterface
+ 464          fun openExternalUrl(url: String?) {
+ 465              val cleanUrl = url?.trim().orEmpty()
+ 466              if (cleanUrl.isEmpty()) return
+ 467              mainHandler.post {
+ 468                  try {
+ 469                      val uri = Uri.parse(cleanUrl)
+ 470                      val scheme = uri.scheme?.lowercase()
+ 471                      if (scheme == "http" || scheme == "https") {
+ 472                          val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+ 473                              addCategory(Intent.CATEGORY_BROWSABLE)
+ 474                              addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+ 475                          }
+ 476                          startActivity(intent)
+ 477                      } else if (cleanUrl.startsWith("file://") || cleanUrl.startsWith("about:")) {
+ 478                          webView.loadUrl(cleanUrl)
+ 479                      }
+ 480                  } catch (e: Exception) {
+ 481                      emitJsError("openExternalUrl: ${e.message ?: "intent error"}")
+ 482                  }
+ 483              }
+ 484          }
+ 485  
+ 486          @JavascriptInterface
+ 487          fun goBack() {
+ 488              mainHandler.post {
+ 489                  try {
+ 490                      if (webView.canGoBack()) {
+ 491                          webView.goBack()
+ 492                      }
+ 493                  } catch (e: Exception) {
+ 494                      emitJsError("goBack: ${e.message ?: "error"}")
+ 495                  }
+ 496              }
+ 497          }
+ 498  
+ 499          @JavascriptInterface
+ 500          fun goForward() {
+ 501              mainHandler.post {
+ 502                  try {
+ 503                      if (webView.canGoForward()) {
+ 504                          webView.goForward()
+ 505                      }
+ 506                  } catch (e: Exception) {
+ 507                      emitJsError("goForward: ${e.message ?: "error"}")
+ 508                  }
+ 509              }
+ 510          }
+ 511  
+ 512          @JavascriptInterface
+ 513          fun postChatCompletion(
+ 514              endpoint: String?,
+ 515              model: String?,
+ 516              apiKey: String?,
+ 517              payloadJson: String?
+ 518          ): String {
+ 519              val targetUrl = endpoint?.trim().orEmpty()
+ 520              if (targetUrl.isEmpty()) {
+ 521                  return JSONObject().put("error", "Brak endpointu AI").toString()
+ 522              }
+ 523              val rawBody = payloadJson?.trim().orEmpty()
+ 524              if (rawBody.isEmpty()) {
+ 525                  return JSONObject().put("error", "Pusty ładunek JSON").toString()
+ 526              }
+ 527  
+ 528              val normalizedBody = try {
+ 529                  val obj = JSONObject(rawBody)
+ 530                  if (!model.isNullOrBlank()) {
+ 531                      obj.put("model", model.trim())
+ 532                  }
+ 533                  obj.toString()
+ 534              } catch (e: Exception) {
+ 535                  return JSONObject().put("error", "Niepoprawny JSON żądania: ${e.message}").toString()
+ 536              }
+ 537  
+ 538              return try {
+ 539                  val mediaType = "application/json; charset=utf-8".toMediaType()
+ 540                  val body = normalizedBody.toRequestBody(mediaType)
+ 541                  val reqBuilder = Request.Builder()
+ 542                      .url(targetUrl)
+ 543                      .post(body)
+ 544                      .header("Content-Type", "application/json")
+ 545                      .header("Accept", "application/json")
+ 546  
+ 547                  val cleanKey = apiKey?.trim().orEmpty()
+ 548                  if (cleanKey.isNotEmpty()) {
+ 549                      reqBuilder.header("Authorization", "Bearer $cleanKey")
+ 550                  }
+ 551  
+ 552                  httpClient.newCall(reqBuilder.build()).execute().use { response ->
+ 553                      val responseBody = response.body?.string().orEmpty()
+ 554                      if (!response.isSuccessful) {
+ 555                          JSONObject()
+ 556                              .put("error", "HTTP ${response.code}: ${response.message} ${responseBody.take(400)}")
+ 557                              .toString()
+ 558                      } else if (responseBody.isBlank()) {
+ 559                          JSONObject().put("error", "Pusta odpowiedź z endpointu AI").toString()
+ 560                      } else {
+ 561                          responseBody
+ 562                      }
+ 563                  }
+ 564              } catch (e: Exception) {
+ 565                  JSONObject()
+ 566                      .put("error", "${e.javaClass.simpleName}: ${e.message ?: "błąd połączenia"}")
+ 567                      .toString()
+ 568              }
+ 569          }
+ 570  
+ 571          private fun emitJsError(message: String) {
+ 572              val escaped = JSONObject.quote("[BRIDGE] $message")
+ 573              val jsCode = """
+ 574                  (function() {
+ 575                    var out = document.getElementById('aiOutput');
+ 576                    if (out) {
+ 577                      out.textContent += '\n' + $escaped + '\n';
+ 578                      out.scrollTop = out.scrollHeight;
+ 579                    }
+ 580                  })();
+ 581              """.trimIndent()
+ 582  
+ 583              mainHandler.post {
+ 584                  try {
+ 585                      webView.evaluateJavascript(jsCode, null)
+ 586                  } catch (_: Exception) {
+ 587                  }
+ 588              }
+ 589          }
+ 590      }
+ 591  }
+    private val mainHandler = Handler(Looper.getMainLooper())
+            <button onclick="runBridgePing()">Test AndroidNative</button>
+                el.textContent = (window.AndroidNative && typeof window.AndroidNative.postChatCompletion === 'function')
+                  ? 'AKTYWNY (AndroidNative)'
+              if (!window.AndroidNative) {
+                appendOut('[ERR] window.AndroidNative niedostępny');
+              var res = window.AndroidNative.postChatCompletion('', '', '', '');
+              if (window.AndroidNative && typeof window.AndroidNative.openExternalUrl === 'function') {
+                window.AndroidNative.openExternalUrl('https://example.com');
+            webView.removeJavascriptInterface("AndroidNative")
+            if (webView.canGoBack()) webView.goBack()
+            if (webView.canGoForward()) webView.goForward()
+            text = "Status: GOTOWY | Bridge: AndroidNative"
+                    val result = AndroidNative(webView).postChatCompletion(
+                    mainHandler.post {
+        setContentView(root)
+                mainHandler.post {
+                    statusText.text = "Status: Ładowanie ${newProgress}% | Bridge: AndroidNative"
+                    mainHandler.post { urlInput.setText(target) }
+                mainHandler.post {
+                    statusText.text = "Status: ZAŁADOWANO | Bridge: AndroidNative"
+        targetWebView.removeJavascriptInterface("AndroidNative")
+        targetWebView.addJavascriptInterface(AndroidNative(targetWebView), "AndroidNative")
+    inner class AndroidNative(private val webView: WebView) {
+        fun openExternalUrl(url: String?) {
+            mainHandler.post {
+                    emitJsError("openExternalUrl: ${e.message ?: "intent error"}")
+        fun goBack() {
+            mainHandler.post {
+                        webView.goBack()
+                    emitJsError("goBack: ${e.message ?: "error"}")
+        fun goForward() {
+            mainHandler.post {
+                        webView.goForward()
+                    emitJsError("goForward: ${e.message ?: "error"}")
+        fun postChatCompletion(
+            mainHandler.post {
+--- [3/4] CZYSTY RESTART I SNAPSHOT LOGÓW ---
+package:/data/app/~~tw2QtS6RJ-eupNCcMP5oHw==/pl.tomaszewski.aiweb-DhH22zZH6jTpNgKibYOZqw==/base.apk
+RUNTIME_PID=20566
+STREAMING_PID=20566 TARGET=192.168.1.154:33131
+--------- beginning of main
+11-20 03:21:04.541 I/libprocessgroup(20566): Created cgroup /sys/fs/cgroup/apps/uid_11562/pid_20566
+11-20 03:21:04.553 I/Zygote  (20566): Process 20566 created for pl.tomaszewski.aiweb
+11-20 03:21:04.553 I/maszewski.aiweb(20566): Using generational CollectorTypeCMC GC.
+11-20 03:21:04.566 D/nativeloader(20566): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+11-20 03:21:04.588 D/CompatChangeReporter(20566): Compat change id reported: 242716250; UID 11562; state: ENABLED
+11-20 03:21:04.591 D/nativeloader(20566): Configuring clns-9 for other apk /data/app/~~tw2QtS6RJ-eupNCcMP5oHw==/pl.tomaszewski.aiweb-DhH22zZH6jTpNgKibYOZqw==/base.apk. target_sdk_version=34, uses_libraries=, library_path=/data/app/~~tw2QtS6RJ-eupNCcMP5oHw==/pl.tomaszewski.aiweb-DhH22zZH6jTpNgKibYOZqw==/lib/arm64, permitted_path=/data:/mnt/expand:/data/user/0/pl.tomaszewski.aiweb
+11-20 03:21:04.594 V/GraphicsEnvironment(20566): Currently set values for:
+11-20 03:21:04.594 V/GraphicsEnvironment(20566):   angle_gl_driver_selection_pkgs=[]
+11-20 03:21:04.594 V/GraphicsEnvironment(20566):   angle_gl_driver_selection_values=[]
+11-20 03:21:04.594 V/GraphicsEnvironment(20566): pl.tomaszewski.aiweb is not listed in per-application setting
+11-20 03:21:04.594 V/GraphicsEnvironment(20566): first_api_level (34) < 36; skipping config_angleAllowList for pl.tomaszewski.aiweb
+11-20 03:21:04.594 V/GraphicsEnvironment(20566): No special selections for ANGLE, returning default driver choice
+11-20 03:21:04.594 V/GraphicsEnvironment(20566): The updatable driver is turned off on this device.
+--------- beginning of system
+11-20 03:21:04.606 D/ActivityThread(20566): pl.tomaszewski.aiweb will use render engine as VK
+11-20 03:21:04.606 D/HWUI    (20566): HWUI - treat SMPTE_170M as sRGB
+11-20 03:21:04.607 I/DisplayManager(20566): Choreographer implicitly registered for the refresh rate.
+11-20 03:21:04.618 D/HWUI    (20566): CacheManager constructor. deviceInfo=(1080, 1920)
+11-20 03:21:04.619 D/DesktopExperienceFlags(20566): Toggle override initialized to: false
+11-20 03:21:04.620 D/AppCompatDelegate(20566): Checking for metadata for AppLocalesMetadataHolderService : Service not found
+11-20 03:21:04.625 E/Adreno-AppProfiles(20566): QSPM AIDL service doesn't exist
+11-20 03:21:04.625 I/AdrenoVK-0(20566): ===== BEGIN DUMP OF OVERRIDDEN SETTINGS =====
+11-20 03:21:04.625 I/AdrenoVK-0(20566): ===== END DUMP OF OVERRIDDEN SETTINGS =====
+11-20 03:21:04.629 I/AdrenoVK-0(20566): QUALCOMM build          : bb11e2f361, Id7183d7088
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Build Date              : 07/24/26
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Shader Compiler Version : E031.45.02.43
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Local Branch            : 
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Remote Branch           : refs/tags/AU_LINUX_ANDROID_LA.VENDOR.14.3.0.R1.00.00.00.000.225
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Remote Branch           : NONE
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Reconstruct Branch      : NOTHING
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Build Config            : S P 16.1.2 AArch64
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Driver Path             : /vendor/lib64/hw/vulkan.adreno.so
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Driver Version          : 0762.48.1
+11-20 03:21:04.629 I/AdrenoVK-0(20566): PFP                     : 0x01520181
+11-20 03:21:04.629 I/AdrenoVK-0(20566): ME                      : 0x01520023
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Application Name    : android framework
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Application Version : 0x00000000
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Engine Name         : android framework
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Engine Version      : 0x00000000
+11-20 03:21:04.629 I/AdrenoVK-0(20566): Api Version         : 0x00401000
+11-20 03:21:04.638 I/DecorView(20566): setWindowBackground: isPopOver=false color=ff141218 d=android.graphics.drawable.ColorDrawable@b4a97a9
+11-20 03:21:04.643 D/ViewRootImpl(20566): desktopMode is false
+11-20 03:21:04.643 I/ViewRootImpl(20566): dVRR is disabled
+11-20 03:21:04.644 D/HardwareRenderer(20566): onDisplayChanged. displayId=0 current wxh=1440x3120 mLargest wxh=0x0
+11-20 03:21:04.644 D/HardwareRenderer(20566): Set largestWidth and largestHeight as logical resolution. (1440x3120)
+11-20 03:21:04.644 D/HWUI    (20566): setMaxSurfaceArea requested wxh=(1440,3120) requestedSurfaceArea(4492800) mMaxSurfaceArea(2073600)
+11-20 03:21:04.644 D/NativeCustomFrequencyManager(20566): [NativeCFMS] BpCustomFrequencyManager::BpCustomFrequencyManager()
+11-20 03:21:04.649 D/InputTransport(20566): Input channel constructed: 'cad49dc', fd=123
+11-20 03:21:04.650 I/VRI[MainActivity]@e2d62c0(20566): synced displayState. AttachInfo displayState=2
+11-20 03:21:04.651 I/VRI[MainActivity]@e2d62c0(20566): setView = com.android.internal.policy.DecorView@ff1f131 IsHRR=false mFlingFrameRateChange=0 TM=true
+11-20 03:21:04.651 I/IDS_TAG (20566): Starting IDS observe window
+11-20 03:21:04.651 I/IDS_TAG (20566): Getting Shared Preference for android.app.Application@30678d0 uid = 11562
+11-20 03:21:04.652 I/IDS_TAG (20566): App android.app.Application@30678d0 has not finished training
+11-20 03:21:04.653 I/IDS_TAG (20566): Closing IDS observe window
+11-20 03:21:04.653 I/IDS_TAG (20566): Getting Shared Preference for android.app.Application@30678d0 uid = 11562
+11-20 03:21:04.653 I/IDS_TAG (20566): IDS count updated to 2 for android.app.Application@30678d0
+11-20 03:21:04.654 D/WindowOnBackDispatcher(20566): setTopOnBackInvokedCallback (unwrapped): android.app.Activity$$ExternalSyntheticLambda1@f7d7a2
+11-20 03:21:04.654 D/VRI[MainActivity]@e2d62c0(20566): WindowInsets changed: 1440x3120 statusBars:[0,129,0,0] navigationBars:[0,0,0,82] ime:[0,0,0,606] mandatorySystemGestures:[0,149,0,82] 
+11-20 03:21:04.657 I/Surface (20566): Creating surface for consumer unnamed-20566-0 with slotExpansion=1 for 64 slots
+11-20 03:21:04.657 W/libc    (20566): Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+11-20 03:21:04.657 I/BufferQueueProducer(20566): [](id:505600000000,api:0,p:0,c:20566) setDequeueTimeout:2077252342
+11-20 03:21:04.658 I/Surface (20566): Creating surface for consumer VRI[MainActivity]@e2d62c0#0(BLAST Consumer)0 with slotExpansion=1 for 64 slots
+11-20 03:21:04.658 W/libc    (20566): Access denied finding property "vendor.display.enable_optimal_refresh_rate"
+11-20 03:21:04.658 I/VRI[MainActivity]@e2d62c0(20566): Relayout returned: old=(0,0,1440,3120) new=(0,0,1440,3120) relayoutAsync=false req=(1440,3120)0 dur=3 res=0x3 s={true 0xb400007250a8d8c0} ch=true seqId=1 syncSeqId=0
+11-20 03:21:04.658 D/VRI[MainActivity]@e2d62c0(20566): reportNextDraw android.view.ViewRootImpl.performTraversals:5295 android.view.ViewRootImpl.doTraversal:4255 android.view.ViewRootImpl$TraversalCallback.onVsync:13896 android.view.Choreographer$CallbackRecord.run:1995 android.view.Choreographer.doCallbacks:1440 
+11-20 03:21:04.658 D/VRI[MainActivity]@e2d62c0(20566): applyTransactionOnDraw applyImmediately
+11-20 03:21:04.658 I/VRI[MainActivity]@e2d62c0(20566): performConfigurationChange setNightDimText nightDimLevel=0
+11-20 03:21:04.658 D/VRI[MainActivity]@e2d62c0(20566): mThreadedRenderer.initialize() mSurface={isValid=true 0xb400007250a8d8c0} hwInitialized=true
+11-20 03:21:04.659 D/VRI[MainActivity]@e2d62c0(20566): reportNextDraw android.view.ViewRootImpl.performTraversals:5940 android.view.ViewRootImpl.doTraversal:4255 android.view.ViewRootImpl$TraversalCallback.onVsync:13896 android.view.Choreographer$CallbackRecord.run:1995 android.view.Choreographer.doCallbacks:1440 
+11-20 03:21:04.659 D/VRI[MainActivity]@e2d62c0(20566): Setup new sync=wmsSync-VRI[MainActivity]@e2d62c0#0
+11-20 03:21:04.659 I/VRI[MainActivity]@e2d62c0(20566): Creating new active sync group VRI[MainActivity]@e2d62c0#1
+11-20 03:21:04.659 D/VRI[MainActivity]@e2d62c0(20566): registerCallbacksForSync syncBuffer=false
+11-20 03:21:04.660 D/VRI[MainActivity]@e2d62c0(20566): Received frameDrawingCallback syncResult=0 frameNum=1.
+11-20 03:21:04.660 I/VR=== PODSUMOWANIE LOGÓW: /data/data/com.termux/files/home/ai-web-browser-apk/out/last_clean_log.txt ===
+--- [4/4] ANALIZA LOGCAT (CRASH / FATAL / ACTIVITY) ---
+11-20 03:21:04.837  2968  3909 I SGM:GosNotifyThread: notifyPackageChangedToGos(), category from pm: pl.tomaszewski.aiweb, [-1/-1]
+11-20 03:21:04.837  2968  3242 I SGM:PackageUpdateReceiver: PkgUpdateReceiver, onPackageReplaced : pl.tomaszewski.aiweb userID : 95
+11-20 03:21:04.837  2968  3242 D SGM:GosNotifyThread: sendPackageMessage(), changeType=8, pkgName=pl.tomaszewski.aiweb, userHandleId=95
+11-20 03:21:04.837  2968  3242 D MetaDataCollector: onReceive: done pkgName=pl.tomaszewski.aiweb
+11-20 03:21:04.841  2968  3909 D SGM:GosNotifyThread: notifyPackageChangedToGos(), before send intent to GOS. type:15, changeType: 8, pkgName:pl.tomaszewski.aiweb, userHandleId:95
+11-20 03:21:04.844 19911 20601 I GOS:GameIntentService: onHandleIntent. GameIntentService. type: 15, pkgName: pl.tomaszewski.aiweb
+11-20 03:21:04.862  5160 10966 I LauncherActivityInfo: packageName: pl.tomaszewski.aiweb, useThemeIcon: false, height: 123, width: 123, density: 480
+11-20 03:21:04.866  5160 22448 I HoneySpace.IconCache: add icon DB: [pl.tomaszewski.aiweb/.MainActivity#UserHandle{0}] - IconAndLabel(icon=android.graphics.Bitmap@208219d, label=AI Web Core) | false | 480 | false |true | -14128109
+11-20 03:21:04.868  5160  5160 I HoneySpace.HoneySpaceManagerContainer: refreshHoneyPlugin, packageName: pl.tomaszewski.aiweb
+11-20 03:21:04.868  5160 22448 I HoneySpace.HoneySpacePackageSourceImpl: Package changed : pl.tomaszewski.aiweb
+11-20 03:21:04.869  5160 10967 I SearchableManager: invalidate: pl.tomaszewski.aiweb
+11-20 03:21:04.869  5160 28920 I HoneySpace.OpenMarketCustomizationOperator: packageUpdateEvent: com.honeyspace.sdk.source.entity.PackageOperation$Changed > pl.tomaszewski.aiweb
+11-20 03:21:04.870  2968  4101 I AppWidgetServiceImpl: getInstalledProvidersForProfiles lock in pl.tomaszewski.aiweb
+11-20 03:21:04.870  5160 10966 I HoneySpace.IconCache: updateSpecificIconCacheAndDB : pl.tomaszewski.aiweb UserHandle{95}
+11-20 03:21:04.870  5160 10966 I HoneySpace.IconCache: remove icon cache & DB : pl.tomaszewski.aiweb UserHandle{95}
+11-20 03:21:04.871  5160 10966 I HoneySpace.IconCache: removeSpecificIconDb: pl.tomaszewski.aiweb UserHandle{95}
+11-20 03:21:04.880  5160  5160 I HoneySpace.AppsEdge.Panel.ViewModel: packageChanged : pl.tomaszewski.aiweb
+11-20 03:21:04.894  5160 22448 I LauncherActivityInfo: packageName: pl.tomaszewski.aiweb, useThemeIcon: false, height: 123, width: 123, density: 480
+11-20 03:21:04.895  5160  5160 I HoneySpace.HoneySpaceManagerContainer: refreshHoneyPlugin, packageName: pl.tomaszewski.aiweb
+11-20 03:21:04.895  5160 16567 I HoneySpace.OpenMarketCustomizationOperator: packageUpdateEvent: com.honeyspace.sdk.source.entity.PackageOperation$Changed > pl.tomaszewski.aiweb
+11-20 03:21:04.895  5160 10964 I HoneySpace.IconCache: add icon DB: [pl.tomaszewski.aiweb/.MainActivity#UserHandle{95}] - IconAndLabel(icon=android.graphics.Bitmap@f2b331f, label=AI Web Core) | false | 480 | false |true | -14128109
+11-20 03:21:04.896  5160 28920 I HoneySpace.HoneySpacePackageSourceImpl: Package changed : pl.tomaszewski.aiweb
+11-20 03:21:04.896  5160 10964 I SearchableManager: invalidate: pl.tomaszewski.aiweb
+11-20 03:21:04.897  5160  5160 I HoneySpace.AppsEdge.Panel.ViewModel: packageChanged : pl.tomaszewski.aiweb
+11-20 03:21:05.013 19911 20601 I GOS:GameIntentService: onPackageChanged(). extras: Bundle[{changeType=8, manifestCategory=-1, userId=0, pkgName=pl.tomaszewski.aiweb, type=15, packageName=pl.tomaszewski.aiweb, categoryOverride=-1}]
+11-20 03:21:05.013 19911 20601 I GOS:GameIntentService: onPackageChanged(). changeType(REPLACED), pkgName(pl.tomaszewski.aiweb), UserHandle(0), userId(0), Installed(true)
+11-20 03:21:05.206  2968  3227 D SGM:GameManager: identifyForegroundApp. pl.tomaszewski.aiweb, mCurrentUserId: 0, callerUserId: 0
+11-20 03:21:05.233  2968  6849 D InsetsSourceProvider: updateControlForTarget: control=InsetsSourceControl: {3 mType=ime mSurfacePosition=Point(0, 129) mInsetsHint=Insets{left=0, top=0, right=0, bottom=606} mLeash=Surface(name=Surface(name=1b70ad6 InputMethod#15553)/@0xbe04444 - animation-leash of insets_animation#22816)/@0xd43b8c8}, target=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}, from=com.android.server.wm.ImeInsetsSourceProvider.updateControlForTarget:22 com.android.server.wm.ImeInsetsSourceProvider.setServerVisible:67 com.android.server.wm.InsetsSourceProvider.onPreLayout:9 com.android.server.wm.ImeInsetsSourceProvider.onPreLayout:4 com.android.server.wm.RootWindowContainer.applySurfaceChangesTransaction$1:191 
+11-20 03:21:05.237 20566 20566 I InsetsController: onStateChanged: host=pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity, from=android.view.ViewRootImpl.onInsetsStateChanged:3319, state=InsetsState: {mDisplayFrame=Rect(0, 0 - 1440, 3120), mDisplayCutout=DisplayCutout{insets=Rect(0, 128 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(686, 0 - 754, 128), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1440 displayHeight=3120 physicalDisplayWidth=1440 physicalDisplayHeight=3120 density={3.75} cutoutSpec={M 0,0 H -9.066666666666667 V 34.13333333333333 H 9.066666666666667 V 0 H 0 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}} sideOverrides={}}, mRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=3, center=Point(3, 3)}, RoundedCorner{position=TopRight, radius=3, center=Point(1437, 3)}, RoundedCorner{position=BottomRight, radius=3, center=Point(1437, 3117)}, RoundedCorner{position=BottomLeft, radius=3, center=Point(3, 3117)}]}  mRoundedCornerFrame=Rect(0, 0 - 1440, 3120), mPrivacyIndicatorBounds=PrivacyIndicatorBounds {static bounds=Rect(1364, 0 - 1440, 129) rotation=0}, mDisplayShape=DisplayShape{type=2, displayWidth=1440, displayHeight=3120, physicalPixelDisplaySizeRatio=1.0, rotation=0, offsetX=0, offsetY=0, scale=1.0}, mSources= { InsetsSource: {b1120001 mType=navigationBars mFrame=[0,3038][1440,3120] mAttachedInsets=null mVisible=true mFlags= mSideHint=BOTTOM}, InsetsSource: {b1120004 mType=systemGestures mFrame=[0,0][0,0] mAttachedInsets=null mVisible=true mFlags= mSideHint=NONE}, InsetsSource: {b1120005 mType=mandatorySystemGestures mFrame=[0,3038][1440,3120] mAttachedInsets=null mVisible=true mFlags= mSideHint=BOTTOM}, InsetsSource: {b1120006 mType=tappableElement mFrame=[0,3038][1440,3120] mAttachedInsets=null mVisible=true mFlags= mSideHint=BOTTOM}, InsetsSource: {b1120024 mType=systemGestures mFrame=[0,0][0,0] mAttachedInsets=null mVisible=true mFlags= mSideHint=NONE}, InsetsSource: {3 mType=ime mFrame=[0,0][0,0] mAttachedInsets=null mVisible=false mFlags=INVALID mSideHint=NONE}, InsetsSource: {27 mType=displayCutout mFrame=[0,0][1440,128] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP}, InsetsSource: {20720000 mType=statusBars mFrame=[0,0][1440,129] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP}, InsetsSource: {20720005 mType=mandatorySystemGestures mFrame=[0,0][1440,149] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP}, InsetsSource: {20720006 mType=tappableElement mFrame=[0,0][1440,129] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP} }
+11-20 03:21:05.237 20566 20566 I VRI[MainActivity]@e2d62c0: handleResized, frames=ClientWindowFrames{frame=[0,0][1440,3120] display=[0,0][1440,3120] parentFrame=[0,0][0,0]} displayId=0 dragResizing=false compatScale=1.0 frameChanged=false attachedFrameChanged=false configChanged=false displayChanged=false compatScaleChanged=false dragResizingChanged=false
+11-20 03:21:05.237 20566 20566 I VRI[MainActivity]@e2d62c0: handleResized seqId=1 mSeqId=1 mSyncSeqId=0 syncWithBuffers=false
+11-20 03:21:05.240 20566 20566 I InsetsController: onStateChanged: host=pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity, from=android.view.ViewRootImpl.onInsetsStateChanged:3319, state=InsetsState: {mDisplayFrame=Rect(0, 0 - 1440, 3120), mDisplayCutout=DisplayCutout{insets=Rect(0, 128 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(686, 0 - 754, 128), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1440 displayHeight=3120 physicalDisplayWidth=1440 physicalDisplayHeight=3120 density={3.75} cutoutSpec={M 0,0 H -9.066666666666667 V 34.13333333333333 H 9.066666666666667 V 0 H 0 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}} sideOverrides={}}, mRoundedCorners=RoundedCorners{[RoundedCorner{position=TopLeft, radius=3, center=Point(3, 3)}, RoundedCorner{position=TopRight, radius=3, center=Point(1437, 3)}, RoundedCorner{position=BottomRight, radius=3, center=Point(1437, 3117)}, RoundedCorner{position=BottomLeft, radius=3, center=Point(3, 3117)}]}  mRoundedCornerFrame=Rect(0, 0 - 1440, 3120), mPrivacyIndicatorBounds=PrivacyIndicatorBounds {static bounds=Rect(1364, 0 - 1440, 129) rotation=0}, mDisplayShape=DisplayShape{type=2, displayWidth=1440, displayHeight=3120, physicalPixelDisplaySizeRatio=1.0, rotation=0, offsetX=0, offsetY=0, scale=1.0}, mSources= { InsetsSource: {b1120001 mType=navigationBars mFrame=[0,3038][1440,3120] mAttachedInsets=null mVisible=true mFlags= mSideHint=BOTTOM}, InsetsSource: {b1120004 mType=systemGestures mFrame=[0,0][0,0] mAttachedInsets=null mVisible=true mFlags= mSideHint=NONE}, InsetsSource: {b1120005 mType=mandatorySystemGestures mFrame=[0,3038][1440,3120] mAttachedInsets=null mVisible=true mFlags= mSideHint=BOTTOM}, InsetsSource: {b1120006 mType=tappableElement mFrame=[0,3038][1440,3120] mAttachedInsets=null mVisible=true mFlags= mSideHint=BOTTOM}, InsetsSource: {b1120024 mType=systemGestures mFrame=[0,0][0,0] mAttachedInsets=null mVisible=true mFlags= mSideHint=NONE}, InsetsSource: {3 mType=ime mFrame=[0,0][0,0] mAttachedInsets=null mVisible=false mFlags=INVALID mSideHint=NONE}, InsetsSource: {27 mType=displayCutout mFrame=[0,0][1440,128] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP}, InsetsSource: {20720000 mType=statusBars mFrame=[0,0][1440,129] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP}, InsetsSource: {20720005 mType=mandatorySystemGestures mFrame=[0,0][1440,149] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP}, InsetsSource: {20720006 mType=tappableElement mFrame=[0,0][1440,129] mAttachedInsets=null mVisible=true mFlags= mSideHint=TOP} }
+11-20 03:21:05.296  5160 20603 I SearchEngineAppSuggestion: package changed: pl.tomaszewski.aiweb
+11-20 03:21:05.298  5160 20603 I SearchEngine: isComponentInApps() packageName : ru.mqsrkyff.qefwbqecc / className : ru.mqsrkyff.qefwbqecc.MainActivity1 / userId : 0 / enable true / enabledSetting 0
+11-20 03:21:05.301  5160 20603 I SearchEngine: isComponentInApps() packageName : ai.mistral.chat / className : ai.mistral.chat.MainActivity / userId : 0 / enable true / enabledSetting 0
+11-20 03:21:05.304  5160 20603 I SearchEngine: isComponentInApps() packageName : com.alexvas.dvr / className : com.alexvas.dvr.MainActivity / userId : 0 / enable true / enabledSetting 0
+11-20 03:21:05.305  5160 20603 I SearchEngine: isComponentInApps() packageName : com.rhmsoft.code / className : com.rhmsoft.code.MainActivity / userId : 0 / enable true / enabledSetting 0
+11-20 03:21:05.305  5160 20603 I SearchEngine: isComponentInApps() packageName : ru.mqsrkyff.qefwbqecc / className : ru.mqsrkyff.qefwbqecc.MainActivity1 / userId : 0 / enable true / enabledSetting 0
+11-20 03:21:05.306  5160 20603 I SearchEngine: isComponentInApps() packageName : com.lemon.lvoverseas / className : com.vega.main.MainActivity / userId : 0 / enable true / enabledSetting 0
+11-20 03:21:05.306  5160 20603 I SearchEngine: isComponentInApps() packageName : app.phantom / className : app.phantom.MainActivity / userId : 0 / enable true / enabledSetting 0
+11-20 03:21:05.307  5160 20603 I SearchEngine: isComponentInApps() packageName : com.yasinkacmaz.jetflix / className : com.yasinkacmaz.jetflix.ui.main.MainActivity / userId : 0 / enable true / enabledSetting 0
+11-20 03:21:05.311  5160 20603 I HoneySpace.SuggestAppDecor: getInstaller: pl.tomaszewski.aiweb [null]
+11-20 03:21:05.311  5160 20603 I HoneySpace.SuggestAppDecor: getInstaller: pl.tomaszewski.aiweb [null]
+11-20 03:21:06.762  5647  5647 I adbd    : adbd service requested 'shell,v2,TERM=xterm-256color,raw:cmd package path pl.tomaszewski.aiweb'
+11-20 03:21:06.837  5647  5647 I adbd    : adbd service requested 'shell,v2,TERM=xterm-256color,raw:pidof pl.tomaszewski.aiweb'
+11-20 03:21:06.960  5647  5647 I adbd    : adbd service requested 'shell,v2,TERM=xterm-256color,raw:pidof pl.tomaszewski.aiweb'
+11-20 03:21:07.031  2968  4225 I Pageboost: memUsage collected : 28819 18040 1356 for pl.tomaszewski.aiweb 20566
+11-20 03:21:07.843  2968  4088 D SGM:GameManager: identifyGamePackage. pl.tomaszewski.aiweb, mCurrentUserId: 0, callingMethodInfo: com.samsung.android.game.SemGameManager.isGamePackage(SemGameManager.java:106)
+11-20 03:21:07.844  2968  4088 D SGM:SemGameManager: isGamePackage(), pkgName=pl.tomaszewski.aiweb, ret=false
+11-20 03:21:09.511  2968  4225 I Pageboost: memUsage collected : 28803 18040 1356 for pl.tomaszewski.aiweb 20566
+11-20 03:21:09.553 20566 20572 W maszewski.aiweb: Could not open the profile file: /data/misc/profiles/ref/pl.tomaszewski.aiweb/primary.prof: No such file or directory
+11-20 03:21:10.275  2968  6773 D SGM:GameManager: identifyGamePackage. pl.tomaszewski.aiweb, mCurrentUserId: 0, callingMethodInfo: com.samsung.android.game.SemGameManager.isGamePackage(SemGameManager.java:106)
+11-20 03:21:10.276  2968  6773 D SGM:SemGameManager: isGamePackage(), pkgName=pl.tomaszewski.aiweb, ret=false
+11-20 03:21:10.335 20566 20687 D ProfileInstaller: Installing profile for pl.tomaszewski.aiweb
+11-20 03:21:10.860  2968  4088 D SGM:GameManager: identifyGamePackage. pl.tomaszewski.aiweb, mCurrentUserId: 0, callingMethodInfo: com.samsung.android.game.SemGameManager.isGamePackage(SemGameManager.java:106)
+11-20 03:21:10.860  2968  4088 D SGM:SemGameManager: isGamePackage(), pkgName=pl.tomaszewski.aiweb, ret=false
+11-20 03:21:13.885  2968  4088 D SGM:GameManager: identifyGamePackage. pl.tomaszewski.aiweb, mCurrentUserId: 0, callingMethodInfo: com.samsung.android.game.SemGameManager.isGamePackage(SemGameManager.java:106)
+11-20 03:21:13.885  2968  4088 D SGM:SemGameManager: isGamePackage(), pkgName=pl.tomaszewski.aiweb, ret=false
+11-20 03:21:16.909  2968  4088 D SGM:GameManager: identifyGamePackage. pl.tomaszewski.aiweb, mCurrentUserId: 0, callingMethodInfo: com.samsung.android.game.SemGameManager.isGamePackage(SemGameManager.java:106)
+11-20 03:21:16.909  2968  4088 D SGM:SemGameManager: isGamePackage(), pkgName=pl.tomaszewski.aiweb, ret=false
+u0_a1562     20566  1759   17491468 115484 0                   0 S pl.tomaszewski.aiweb
+  * Task{3d25e94 #4751 type=standard A=11562:pl.tomaszewski.aiweb U=0 visible=true visibleRequested=true mode=fullscreen translucent=false sz=1}
+    fullscreenRequestAllowMode=NONE
+    mLastNonFullscreenBounds=Rect(108, 803 - 1332, 2363)
+    isSleeping=false
+    topResumedActivity=ActivityRecord{205312743 u0 pl.tomaszewski.aiweb/.MainActivity t4751}
+    * Hist  #0: ActivityRecord{205312743 u0 pl.tomaszewski.aiweb/.MainActivity t4751}
+      packageName=pl.tomaszewski.aiweb processName=pl.tomaszewski.aiweb
+      launchedFromUid=2000 launchedFromPackage=com.android.shell launchedFromFeature=null userId=0
+      app=ProcessRecord{d4a43d7 20566:pl.tomaszewski.aiweb/u0a1562}
+      Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10200000 cmp=pl.tomaszewski.aiweb/.MainActivity }
+      rootOfTask=true task=Task{3d25e94 #4751 type=standard A=11562:pl.tomaszewski.aiweb}
+      taskAffinity=11562:pl.tomaszewski.aiweb
+      mActivityComponent=pl.tomaszewski.aiweb/.MainActivity
+      baseDir=/data/app/~~tw2QtS6RJ-eupNCcMP5oHw==/pl.tomaszewski.aiweb-DhH22zZH6jTpNgKibYOZqw==/base.apk
+      dataDir=/data/user/0/pl.tomaszewski.aiweb
+      stateNotNeeded=false componentSpecified=true mActivityType=standard
+      compat={274dpi always-compat} theme=0x7f0f0235
+      mLastReportedConfigurations:
+        mGlobalConfig={2.0 260mcc2mnc [pl_PL] masculine ldltr sw841dp w841dp h1699dp 274dpi xlrg long compactNeeded hdr widecg port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1440, 3120) mAppBounds=Rect(0, 128 - 1440, 3038) mMaxBounds=Rect(0, 0 - 1440, 3120) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mEmbedActivityMode=undefined mPopOver=off mOverlappingWithCutout=false} s.2410 fontWeightAdjustment=0 fv=0 bf=-1 bts=0 cst=2.0 nightDim=0 themeSeq=0}
+        mOverrideConfig={2.0 260mcc2mnc [pl_PL] masculine ldltr sw841dp w841dp h1699dp 274dpi xlrg long compactNeeded hdr widecg port night finger -keyb/v/h -nav/h winConfig={ mBounds=Rect(0, 0 - 1440, 3120) mAppBounds=Rect(0, 128 - 1440, 3038) mMaxBounds=Rect(0, 0 - 1440, 3120) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=standard mAlwaysOnTop=undefined mRotation=ROTATION_0 mStageConfig=undefined mEmbedActivityMode=undefined mPopOver=off mOverlappingWithCutout=false} s.2 fontWeightAdjustment=0 fv=0 bf=-1 bts=0 cst=2.0 nightDim=0 themeSeq=0}
+--
+      windows=[Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}]
+      windowType=2
+      mOccludesParent=true
+      mStyleFillsParent=true
+      overrideOrientation=SCREEN_ORIENTATION_UNSPECIFIED
+      requestedOrientation=SCREEN_ORIENTATION_UNSPECIFIED
+--
+    Resumed: ActivityRecord{205312743 u0 pl.tomaszewski.aiweb/.MainActivity t4751}
+
+  ResumedActivity: ActivityRecord{205312743 u0 pl.tomaszewski.aiweb/.MainActivity t4751}
+
+ActivityTaskSupervisor state:
+  topDisplayFocusedRootTask=Task{3d25e94 #4751 type=standard A=11562:pl.tomaszewski.aiweb}
+  Display: mDisplayId=0 (organized)
+    init=1440x3120 600dpi mMinSizeOfResizeableTaskDp=220 mMinSizeOfDesktopTaskDp=304 base=1440x3120 274dpi cur=1440x3120 app=1440x3120 rng=1440x1440-3120x3120
+    deferred=false mLayoutNeeded=false
+    initCutout=DisplayCutout{insets=Rect(0, 128 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(686, 0 - 754, 128), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1440 displayHeight=3120 physicalDisplayWidth=1440 physicalDisplayHeight=3120 density={3.75} cutoutSpec={M 0,0 H -9.066666666666667 V 34.13333333333333 H 9.066666666666667 V 0 H 0 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}} sideOverrides={}}
+    baseCutout=DisplayCutout{insets=Rect(0, 128 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(686, 0 - 754, 128), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1440 displayHeight=3120 physicalDisplayWidth=1440 physicalDisplayHeight=3120 density={3.75} cutoutSpec={M 0,0 H -9.066666666666667 V 34.13333333333333 H 9.066666666666667 V 0 H 0 Z @dp} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}} sideOverrides={}}
+--
+  mImeLayeringTarget=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+  mImeInputTarget=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+  mImeControlTarget=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+  ImeContainer
+    mNeedsLayer=false
+    mImeWindowToken=null
+  mImeParent=ActivityRecord{205312743 u0 pl.tomaszewski.aiweb/.MainActivity t4751}
+  mRemoteInsetsControlTarget=RemoteInsetsControlTarget{90ff232 displayId=0 requestedVisibleTypes=503 animatingTypes=0}
+  mCurrentFocus=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+  mFocusedApp=ActivityRecord{205312743 u0 pl.tomaszewski.aiweb/.MainActivity t4751}
+  mFixedRotationLaunchingApp=null
+
+  mHoldScreenWindow=null
+  mObscuringWindow=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+  mLastWakeLockHoldingWindow=null
+  mLastWakeLockObscuringWindow=Window{408e84 u0 com.termux/com.termux.app.TermuxActivity}
+
+  mIsHardwareRendererOutputDisabled=false
+  mAreClientRenderingLimitationsEnabled=false
+--
+      mPreferredTopFocusableRootTask=Task{3d25e94 #4751 type=standard A=11562:pl.tomaszewski.aiweb}
+      mLastFocusedRootTask=Task{3d25e94 #4751 type=standard A=11562:pl.tomaszewski.aiweb}
+      Application tokens in top down Z order:
+      * Task{3d25e94 #4751 type=standard A=11562:pl.tomaszewski.aiweb U=0 visible=true visibleRequested=true mode=fullscreen translucent=false sz=1}
+        bounds=[0,0][1440,3120]
+        * ActivityRecord{205312743 u0 pl.tomaszewski.aiweb/.MainActivity t4751}
+      * Task{b4c80f6 #4719 type=standard A=11353:com.termux U=0 visible=false visibleRequested=false mode=fullscreen translucent=true sz=1}
+        bounds=[0,0][1440,3120]
+        * ActivityRecord{72573903 u0 com.termux/.app.TermuxActivity t4719}
+      * Task{da2e31f #1 type=home U=0 visible=false visibleRequested=false mode=fullscreen translucent=true sz=1}
+        bounds=[0,0][1440,3120]
+--
+    mFocusedWindow=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+    mTopFullscreenOpaqueWindowState=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+    mSystemUiControllingWindow=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+    mSystemBarColorApps={ActivityRecord{205312743 u0 pl.tomaszewski.aiweb/.MainActivity t4751}}
+    mNavBarColorWindowCandidate=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+    mNavBarBackgroundWindowCandidate=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+    mLastStatusBarAppearanceRegions=
+      AppearanceRegion{ bounds=[0,0][1440,3120]}
+    mLastLetterboxDetails=
+    mStatusBarBackgroundWindows=
+      Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+    mImeInsetsConsumed=false
+    mForceShowNavigationBarEnabled=false mAllowLockscreenWhenOn=false
+    mAllowsSystemBarRemoteInsetsController=false
+    mDecorInsetsInfo:
+      ROTATION_0={overrideNonDecorInsets=[0,128][0,82], overrideConfigInsets=[0,129][0,82], overrideNonDecorFrame=[0,128][1440,3038], overrideConfigFrame=[0,129][1440,3038]}
+--
+      Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}:
+        InsetsSourceControl: {b1120001 mType=navigationBars initiallyVisible mSurfacePosition=Point(0, 3038) mInsetsHint=Insets{left=0, top=0, right=0, bottom=82} mLeash=Surface(name=Surface(name=6f8b894 NavigationBar0#71)/@0x2322815 - animation-leash of insets_animation#22815)/@0xe9f0704}
+        InsetsSourceControl: {3 mType=ime mSurfacePosition=Point(0, 129) mInsetsHint=Insets{left=0, top=0, right=0, bottom=606} mLeash=null}
+        InsetsSourceControl: {20720000 mType=statusBars initiallyVisible mSurfacePosition=Point(0, 0) mInsetsHint=Insets{left=0, top=129, right=0, bottom=0} mLeash=Surface(name=Surface(name=2b78ca1 StatusBar#73)/@0xe9148a3 - animation-leash of insets_animation#22812)/@0x47b01e3}
+    InsetsSourceProviders:
+      InsetsSourceProvider
+--
+        mControlTarget=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+      ImeInsetsSourceProvider
+        mSource=InsetsSource id=3 type=ime frame=[0,0][0,0] visibleFrame=[0,3038][1440,3120] visible=false flags=INVALID sideHint=NONE
+        mSourceFrame=Rect(0, 3038 - 1440, 3120)
+        mControl=InsetsSourceControl mId=3 mType=ime mLeash=Surface(name=Surface(name=1b70ad6 InputMethod#15553)/@0xbe04444 - animation-leash of insets_animation#22816)/@0xd43b8c8 mInitiallyVisible=false mSurfacePosition=Point(0, 129) mInsetsHint=Insets{left=0, top=0, right=0, bottom=606} mSkipAnimationOnce=false mImeStatsToken=null mControlledByPolicy=false
+        mInsetsHint=Insets{left=0, top=0, right=0, bottom=606} stale
+--
+        mControlTarget=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+        mImeShowing=false mLastDrawn=false
+      InsetsSourceProvider
+        mSource=InsetsSource id=b1120024 type=systemGestures frame=[0,0][0,0] visible=true flags= sideHint=NONE
+        mSourceFrame=Rect(0, 0 - 0, 0)
+        mIsLeashInitialized=false mHasPendingPosition=false
+--
+        mControlTarget=Window{cad49dc u0 pl.tomaszewski.aiweb/pl.tomaszewski.aiweb.MainActivity}
+  InsetsPolicy
+    status: WINDOW_STATE_SHOWING
+    nav: WINDOW_STATE_SHOWING
+
+  DisplayWindowSettingsProvider
+--
+        (fullscreen) Task{3d25e94 #4751 type=standard A=11562:pl.tomaszewski.aiweb}
+
+  VisibleActivityProcess:[ ProcessRecord{d4a43d7 20566:pl.tomaszewski.aiweb/u0a1562}]
+  NumNonAppVisibleWindowUidMap:[ 10157:1 10050:2]
+
+  PACKAGE SETTINGS MANAGER
+    DisplayCutoutController
+      mCutoutInset=Rect(0, 128 - 0, 0)

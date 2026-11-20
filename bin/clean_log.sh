@@ -15,7 +15,7 @@ fi
 
 echo "STREAMING_PID=${APP_PID:-brak} TARGET=$ADB_TARGET"
 
-NOISE_FILTER="setRequestedFrameRate|InsetsState:|onStateChanged: host=pl\.tomaszewski\.aiweb|BLASTBufferQueue_Java|handleResized|reportDrawFinished|mWNT:|RoundedCornerOffset|getInterlacedFlag|setFrameRateCategory"
+NOISE_FILTER="setRequestedFrameRate|InsetsState:|onStateChanged: host=pl\.tomaszewski\.aiweb|BLASTBufferQueue_Java|handleResized|reportDrawFinished|mWNT:|RoundedCornerOffset|getInterlacedFlag|setFrameRateCategory|Shader compilation failed|Pipeline create failed|libpenguin\.so|Unsupported mediaType|Unsupported mime"
 
 if [ -n "$APP_PID" ]; then
   adb -s "$ADB_TARGET" logcat --pid="$APP_PID" -v time | grep -v -E "$NOISE_FILTER"

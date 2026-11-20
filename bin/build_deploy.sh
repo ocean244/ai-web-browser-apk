@@ -6,18 +6,12 @@ ADB_TARGET="${1:-192.168.1.154:33131}"
 PKG_NAME="pl.tomaszewski.aiweb"
 APK_OUT="$PROJ_DIR/out/app-release.apk"
 
-cd "$PROJ_DIR"
-
-if [ -x "$PROJ_DIR/bin/deploy_cloud_apk.sh" ]; then
-  "$PROJ_DIR/bin/deploy_cloud_apk.sh" "$ADB_TARGET" || true
-fi
-
 if [ ! -f "$APK_OUT" ]; then
-  APK_OUT="$(find "$PROJ_DIR" -maxdepth 4 -name "*.apk" | head -n 1 || true)"
+  APK_OUT="$(find "$PROJ_DIR/out" -maxdepth 3 -name "*.apk" | head -n 1 || true)"
 fi
 
 if [ -z "${APK_OUT:-}" ] || [ ! -f "$APK_OUT" ]; then
-  echo "APK_NOT_FOUND w $PROJ_DIR"
+  echo "APK_NOT_FOUND w $PROJ_DIR/out"
   exit 1
 fi
 
@@ -33,5 +27,5 @@ NEW_PID="$(adb -s "$ADB_TARGET" shell pidof "$PKG_NAME" 2>/dev/null | tr -d '\r'
 echo "DEPLOY_OK=$PKG_NAME PID=${NEW_PID:-brak} TARGET=$ADB_TARGET"
 
 if [ -x "$PROJ_DIR/bin/verify_apk.sh" ]; then
-  "$PROJ_DIR/bin/verify_apk.sh" "$ADB_TARGET" || true
+  "$PROJ_DIR/bin/verify_apk.sh" "$ADB_TARGET"
 fi
