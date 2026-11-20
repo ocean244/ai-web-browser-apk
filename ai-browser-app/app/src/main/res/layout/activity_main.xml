@@ -74,7 +74,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingHorizontal="6dp"
-        android:paddingBottom="4dp"
+        android:paddingBottom="2dp"
         app:layout_constraintTop_toBottomOf="@id/topBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -107,10 +107,54 @@
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
                 android:layout_marginStart="4dp"
-                android:layout_marginEnd="6dp"
                 android:minWidth="0dp"
                 android:paddingHorizontal="8dp"
                 android:text="HISTORIA" />
+
+            <Button
+                android:id="@+id/exportJsonButton"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:layout_marginStart="4dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="8dp"
+                android:text="EKSPORT JSON" />
+
+            <Button
+                android:id="@+id/importJsonButton"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="6dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="8dp"
+                android:text="IMPORT JSON" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:id="@+id/scriptsScroll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="6dp"
+        android:paddingBottom="4dp"
+        app:layout_constraintTop_toBottomOf="@id/tabsScroll"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/scriptsStrip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/addScriptButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:minWidth="0dp"
+                android:paddingHorizontal="8dp"
+                android:text="+JS" />
         </LinearLayout>
     </HorizontalScrollView>
 
@@ -118,7 +162,7 @@
         android:id="@+id/webContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/tabsScroll"
+        app:layout_constraintTop_toBottomOf="@id/scriptsScroll"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -130,7 +174,7 @@
         android:orientation="vertical"
         android:padding="10dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tabsScroll"
+        app:layout_constraintTop_toBottomOf="@id/scriptsScroll"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

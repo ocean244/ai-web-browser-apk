@@ -33,6 +33,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
@@ -56,6 +57,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var webContainer: FrameLayout
     private lateinit var tabsStrip: LinearLayout
+    private lateinit var scriptsStrip: LinearLayout
+    private lateinit var addScriptButton: Button
     private lateinit var aiCard: LinearLayout
     private lateinit var urlInput: EditText
     private lateinit var promptInput: EditText
@@ -71,6 +74,8 @@ class MainActivity : AppCompatActivity() {
 
         webContainer = findViewById(R.id.webContainer)
         tabsStrip = findViewById(R.id.tabsStrip)
+        scriptsStrip = findViewById(R.id.scriptsStrip)
+        addScriptButton = findViewById(R.id.addScriptButton)
         aiCard = findViewById(R.id.aiCardContainer)
         urlInput = findViewById(R.id.urlInput)
         promptInput = findViewById(R.id.promptInput)
@@ -81,6 +86,8 @@ class MainActivity : AppCompatActivity() {
         val addBookmarkButton: Button = findViewById(R.id.addBookmarkButton)
         val bookmarksButton: Button = findViewById(R.id.bookmarksButton)
         val historyButton: Button = findViewById(R.id.historyButton)
+        val exportJsonButton: Button = findViewById(R.id.exportJsonButton)
+        val importJsonButton: Button = findViewById(R.id.importJsonButton)
         val goButton: Button = findViewById(R.id.goButton)
         val aiTabButton: Button = findViewById(R.id.aiTabButton)
         val endpointInput: EditText = findViewById(R.id.endpointInput)
@@ -134,6 +141,20 @@ class MainActivity : AppCompatActivity() {
         historyButton.setOnClickListener {
             showEntriesDialog("Historia", storage.loadHistory())
         }
+
+        exportJsonButton.setOnClickListener {
+            exportBackupToDownloads()
+        }
+
+        importJsonButton.setOnClickListener {
+            showImportJsonDialog()
+        }
+
+        addScriptButton.setOnClickListener {
+            showAddScriptDialog()
+        }
+
+        rebuildScriptsBar()
 
         CookieManager.getInstance().setAcceptCookie(true)
 
@@ -249,6 +270,100 @@ class MainActivity : AppCompatActivity() {
 
         val initialUrl = intent?.data?.toString() ?: "https://duck.ai/"
         createTab(initialUrl, switchToIt = true)
+    }
+
+    private fun rebuildScriptsBar() {
+        while (scriptsStrip.childCount > 1) {
+            scriptsStrip.removeViewAt(1)
+        }
+        val scripts = storage.loadUserScripts()
+        for (s in scripts) {
+            val btn = Button(this).apply {
+                text = s.name
+                minWidth = 0
+                setPadding(16, 0, 16, 0)
+                setOnClickListener { runUserScriptOnActiveTab(s) }
+            }
+            scriptsStrip.addView(btn)
+        }
+    }
+
+    private fun runUserScriptOnActiveTab(script: UserScriptEntry) {
+        val current = getActiveTab() ?: return
+        val pageUrl = current.webView.url ?: current.url
+        current.webView.evaluateJavascript(script.code) { rawJs ->
+            val result = unescapeJsString(rawJs)
+            val existing = promptInput.text.toString()
+            val appended = buildString {
+                if (existing.isNotBlank()) append(existing).append("\n\n")
+                append("URL: ").append(pageUrl).append("\n")
+                append("JS [").append(script.name).append("]:\n").append(result.take(12000))
+            }
+            promptInput.setText(appended)
+            Toast.makeText(this, "JS ${script.name} -> prompt", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showAddScriptDialog() {
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(32, 16, 32, 0)
+        }
+        val nameEdit = EditText(this).apply {
+            hint = "Nazwa skryptu (np. Nagłówki)"
+            singleLine = true
+        }
+        val codeEdit = EditText(this).apply {
+            hint = "Kod JS zwracający string (np. JSON.stringify(...))"
+            minLines = 4
+        }
+        layout.addView(nameEdit)
+        layout.addView(codeEdit)
+
+        AlertDialog.Builder(this)
+            .setTitle("Dodaj UserScript")
+            .setView(layout)
+            .setPositiveButton("ZAPISZ") { _, _ ->
+                val name = nameEdit.text.toString().trim()
+                val code = codeEdit.text.toString().trim()
+                if (name.isNotEmpty() && code.isNotEmpty()) {
+                    storage.addOrUpdateScript(name, code)
+                    rebuildScriptsBar()
+                }
+            }
+            .setNegativeButton(getString(R.string.choose_host_browser_dialog_quit), null)
+            .show()
+    }
+
+    private fun exportBackupToDownloads() {
+        try {
+            val jsonPayload = storage.exportAllToJson()
+            val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            if (!dir.exists()) dir.mkdirs()
+            val outFile = File(dir, "ai_browser_backup.json")
+            outFile.writeText(jsonPayload, Charsets.UTF_8)
+            promptInput.setText(jsonPayload)
+            Toast.makeText(this, "Eksport: ${outFile.absolutePath}", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "Błąd eksportu: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showImportJsonDialog() {
+        val input = EditText(this).apply {
+            hint = "Wklej JSON (zakładki / historia / userscripts)..."
+            minLines = 6
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Import JSON")
+            .setView(input)
+            .setPositiveButton("IMPORTUJ") { _, _ ->
+                val ok = storage.importFromJson(input.text.toString())
+                rebuildScriptsBar()
+                Toast.makeText(this, if (ok) "Zaimportowano JSON" else "Niepoprawny JSON", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(getString(R.string.choose_host_browser_dialog_quit), null)
+            .show()
     }
 
     private fun showEntriesDialog(title: String, entries: List<SavedLinkEntry>) {
