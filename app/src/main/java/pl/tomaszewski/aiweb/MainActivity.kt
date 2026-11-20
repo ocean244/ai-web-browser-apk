@@ -383,7 +383,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-fun loadTargetUrl(url: String) {
+    fun loadTargetUrl(url: String) {
         val target = url.trim()
         if (target.isEmpty()) return
         val resolved = if (target.startsWith("http://") || target.startsWith("https://") || target.startsWith("file://")) {
@@ -396,5 +396,4 @@ fun loadTargetUrl(url: String) {
         } catch (_: Throwable) {}
     }
 
-}
 }
