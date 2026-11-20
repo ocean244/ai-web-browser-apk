@@ -6,14 +6,18 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONException
 import org.json.JSONObject
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
 object AiBridgeClient {
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(45, TimeUnit.SECONDS)
-        .build()
+    private val client: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(45, TimeUnit.SECONDS)
+            .build()
+    }
 
     suspend fun analyzePage(url: String, pageText: String, userPrompt: String): String =
         withContext(Dispatchers.IO) {
@@ -38,10 +42,12 @@ object AiBridgeClient {
                         if (parsed.isNotBlank()) return@withContext parsed
                     }
                 }
-            } catch (_: Exception) {
+            } catch (_: IOException) {
+            } catch (_: JSONException) {
             }
 
             val sentences = LocalEngineService.rankExtracts(trimmed, 8).joinToString("\n• ", prefix = "• ")
-            "TRYB LOKALNY (EKSTRAKT STRONY)\nURL: $url\nSHA256: ${LocalEngineService.sha256(trimmed).take(16)}\n\nKluczowe fragmenty:\n$sentences"
+            val digest = LocalEngineService.sha256(trimmed).take(16)
+            "TRYB LOKALNY (EKSTRAKT STRONY)\nURL: $url\nSHA256: $digest\n\nKluczowe fragmenty:\n$sentences"
         }
 }

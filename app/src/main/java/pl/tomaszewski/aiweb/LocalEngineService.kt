@@ -6,9 +6,9 @@ import java.security.MessageDigest
 
 object LocalEngineService {
 
-    fun sha256(input: String): String {
+    suspend fun sha256(input: String): String = withContext(Dispatchers.Default) {
         val bytes = MessageDigest.getInstance("SHA-256").digest(input.toByteArray(Charsets.UTF_8))
-        return bytes.joinToString("") { "%02x".format(it) }
+        bytes.joinToString("") { "%02x".format(it) }
     }
 
     suspend fun rankExtracts(rawText: String, maxItems: Int = 6): List<String> =
